@@ -1,3 +1,11 @@
+import java.util.Properties
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -17,6 +25,11 @@ android {
     }
 
     buildTypes {
+        all {
+            buildConfigField("String", "TOURAPI_SERVICE_KEY", "\"${localProperties["tourapi.serviceKey"]}\"")
+            buildConfigField("String", "TOURAPI_OS", "\"AND\"")
+            buildConfigField("String", "TOURAPI_APP_NAME", "\"${rootProject.name}\"")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
