@@ -2,7 +2,7 @@ package io.jacob.igozogo.core.data.model.odii
 
 import com.google.gson.annotations.SerializedName
 
-data class ThemeBasedItem(
+data class ThemeResponse(
     @SerializedName("tid") val tid: Int,
     @SerializedName("tlid") val title: Int,
     @SerializedName("themeCategory") val themeCategory: String,
@@ -15,5 +15,5 @@ data class ThemeBasedItem(
     @SerializedName("langCode") val langCode: String,
     @SerializedName("imageUrl") val imageUrl: String,
     @SerializedName("createdtime") val createdTime: String,
-    @SerializedName("modifiedtime") val modifiedTime: String
+    @SerializedName("modifiedtime") val modifiedTime: String,
 )
