@@ -4,10 +4,10 @@ import com.google.gson.annotations.SerializedName
 
 /**
  * 이야기 응답
- * @property tid Int 관광지 ID
- * @property tlid Int 관광지 언어 ID
- * @property stid Int 이야기 ID
- * @property stlid Int 이야기 언어 ID
+ * @property themeId Int 관광지 ID
+ * @property themeLangId Int 관광지 언어 ID
+ * @property storyId Int 이야기 ID
+ * @property storyLangId Int 이야기 언어 ID
  * @property title String 관광지 이름
  * @property mapX Double 경도(X)
  * @property mapY Double 위도(Y)
@@ -22,10 +22,10 @@ import com.google.gson.annotations.SerializedName
  * @constructor
  */
 data class StoryResponse(
-    @SerializedName("tid") val tid: Int,
-    @SerializedName("tlid") val tlid: Int,
-    @SerializedName("stid") val stid: Int,
-    @SerializedName("stlid") val stlid: Int,
+    @SerializedName("tid") val themeId: Int,
+    @SerializedName("tlid") val themeLangId: Int,
+    @SerializedName("stid") val storyId: Int,
+    @SerializedName("stlid") val storyLangId: Int,
     @SerializedName("title") val title: String,
     @SerializedName("mapX") val mapX: Double,
     @SerializedName("mapY") val mapY: Double,

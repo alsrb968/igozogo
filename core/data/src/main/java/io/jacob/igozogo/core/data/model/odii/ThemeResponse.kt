@@ -4,8 +4,8 @@ import com.google.gson.annotations.SerializedName
 
 /**
  * 관광지 응답
- * @property tid Int 관광지 ID
- * @property tlid Int 관광지 언어 ID
+ * @property themeId Int 관광지 ID
+ * @property themeLangId Int 관광지 언어 ID
  * @property themeCategory String 테마 유형
  * @property addr1 String 주소
  * @property addr2 String 주소 상세
@@ -20,8 +20,8 @@ import com.google.gson.annotations.SerializedName
  * @constructor
  */
 data class ThemeResponse(
-    @SerializedName("tid") val tid: Int,
-    @SerializedName("tlid") val tlid: Int,
+    @SerializedName("tid") val themeId: Int,
+    @SerializedName("tlid") val themeLangId: Int,
     @SerializedName("themeCategory") val themeCategory: String,
     @SerializedName("addr1") val addr1: String,
     @SerializedName("addr2") val addr2: String,
