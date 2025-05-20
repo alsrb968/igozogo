@@ -34,7 +34,7 @@ data class StoryResponse(
     @SerializedName("playTime") val playTime: Int,
     @SerializedName("audioUrl") val audioUrl: String,
     @SerializedName("langCode") val langCode: String,
-    @SerializedName("ImageUrl") val imageUrl: String,
+    @SerializedName("imageUrl") val imageUrl: String,
     @SerializedName("createdtime") val createdTime: String,
     @SerializedName("modifiedtime") val modifiedTime: String,
 )
