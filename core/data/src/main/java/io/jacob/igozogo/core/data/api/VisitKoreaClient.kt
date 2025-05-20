@@ -26,7 +26,7 @@ object VisitKoreaClient {
             _retrofit ?: Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
+//                .client(client)
                 .build().also {
                     _retrofit = it
                 }

@@ -1,38 +1,34 @@
-package io.jacob.igozogo.core.data.model.odii
+package io.jacob.igozogo.core.data.model.remote.odii
 
 import com.google.gson.annotations.SerializedName
 
 /**
- * 이야기 응답
+ * 관광지 응답
  * @property themeId Int 관광지 ID
  * @property themeLangId Int 관광지 언어 ID
- * @property storyId Int 이야기 ID
- * @property storyLangId Int 이야기 언어 ID
+ * @property themeCategory String 테마 유형
+ * @property addr1 String 주소
+ * @property addr2 String 주소 상세
  * @property title String 관광지 이름
  * @property mapX Double 경도(X)
  * @property mapY Double 위도(Y)
- * @property audioTitle String 오디오 제목
- * @property script String 대본
- * @property playTime Int 재생 시간
- * @property audioUrl String 오디오 파일 URL
+ * @property langCheck String 제공 언어 e.g., `1100` (ko;한국어) | (en;영어) | (jp;일본어) | (cn1;중국어)
  * @property langCode String 언어
  * @property imageUrl String 관광지 이미지 URL
  * @property createdTime String 등록일
  * @property modifiedTime String 수정일
  * @constructor
  */
-data class StoryResponse(
+data class ThemeResponse(
     @SerializedName("tid") val themeId: Int,
     @SerializedName("tlid") val themeLangId: Int,
-    @SerializedName("stid") val storyId: Int,
-    @SerializedName("stlid") val storyLangId: Int,
+    @SerializedName("themeCategory") val themeCategory: String,
+    @SerializedName("addr1") val addr1: String,
+    @SerializedName("addr2") val addr2: String,
     @SerializedName("title") val title: String,
     @SerializedName("mapX") val mapX: Double,
     @SerializedName("mapY") val mapY: Double,
-    @SerializedName("audioTitle") val audioTitle: String,
-    @SerializedName("script") val script: String,
-    @SerializedName("playTime") val playTime: Int,
-    @SerializedName("audioUrl") val audioUrl: String,
+    @SerializedName("langCheck") val langCheck: String,
     @SerializedName("langCode") val langCode: String,
     @SerializedName("imageUrl") val imageUrl: String,
     @SerializedName("createdtime") val createdTime: String,

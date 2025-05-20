@@ -10,7 +10,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object VisitKoreaApiModule {
+object ApiModule {
     @Provides
     @Singleton
     fun provideOdiiApi(): OdiiApi {
