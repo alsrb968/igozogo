@@ -2,13 +2,30 @@ package io.jacob.igozogo.core.data.model.odii
 
 import com.google.gson.annotations.SerializedName
 
+/**
+ * 관광지 응답
+ * @property tid Int 관광지 ID
+ * @property tlid Int 관광지 언어 ID
+ * @property themeCategory String 테마 유형
+ * @property addr1 String 주소
+ * @property addr2 String 주소 상세
+ * @property title String 관광지 이름
+ * @property mapX Double 경도(X)
+ * @property mapY Double 위도(Y)
+ * @property langCheck String 제공 언어
+ * @property langCode String 언어
+ * @property imageUrl String 관광지 이미지 URL
+ * @property createdTime String 등록일
+ * @property modifiedTime String 수정일
+ * @constructor
+ */
 data class ThemeResponse(
     @SerializedName("tid") val tid: Int,
-    @SerializedName("tlid") val title: Int,
+    @SerializedName("tlid") val tlid: Int,
     @SerializedName("themeCategory") val themeCategory: String,
     @SerializedName("addr1") val addr1: String,
     @SerializedName("addr2") val addr2: String,
-    @SerializedName("title") val name: String,
+    @SerializedName("title") val title: String,
     @SerializedName("mapX") val mapX: Double,
     @SerializedName("mapY") val mapY: Double,
     @SerializedName("langCheck") val langCheck: String,
