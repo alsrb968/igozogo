@@ -1,0 +1,50 @@
+name: Android CI
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  check-for-changes:
+    runs-on: ubuntu-latest
+
+    outputs:
+      source_changes: ${{ steps.check_changes.outputs.any_changed }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for source changes
+        uses: tj-actions/changed-files@v42
+        id: check_changes
+        with:
+          files_ignore: |
+            *.md
+            *.mk
+            .idea/**
+            .github/**
+
+  build:
+    needs: check-for-changes
+    if: needs.check-for-changes.outputs.source_changes == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew build
