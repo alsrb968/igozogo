@@ -16,6 +16,8 @@ import io.jacob.igozogo.core.data.model.local.odii.ThemeEntity
     exportSchema = true,
 )
 abstract class VisitKoreaDatabase :RoomDatabase() {
+    abstract fun themeDao(): ThemeDao
+    abstract fun storyDao(): StoryDao
 
     companion object {
         private const val DB_NAME = "VisitKorea.db"

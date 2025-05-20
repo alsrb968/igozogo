@@ -1,15 +1,13 @@
 package io.jacob.igozogo.core.data.model.local.odii
 
 import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-@Entity(
-    tableName = "storyTable",
-    primaryKeys = ["storyId", "storyLangId"]
-)
+@Entity(tableName = "storyTable")
 data class StoryEntity(
     val themeId: Int,
     val themeLangId: Int,
-    val storyId: Int,
+    @PrimaryKey val storyId: Int,
     val storyLangId: Int,
     val title: String,
     val mapX: Double,

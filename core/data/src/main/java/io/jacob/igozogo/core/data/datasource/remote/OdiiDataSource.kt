@@ -1,4 +1,4 @@
-package io.jacob.igozogo.core.data.datasource
+package io.jacob.igozogo.core.data.datasource.remote
 
 import io.jacob.igozogo.core.data.api.OdiiApi
 import io.jacob.igozogo.core.data.model.remote.Body

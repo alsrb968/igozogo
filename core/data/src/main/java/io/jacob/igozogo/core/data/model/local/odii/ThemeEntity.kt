@@ -1,13 +1,11 @@
 package io.jacob.igozogo.core.data.model.local.odii
 
 import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-@Entity(
-    tableName = "themeTable",
-    primaryKeys = ["themeId", "themeLangId"]
-)
+@Entity(tableName = "themeTable")
 data class ThemeEntity(
-    val themeId: Int,
+    @PrimaryKey val themeId: Int,
     val themeLangId: Int,
     val themeCategory: String,
     val addr1: String,
