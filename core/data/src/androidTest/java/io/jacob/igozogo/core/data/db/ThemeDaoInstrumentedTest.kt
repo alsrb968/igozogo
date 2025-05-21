@@ -1,15 +1,13 @@
-package io.jacob.igozogo.core.data
+package io.jacob.igozogo.core.data.db
 
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import io.jacob.igozogo.core.data.db.ThemeDao
-import io.jacob.igozogo.core.data.db.VisitKoreaDatabase
 import io.jacob.igozogo.core.data.model.local.odii.ThemeEntity
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
-import org.junit.Assert.assertEquals
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,19 +34,43 @@ class ThemeDaoInstrumentedTest {
     fun getThemesTest() = runTest {
         dao.insertThemes(entities)
         val result = dao.getThemes().first()
-        assertEquals(3, result.size)
-        assertEquals("백제문화단지", result[0].title)
-        assertEquals("경주 불국사", result[1].title)
-        assertEquals("괘릉", result[2].title)
+        Assert.assertEquals(3, result.size)
+        Assert.assertEquals("백제문화단지", result[0].title)
+        Assert.assertEquals("경주 불국사", result[1].title)
+        Assert.assertEquals("괘릉", result[2].title)
     }
 
     @Test
     fun getThemeCategoriesTest() = runTest {
         dao.insertThemes(entities)
         val result = dao.getThemeCategories().first()
-        assertEquals(2, result.size)
-        assertEquals("백제역사여행", result[0])
-        assertEquals("신라역사여행", result[1])
+        Assert.assertEquals(2, result.size)
+        Assert.assertEquals("백제역사여행", result[0])
+        Assert.assertEquals("신라역사여행", result[1])
+    }
+
+    @Test
+    fun getThemesByCategoryTest() = runTest {
+        dao.insertThemes(entities)
+        val result = dao.getThemesByCategory("신라역사여행").first()
+        Assert.assertEquals(2, result.size)
+        Assert.assertEquals("경주 불국사", result[0].title)
+        Assert.assertEquals("괘릉", result[1].title)
+    }
+
+    @Test
+    fun getThemesByKeywordTest() = runTest {
+        dao.insertThemes(entities)
+
+        val result1 = dao.getThemesByKeyword("괘릉").first()
+        Assert.assertEquals(1, result1.size)
+        Assert.assertEquals("괘릉", result1[0].title)
+
+        val result2 = dao.getThemesByKeyword("역사여행").first()
+        Assert.assertEquals(3, result2.size)
+        Assert.assertEquals("백제문화단지", result2[0].title)
+        Assert.assertEquals("경주 불국사", result2[1].title)
+        Assert.assertEquals("괘릉", result2[2].title)
     }
 
     companion object {

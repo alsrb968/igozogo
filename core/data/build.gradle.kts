@@ -60,18 +60,6 @@ dependencies {
     //----- Dagger Hilt
     implementation(libs.google.hilt.android)
     ksp(libs.google.hilt.compiler)
-    // For Robolectric tests.
-    testImplementation(libs.google.hilt.testing)
-    // ...with Kotlin.
-    kspTest(libs.google.hilt.compiler)
-    // ...with Java.
-    testAnnotationProcessor(libs.google.hilt.compiler)
-    // For instrumented tests.
-    androidTestImplementation(libs.google.hilt.testing)
-    // ...with Kotlin.
-    kspAndroidTest(libs.google.hilt.compiler)
-    // ...with Java.
-    androidTestAnnotationProcessor(libs.google.hilt.compiler)
 
     //----- Room
     implementation(libs.androidx.room.runtime)
