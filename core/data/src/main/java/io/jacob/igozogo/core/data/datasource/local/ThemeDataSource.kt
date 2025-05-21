@@ -2,14 +2,15 @@ package io.jacob.igozogo.core.data.datasource.local
 
 import io.jacob.igozogo.core.data.db.ThemeDao
 import io.jacob.igozogo.core.data.model.local.odii.ThemeEntity
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 interface ThemeDataSource {
     suspend fun insertThemes(themes: List<ThemeEntity>)
-    suspend fun getThemes(): List<ThemeEntity>
-    suspend fun getThemeCategories(): List<String>
-    suspend fun getThemesByCategory(category: String): List<ThemeEntity>
-    suspend fun getCount(): Int
+    fun getThemes(): Flow<List<ThemeEntity>>
+    fun getThemeCategories(): Flow<List<String>>
+    fun getThemesByCategory(category: String): Flow<List<ThemeEntity>>
+    fun searchThemes(keyword: String): Flow<List<ThemeEntity>>
     suspend fun deleteThemes()
 }
 
@@ -20,20 +21,20 @@ class ThemeDataSourceImpl @Inject constructor(
         return dao.insertThemes(themes)
     }
 
-    override suspend fun getThemes(): List<ThemeEntity> {
+    override fun getThemes(): Flow<List<ThemeEntity>> {
         return dao.getThemes()
     }
 
-    override suspend fun getThemeCategories(): List<String> {
+    override fun getThemeCategories(): Flow<List<String>> {
         return dao.getThemeCategories()
     }
 
-    override suspend fun getThemesByCategory(category: String): List<ThemeEntity> {
+    override fun getThemesByCategory(category: String): Flow<List<ThemeEntity>> {
         return dao.getThemesByCategory(category)
     }
 
-    override suspend fun getCount(): Int {
-        return dao.getCount()
+    override fun searchThemes(keyword: String): Flow<List<ThemeEntity>> {
+        return dao.searchThemes(keyword)
     }
 
     override suspend fun deleteThemes() {

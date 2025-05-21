@@ -1,5 +1,6 @@
 package io.jacob.igozogo.core.data
 
+import androidx.paging.PagingSource
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -34,18 +35,45 @@ class StoryDaoInstrumentedTest {
     @Test
     fun getStoriesTest() = runTest {
         dao.insertStories(entities)
-        val result = dao.getStories()
-        assertEquals(1, result.size)
-        assertEquals("수로왕릉 - 정문", result[0].title)
+
+        val pagingSource = dao.getStories()
+        val result = pagingSource.load(
+            PagingSource.LoadParams.Refresh(
+                key = null,
+                loadSize = 20,
+                placeholdersEnabled = false,
+            )
+        )
+        val data = (result as PagingSource.LoadResult.Page).data
+        assertEquals(1, data.size)
+        assertEquals("수로왕릉 - 정문", data[0].title)
     }
 
     @Test
     fun getStoriesByThemeIdTest() = runTest {
         dao.insertStories(entities)
-        val result = dao.getStoriesByThemeId(35)
-        assertEquals(1, result.size)
-        val result0 = dao.getStoriesByThemeId(1)
-        assertEquals(0, result0.size)
+
+        val pagingSource1 = dao.getStoriesByTheme(35, 119)
+        val result1 = pagingSource1.load(
+            PagingSource.LoadParams.Refresh(
+                key = null,
+                loadSize = 20,
+                placeholdersEnabled = false,
+            )
+        )
+        val data1 = (result1 as PagingSource.LoadResult.Page).data
+        assertEquals(1, data1.size)
+
+        val pagingSource2 = dao.getStoriesByTheme(1, 1)
+        val result2 = pagingSource2.load(
+            PagingSource.LoadParams.Refresh(
+                key = null,
+                loadSize = 20,
+                placeholdersEnabled = false,
+            )
+        )
+        val data2 = (result2 as PagingSource.LoadResult.Page).data
+        assertEquals(0, data2.size)
     }
 
     companion object {

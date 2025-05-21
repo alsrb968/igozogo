@@ -1,5 +1,6 @@
 package io.jacob.igozogo.core.data.db
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -14,24 +15,35 @@ interface StoryDao {
     @Query(
         """
         SELECT *
-        FROM storyTable
+        FROM story_table
         """
     )
-    suspend fun getStories(): List<StoryEntity>
+    fun getStories(): PagingSource<Int, StoryEntity>
 
     @Query(
         """
         SELECT *
-        FROM storyTable
-        WHERE themeId = :themeId
+        FROM story_table
+        WHERE themeId = :themeId AND themeLangId = :themeLangId
         """
     )
-    suspend fun getStoriesByThemeId(themeId: Int): List<StoryEntity>
+    fun getStoriesByTheme(themeId: Int, themeLangId: Int): PagingSource<Int, StoryEntity>
+
+    @Query(
+        """
+        SELECT *
+        FROM story_table
+        WHERE title LIKE '%' || :keyword || '%'
+            OR audioTitle LIKE '%' || :keyword || '%'
+            OR script LIKE '%' || :keyword || '%'
+        """
+    )
+    fun searchStories(keyword: String): PagingSource<Int, StoryEntity>
 
     @Query(
         """
         DELETE
-        FROM storyTable
+        FROM story_table
         """
     )
     suspend fun deleteStories()

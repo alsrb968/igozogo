@@ -34,7 +34,7 @@ object DataSourceModule {
         dao: StoryDao
     ): StoryDataSource {
         return StoryDataSourceImpl(
-            dao = dao
+            storyDao = dao
         )
     }
 

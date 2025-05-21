@@ -3,12 +3,12 @@ package io.jacob.igozogo.core.data.model.local.odii
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "storyTable")
+@Entity(tableName = "story_table")
 data class StoryEntity(
     val themeId: Int,
     val themeLangId: Int,
-    @PrimaryKey val storyId: Int,
-    val storyLangId: Int,
+    val storyId: Int,
+    @PrimaryKey val storyLangId: Int,
     val title: String,
     val mapX: Double,
     val mapY: Double,

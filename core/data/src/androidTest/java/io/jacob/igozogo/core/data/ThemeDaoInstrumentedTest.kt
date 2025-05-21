@@ -6,6 +6,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import io.jacob.igozogo.core.data.db.ThemeDao
 import io.jacob.igozogo.core.data.db.VisitKoreaDatabase
 import io.jacob.igozogo.core.data.model.local.odii.ThemeEntity
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -34,7 +35,7 @@ class ThemeDaoInstrumentedTest {
     @Test
     fun getThemesTest() = runTest {
         dao.insertThemes(entities)
-        val result = dao.getThemes()
+        val result = dao.getThemes().first()
         assertEquals(3, result.size)
         assertEquals("백제문화단지", result[0].title)
         assertEquals("경주 불국사", result[1].title)
@@ -44,17 +45,10 @@ class ThemeDaoInstrumentedTest {
     @Test
     fun getThemeCategoriesTest() = runTest {
         dao.insertThemes(entities)
-        val result = dao.getThemeCategories()
+        val result = dao.getThemeCategories().first()
         assertEquals(2, result.size)
         assertEquals("백제역사여행", result[0])
         assertEquals("신라역사여행", result[1])
-    }
-
-    @Test
-    fun getCountTest() = runTest {
-        dao.insertThemes(entities)
-        val result = dao.getCount()
-        assertEquals(3, result)
     }
 
     companion object {
