@@ -69,8 +69,8 @@ class OdiiApiInstrumentedTest {
         val response = api.getStoryBasedList(
             numOfRows = numOfRows,
             pageNo = 1,
-            tid = 1,
-            tlid = 1,
+            themeId = 1,
+            themeLangId = 1,
         )
 
         assertNotNull(response)
