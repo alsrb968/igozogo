@@ -3,10 +3,15 @@ package io.jacob.igozogo.core.data.mapper
 import io.jacob.igozogo.core.data.model.local.odii.StoryEntity
 import io.jacob.igozogo.core.data.model.local.odii.StoryRemoteKey
 import io.jacob.igozogo.core.data.model.local.odii.ThemeEntity
+import io.jacob.igozogo.core.data.model.remote.ResponseWrapper
 import io.jacob.igozogo.core.data.model.remote.odii.StoryResponse
 import io.jacob.igozogo.core.data.model.remote.odii.ThemeResponse
 import io.jacob.igozogo.core.domain.model.Story
 import io.jacob.igozogo.core.domain.model.Theme
+
+fun <T> ResponseWrapper<T>.toResponses(): List<T> {
+    return this.response.body.items.item
+}
 
 fun ThemeResponse.toThemeEntity(): ThemeEntity {
     return ThemeEntity(
@@ -100,14 +105,23 @@ fun List<StoryEntity>.toStory(): List<Story> {
     return map { it.toStory() }
 }
 
-fun StoryEntity.toStoryRemoteKey(query: String, nextPage: Int?): StoryRemoteKey {
+fun StoryEntity.toStoryRemoteKey(
+    query: String,
+    prevPage: Int?,
+    nextPage: Int?
+): StoryRemoteKey {
     return StoryRemoteKey(
         id = this.storyLangId,
         queryType = query,
+        prevPage = prevPage,
         nextPage = nextPage,
     )
 }
 
-fun List<StoryEntity>.toStoryRemoteKey(query: String, nextPage: Int?): List<StoryRemoteKey> {
-    return map { it.toStoryRemoteKey(query, nextPage) }
+fun List<StoryEntity>.toStoryRemoteKey(
+    query: String,
+    prevPage: Int?,
+    nextPage: Int?
+): List<StoryRemoteKey> {
+    return map { it.toStoryRemoteKey(query, prevPage, nextPage) }
 }

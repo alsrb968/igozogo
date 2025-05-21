@@ -7,7 +7,7 @@ import io.jacob.igozogo.core.data.datasource.remote.OdiiDataSource
 import io.jacob.igozogo.core.data.mapper.toStory
 import io.jacob.igozogo.core.data.mapper.toTheme
 import io.jacob.igozogo.core.data.mapper.toThemeEntity
-import io.jacob.igozogo.core.data.mediator.QueryType
+import io.jacob.igozogo.core.data.mediator.Query
 import io.jacob.igozogo.core.data.mediator.StoryRemoteMediator
 import io.jacob.igozogo.core.domain.model.Story
 import io.jacob.igozogo.core.domain.model.Theme
@@ -28,7 +28,7 @@ class OdiiRepositoryImpl @Inject constructor(
             numOfRows = 100,
             pageNo = 1,
         )
-        themeDataSource.insertThemes(themes.items.item.toThemeEntity())
+        themeDataSource.insertThemes(themes.toThemeEntity())
     }
 
     override fun getThemes(): Flow<List<Theme>> {
@@ -44,7 +44,7 @@ class OdiiRepositoryImpl @Inject constructor(
     }
 
     override fun getThemesByKeyword(keyword: String): Flow<List<Theme>> {
-        return themeDataSource.searchThemes(keyword).map { it.toTheme() }
+        return themeDataSource.getThemesByKeyword(keyword).map { it.toTheme() }
     }
 
     override fun getStoriesByTheme(
@@ -52,7 +52,7 @@ class OdiiRepositoryImpl @Inject constructor(
         themeLangId: Int,
         pageSize: Int
     ): Flow<PagingData<Story>> {
-        val query = QueryType.Theme(themeId, themeLangId)
+        val query = Query.Theme(themeId, themeLangId)
 
         return Pager(
             config = PagingConfig(pageSize = pageSize),
@@ -83,13 +83,13 @@ class OdiiRepositoryImpl @Inject constructor(
         keyword: String,
         pageSize: Int
     ): Flow<PagingData<Story>> {
-        val query = QueryType.Search(keyword)
+        val query = Query.Keyword(keyword)
 
         return Pager(
             config = PagingConfig(pageSize = pageSize),
             remoteMediator = storyRemoteMediatorFactory.create(query),
             pagingSourceFactory = {
-                storyDataSource.searchStories(keyword)
+                storyDataSource.getStoriesByKeyword(keyword)
             }
         ).flow.map { pagingData ->
             pagingData.map { it.toStory() }

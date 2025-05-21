@@ -12,6 +12,7 @@ import io.jacob.igozogo.core.data.datasource.local.ThemeDataSourceImpl
 import io.jacob.igozogo.core.data.datasource.remote.OdiiDataSource
 import io.jacob.igozogo.core.data.datasource.remote.OdiiDataSourceImpl
 import io.jacob.igozogo.core.data.db.StoryDao
+import io.jacob.igozogo.core.data.db.StoryRemoteKeyDao
 import io.jacob.igozogo.core.data.db.ThemeDao
 import javax.inject.Singleton
 
@@ -31,10 +32,12 @@ object DataSourceModule {
     @Provides
     @Singleton
     fun provideStoryDataSource(
-        dao: StoryDao
+        storyDao: StoryDao,
+        remoteKeyDao: StoryRemoteKeyDao,
     ): StoryDataSource {
         return StoryDataSourceImpl(
-            storyDao = dao
+            storyDao = storyDao,
+            remoteKeyDao = remoteKeyDao,
         )
     }
 

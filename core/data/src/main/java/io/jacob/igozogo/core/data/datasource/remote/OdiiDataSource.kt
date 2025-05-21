@@ -1,7 +1,7 @@
 package io.jacob.igozogo.core.data.datasource.remote
 
 import io.jacob.igozogo.core.data.api.OdiiApi
-import io.jacob.igozogo.core.data.model.remote.Body
+import io.jacob.igozogo.core.data.mapper.toResponses
 import io.jacob.igozogo.core.data.model.remote.odii.StoryResponse
 import io.jacob.igozogo.core.data.model.remote.odii.ThemeResponse
 import javax.inject.Inject
@@ -11,7 +11,7 @@ interface OdiiDataSource {
         numOfRows: Int,
         pageNo: Int,
         langCode: String = "ko",
-    ): Body<ThemeResponse>
+    ): List<ThemeResponse>
 
     suspend fun getThemeLocationBasedList(
         numOfRows: Int,
@@ -20,14 +20,14 @@ interface OdiiDataSource {
         mapX: Double,
         mapY: Double,
         radius: Int,
-    ): Body<ThemeResponse>
+    ): List<ThemeResponse>
 
     suspend fun getThemeSearchList(
         numOfRows: Int,
         pageNo: Int,
         langCode: String = "ko",
         keyword: String,
-    ): Body<ThemeResponse>
+    ): List<ThemeResponse>
 
     suspend fun getStoryBasedList(
         numOfRows: Int,
@@ -35,7 +35,7 @@ interface OdiiDataSource {
         langCode: String = "ko",
         themeId: Int,
         themeLangId: Int,
-    ): Body<StoryResponse>
+    ): List<StoryResponse>
 
     suspend fun getStoryLocationBasedList(
         numOfRows: Int,
@@ -44,14 +44,14 @@ interface OdiiDataSource {
         mapX: Double,
         mapY: Double,
         radius: Int,
-    ): Body<StoryResponse>
+    ): List<StoryResponse>
 
     suspend fun getStorySearchList(
         numOfRows: Int,
         pageNo: Int,
         langCode: String = "ko",
         keyword: String,
-    ): Body<StoryResponse>
+    ): List<StoryResponse>
 }
 
 class OdiiDataSourceImpl @Inject constructor(
@@ -61,12 +61,12 @@ class OdiiDataSourceImpl @Inject constructor(
         numOfRows: Int,
         pageNo: Int,
         langCode: String,
-    ): Body<ThemeResponse> {
+    ): List<ThemeResponse> {
         return api.getThemeBasedList(
             numOfRows = numOfRows,
             pageNo = pageNo,
             langCode = langCode,
-        ).response.body
+        ).toResponses()
     }
 
     override suspend fun getThemeLocationBasedList(
@@ -76,7 +76,7 @@ class OdiiDataSourceImpl @Inject constructor(
         mapX: Double,
         mapY: Double,
         radius: Int,
-    ): Body<ThemeResponse> {
+    ): List<ThemeResponse> {
         return api.getThemeLocationBasedList(
             numOfRows = numOfRows,
             pageNo = pageNo,
@@ -84,7 +84,7 @@ class OdiiDataSourceImpl @Inject constructor(
             mapX = mapX,
             mapY = mapY,
             radius = radius,
-        ).response.body
+        ).toResponses()
     }
 
     override suspend fun getThemeSearchList(
@@ -92,13 +92,13 @@ class OdiiDataSourceImpl @Inject constructor(
         pageNo: Int,
         langCode: String,
         keyword: String,
-    ): Body<ThemeResponse> {
+    ): List<ThemeResponse> {
         return api.getThemeSearchList(
             numOfRows = numOfRows,
             pageNo = pageNo,
             langCode = langCode,
             keyword = keyword,
-        ).response.body
+        ).toResponses()
     }
 
     override suspend fun getStoryBasedList(
@@ -107,14 +107,14 @@ class OdiiDataSourceImpl @Inject constructor(
         langCode: String,
         themeId: Int,
         themeLangId: Int,
-    ): Body<StoryResponse> {
+    ): List<StoryResponse> {
         return api.getStoryBasedList(
             numOfRows = numOfRows,
             pageNo = pageNo,
             langCode = langCode,
             themeId = themeId,
             themeLangId = themeLangId,
-        ).response.body
+        ).toResponses()
     }
 
     override suspend fun getStoryLocationBasedList(
@@ -124,7 +124,7 @@ class OdiiDataSourceImpl @Inject constructor(
         mapX: Double,
         mapY: Double,
         radius: Int,
-    ): Body<StoryResponse> {
+    ): List<StoryResponse> {
         return api.getStoryLocationBasedList(
             numOfRows = numOfRows,
             pageNo = pageNo,
@@ -132,7 +132,7 @@ class OdiiDataSourceImpl @Inject constructor(
             mapX = mapX,
             mapY = mapY,
             radius = radius,
-        ).response.body
+        ).toResponses()
     }
 
     override suspend fun getStorySearchList(
@@ -140,12 +140,12 @@ class OdiiDataSourceImpl @Inject constructor(
         pageNo: Int,
         langCode: String,
         keyword: String,
-    ): Body<StoryResponse> {
+    ): List<StoryResponse> {
         return api.getStorySearchList(
             numOfRows = numOfRows,
             pageNo = pageNo,
             langCode = langCode,
             keyword = keyword,
-        ).response.body
+        ).toResponses()
     }
 }

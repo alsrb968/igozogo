@@ -9,5 +9,6 @@ import androidx.room.Entity
 data class StoryRemoteKey(
     val id: Int,
     val queryType: String,
-    val nextPage: Int?
+    val prevPage: Int?,
+    val nextPage: Int?,
 )

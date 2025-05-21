@@ -45,7 +45,7 @@ interface ThemeDao {
             OR themeCategory LIKE '%' || :keyword || '%'
         """
     )
-    fun searchThemes(keyword: String): Flow<List<ThemeEntity>>
+    fun getThemesByKeyword(keyword: String): Flow<List<ThemeEntity>>
 
     @Query(
         """

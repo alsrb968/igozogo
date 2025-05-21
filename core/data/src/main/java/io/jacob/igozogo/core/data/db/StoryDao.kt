@@ -38,7 +38,7 @@ interface StoryDao {
             OR script LIKE '%' || :keyword || '%'
         """
     )
-    fun searchStories(keyword: String): PagingSource<Int, StoryEntity>
+    fun getStoriesByKeyword(keyword: String): PagingSource<Int, StoryEntity>
 
     @Query(
         """
