@@ -1,5 +1,6 @@
 package io.jacob.igozogo.core.data.repository
 
+import io.jacob.igozogo.core.data.TestPagingSource
 import io.jacob.igozogo.core.data.datasource.local.StoryDataSource
 import io.jacob.igozogo.core.data.datasource.local.ThemeDataSource
 import io.jacob.igozogo.core.data.datasource.remote.OdiiDataSource
@@ -12,7 +13,9 @@ import io.jacob.igozogo.core.domain.repository.OdiiRepository
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.*
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -137,30 +140,68 @@ class OdiiRepositoryUnitTest {
             coVerify { themeDataSource.getThemesByKeyword(any()) }
         }
 
-//    @Test
-//    fun `Given, When getStoriesByTheme called, Then`() =
-//        testScope.runTest {
-//            // Given
-//
-//            val pagingSource = TestPagingSource(storyEntities)
-//
-//            every {
-//                storyDataSource.getStoriesByTheme(1, 1)
-//            } returns pagingSource
-//
-////            every {
-////                storyRemoteMediatorFactory.create(Query.Theme(1, 1))
-////            } returns null // or use mockk<RemoteMediator<*, *>>() if required
-//
-//            // When
-//            val result = repository.getStoriesByTheme(1, 1, pageSize = 10)
-//                .first() // collect one PagingData
-//
-//            // Then
-//            val collected = collectPagingData(result)
-//            assertEquals(1, collected.size)
-//            assertEquals("백제문화단지", collected.first().title)
-//        }
+    @Test
+    fun `Given RemoteMediator, When getStoriesByTheme called, Then call dataSource`() =
+        testScope.runTest {
+            // Given
+            val fakeRemoteMediator = mockk<StoryRemoteMediator>(relaxed = true)
+            every { storyRemoteMediatorFactory.create(any()) } returns fakeRemoteMediator
+            every {
+                storyDataSource.getStoriesByTheme(any(), any())
+            } returns TestPagingSource(storyEntities)
+
+            // When
+            val flow = repository.getStoriesByTheme(1, 1, pageSize = 10)
+
+            val job = launch { flow.collectLatest { pagingData -> } }
+
+            // Then
+            advanceUntilIdle()
+            job.cancel()
+            coVerify { storyDataSource.getStoriesByTheme(any(), any()) }
+        }
+
+    @Test
+    fun `Given RemoteMediator, When getStoriesByLocation called, Then call dataSource`() =
+        testScope.runTest {
+            // Given
+            val fakeRemoteMediator = mockk<StoryRemoteMediator>(relaxed = true)
+            every { storyRemoteMediatorFactory.create(any()) } returns fakeRemoteMediator
+            every {
+                storyDataSource.getStoriesByLocation(any(), any(), any())
+            } returns TestPagingSource(storyEntities)
+
+            // When
+            val flow = repository.getStoriesByLocation(1.0, 1.0, 1)
+
+            val job = launch { flow.collectLatest { pagingData -> } }
+
+            // Then
+            advanceUntilIdle()
+            job.cancel()
+            coVerify { storyDataSource.getStoriesByLocation(any(), any(), any()) }
+        }
+
+    @Test
+    fun `Given RemoteMediator, When getStoriesByKeyword called, Then call dataSource`() =
+        testScope.runTest {
+            // Given
+            val fakeRemoteMediator = mockk<StoryRemoteMediator>(relaxed = true)
+            every { storyRemoteMediatorFactory.create(any()) } returns fakeRemoteMediator
+            every {
+                storyDataSource.getStoriesByKeyword(any())
+            } returns TestPagingSource(storyEntities)
+
+            // When
+            val flow = repository.getStoriesByKeyword("test", 1)
+
+            val job = launch { flow.collectLatest { pagingData -> } }
+
+            // Then
+            advanceUntilIdle()
+            job.cancel()
+            coVerify { storyDataSource.getStoriesByKeyword(any()) }
+        }
 
     companion object {
         private val themeResponses = listOf(
