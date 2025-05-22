@@ -1,15 +1,17 @@
 package io.jacob.igozogo.core.data.datasource.local
 
+import androidx.paging.PagingSource
 import io.jacob.igozogo.core.data.db.ThemeDao
 import io.jacob.igozogo.core.data.model.local.odii.ThemeEntity
 import javax.inject.Inject
 
 interface ThemeDataSource {
     suspend fun insertThemes(themes: List<ThemeEntity>)
-    suspend fun getThemes(): List<ThemeEntity>
-    suspend fun getThemeCategories(): List<String>
-    suspend fun getThemesByCategory(category: String): List<ThemeEntity>
-    suspend fun getCount(): Int
+    fun getThemes(): PagingSource<Int, ThemeEntity>
+    fun getThemeCategories(): PagingSource<Int, String>
+    fun getThemesByCategory(category: String): PagingSource<Int, ThemeEntity>
+    fun getThemesByLocation(mapX: Double, mapY: Double, radius: Int): PagingSource<Int, ThemeEntity>
+    fun getThemesByKeyword(keyword: String): PagingSource<Int, ThemeEntity>
     suspend fun deleteThemes()
 }
 
@@ -20,23 +22,35 @@ class ThemeDataSourceImpl @Inject constructor(
         return dao.insertThemes(themes)
     }
 
-    override suspend fun getThemes(): List<ThemeEntity> {
+    override fun getThemes(): PagingSource<Int, ThemeEntity> {
         return dao.getThemes()
     }
 
-    override suspend fun getThemeCategories(): List<String> {
+    override fun getThemeCategories(): PagingSource<Int, String> {
         return dao.getThemeCategories()
     }
 
-    override suspend fun getThemesByCategory(category: String): List<ThemeEntity> {
+    override fun getThemesByCategory(category: String): PagingSource<Int, ThemeEntity> {
         return dao.getThemesByCategory(category)
     }
 
-    override suspend fun getCount(): Int {
-        return dao.getCount()
+    override fun getThemesByLocation(
+        mapX: Double,
+        mapY: Double,
+        radius: Int
+    ): PagingSource<Int, ThemeEntity> {
+        return dao.getThemesByLocation(mapX, mapY, radius / METERS_PER_DEGREE)
+    }
+
+    override fun getThemesByKeyword(keyword: String): PagingSource<Int, ThemeEntity> {
+        return dao.getThemesByKeyword(keyword)
     }
 
     override suspend fun deleteThemes() {
         return dao.deleteThemes()
+    }
+
+    companion object {
+        private const val METERS_PER_DEGREE = 111000.0
     }
 }

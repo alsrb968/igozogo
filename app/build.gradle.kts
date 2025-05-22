@@ -20,6 +20,13 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    packaging {
+        resources {
+            excludes += "/META-INF/LICENSE.md"
+            excludes += "/META-INF/LICENSE-notice.md"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -59,6 +66,14 @@ dependencies {
     //----- Dagger Hilt
     implementation(libs.google.hilt.android)
     ksp(libs.google.hilt.compiler)
+    // For Robolectric tests.
+    testImplementation(libs.google.hilt.testing)
+    // ...with Kotlin.
+    kspTest(libs.google.hilt.compiler)
+    // For instrumented tests.
+    androidTestImplementation(libs.google.hilt.testing)
+    // ...with Kotlin.
+    kspAndroidTest(libs.google.hilt.compiler)
 
     //----- Paging
     implementation(libs.androidx.paging.compose)
@@ -72,6 +87,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    androidTestImplementation(libs.mockk.android)
 
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)

@@ -1,5 +1,6 @@
 package io.jacob.igozogo.core.data.db
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -14,40 +15,55 @@ interface ThemeDao {
     @Query(
         """
         SELECT *
-        FROM themeTable
+        FROM theme_table
         """
     )
-    suspend fun getThemes(): List<ThemeEntity>
+    fun getThemes(): PagingSource<Int, ThemeEntity>
 
     @Query(
         """
         SELECT DISTINCT themeCategory
-        FROM themeTable
+        FROM theme_table
         """
     )
-    suspend fun getThemeCategories(): List<String>
+    fun getThemeCategories(): PagingSource<Int, String>
 
     @Query(
         """
         SELECT *
-        FROM themeTable
+        FROM theme_table
         WHERE themeCategory = :category
         """
     )
-    suspend fun getThemesByCategory(category: String): List<ThemeEntity>
+    fun getThemesByCategory(category: String): PagingSource<Int, ThemeEntity>
 
     @Query(
         """
-        SELECT COUNT(*)
-        FROM themeTable
+        SELECT *
+        FROM theme_table
+        WHERE mapX BETWEEN :mapX - :radiusDeg AND :mapX + :radiusDeg
+            AND mapY BETWEEN :mapY - :radiusDeg AND :mapY + :radiusDeg
+        ORDER BY ((mapX - :mapX) * (mapX - :mapX) + (mapY - :mapY) * (mapY - :mapY)) ASC
         """
     )
-    suspend fun getCount(): Int
+    fun getThemesByLocation(mapX: Double, mapY: Double, radiusDeg: Double): PagingSource<Int, ThemeEntity>
+
+    @Query(
+        """
+        SELECT *
+        FROM theme_table
+        WHERE title LIKE '%' || :keyword || '%'
+            OR themeCategory LIKE '%' || :keyword || '%'
+            OR addr1 LIKE '%' || :keyword || '%'
+            OR addr2 LIKE '%' || :keyword || '%'
+        """
+    )
+    fun getThemesByKeyword(keyword: String): PagingSource<Int, ThemeEntity>
 
     @Query(
         """
         DELETE
-        FROM themeTable
+        FROM theme_table
         """
     )
     suspend fun deleteThemes()

@@ -1,11 +1,8 @@
-package io.jacob.igozogo.core.data
+package io.jacob.igozogo.core.data.api
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import io.jacob.igozogo.core.data.api.OdiiApi
-import io.jacob.igozogo.core.data.api.VisitKoreaClient
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertTrue
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -28,8 +25,8 @@ class OdiiApiInstrumentedTest {
             pageNo = 1,
         )
 
-        assertNotNull(response)
-        assertTrue(numOfRows == response.response.body.items.item.size)
+        Assert.assertNotNull(response)
+        Assert.assertTrue(numOfRows == response.response.body.items.item.size)
     }
 
     @Test
@@ -44,8 +41,8 @@ class OdiiApiInstrumentedTest {
             radius = 1000,
         )
 
-        assertNotNull(response)
-        assertTrue(numOfRows == response.response.body.items.item.size)
+        Assert.assertNotNull(response)
+        Assert.assertTrue(numOfRows == response.response.body.items.item.size)
     }
 
     @Test
@@ -58,8 +55,8 @@ class OdiiApiInstrumentedTest {
             keyword = "백제",
         )
 
-        assertNotNull(response)
-        assertTrue(numOfRows == response.response.body.items.item.size)
+        Assert.assertNotNull(response)
+        Assert.assertTrue(numOfRows == response.response.body.items.item.size)
     }
 
     @Test
@@ -73,8 +70,8 @@ class OdiiApiInstrumentedTest {
             themeLangId = 1,
         )
 
-        assertNotNull(response)
-        assertTrue(numOfRows == response.response.body.items.item.size)
+        Assert.assertNotNull(response)
+        Assert.assertTrue(numOfRows == response.response.body.items.item.size)
     }
 
     @Test
@@ -89,8 +86,8 @@ class OdiiApiInstrumentedTest {
             radius = 1000,
         )
 
-        assertNotNull(response)
-        assertTrue(numOfRows == response.response.body.items.item.size)
+        Assert.assertNotNull(response)
+        Assert.assertTrue(numOfRows == response.response.body.items.item.size)
     }
 
     @Test
@@ -103,7 +100,7 @@ class OdiiApiInstrumentedTest {
             keyword = "백제",
         )
 
-        assertNotNull(response)
-        assertTrue(numOfRows == response.response.body.items.item.size)
+        Assert.assertNotNull(response)
+        Assert.assertTrue(numOfRows == response.response.body.items.item.size)
     }
 }

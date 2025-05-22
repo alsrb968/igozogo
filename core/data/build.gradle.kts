@@ -24,6 +24,13 @@ android {
         consumerProguardFiles("consumer-rules.pro")
     }
 
+    packaging {
+        resources {
+            excludes += "/META-INF/LICENSE.md"
+            excludes += "/META-INF/LICENSE-notice.md"
+        }
+    }
+
     buildTypes {
         all {
             buildConfigField("String", "TOURAPI_SERVICE_KEY", "\"${localProperties["tourapi.serviceKey"]}\"")
@@ -60,18 +67,6 @@ dependencies {
     //----- Dagger Hilt
     implementation(libs.google.hilt.android)
     ksp(libs.google.hilt.compiler)
-    // For Robolectric tests.
-    testImplementation(libs.google.hilt.testing)
-    // ...with Kotlin.
-    kspTest(libs.google.hilt.compiler)
-    // ...with Java.
-    testAnnotationProcessor(libs.google.hilt.compiler)
-    // For instrumented tests.
-    androidTestImplementation(libs.google.hilt.testing)
-    // ...with Kotlin.
-    kspAndroidTest(libs.google.hilt.compiler)
-    // ...with Java.
-    androidTestAnnotationProcessor(libs.google.hilt.compiler)
 
     //----- Room
     implementation(libs.androidx.room.runtime)
@@ -99,4 +94,6 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    androidTestImplementation(libs.mockk.android)
 }
