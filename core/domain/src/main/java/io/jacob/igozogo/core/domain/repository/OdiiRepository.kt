@@ -7,11 +7,25 @@ import kotlinx.coroutines.flow.Flow
 
 interface OdiiRepository {
     suspend fun syncThemes()
-    fun getThemes(): Flow<List<Theme>>
-    fun getThemeCategories(): Flow<List<String>>
-    fun getThemesByCategory(category: String): Flow<List<Theme>>
-    fun getThemesByLocation(mapX: Double, mapY: Double, radius: Int): Flow<List<Theme>>
-    fun getThemesByKeyword(keyword: String): Flow<List<Theme>>
+
+    fun getThemes(pageSize: Int = 20): Flow<PagingData<Theme>>
+
+    fun getThemeCategories(pageSize: Int = 20): Flow<PagingData<String>>
+
+    fun getThemesByCategory(
+        category: String,
+        pageSize: Int = 20,
+    ): Flow<PagingData<Theme>>
+
+    fun getThemesByLocation(
+        mapX: Double, mapY: Double, radius: Int,
+        pageSize: Int = 20,
+    ): Flow<PagingData<Theme>>
+
+    fun getThemesByKeyword(
+        keyword: String,
+        pageSize: Int = 20,
+    ): Flow<PagingData<Theme>>
 
     fun getStoriesByTheme(
         themeId: Int,

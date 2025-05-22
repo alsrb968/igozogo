@@ -14,7 +14,6 @@ import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.*
 import org.junit.After
@@ -77,12 +76,16 @@ class OdiiRepositoryUnitTest {
     fun `Given themes, When getThemes called, Then call dataSource`() =
         testScope.runTest {
             // Given
-            coEvery { themeDataSource.getThemes() } returns flowOf(emptyList())
+            coEvery { themeDataSource.getThemes() } returns TestPagingSource(themeEntities)
 
             // When
-            repository.getThemes()
+            val flow = repository.getThemes()
+
+            val job = launch { flow.collectLatest { pagingData -> } }
 
             // Then
+            advanceUntilIdle()
+            job.cancel()
             coVerify { themeDataSource.getThemes() }
         }
 
@@ -90,12 +93,16 @@ class OdiiRepositoryUnitTest {
     fun `Given themes, When getThemeCategories called, Then call dataSource`() =
         testScope.runTest {
             // Given
-            coEvery { themeDataSource.getThemeCategories() } returns flowOf(emptyList())
+            coEvery { themeDataSource.getThemeCategories() } returns TestPagingSource(listOf())
 
             // When
-            repository.getThemeCategories()
+            val flow = repository.getThemeCategories()
+
+            val job = launch { flow.collectLatest { pagingData -> } }
 
             // Then
+            advanceUntilIdle()
+            job.cancel()
             coVerify { themeDataSource.getThemeCategories() }
         }
 
@@ -103,12 +110,16 @@ class OdiiRepositoryUnitTest {
     fun `Given themes, When getThemesByCategory called, Then call dataSource`() =
         testScope.runTest {
             // Given
-            coEvery { themeDataSource.getThemesByCategory(any()) } returns flowOf(emptyList())
+            coEvery { themeDataSource.getThemesByCategory(any()) } returns TestPagingSource(themeEntities)
 
             // When
-            repository.getThemesByCategory("백제역사여행")
+            val flow = repository.getThemesByCategory("백제역사여행")
+
+            val job = launch { flow.collectLatest { pagingData -> } }
 
             // Then
+            advanceUntilIdle()
+            job.cancel()
             coVerify { themeDataSource.getThemesByCategory(any()) }
         }
 
@@ -116,14 +127,18 @@ class OdiiRepositoryUnitTest {
     fun `Given themes, When getThemesByLocation called, Then call dataSource`() =
         testScope.runTest {
             // Given
-            coEvery {
+            every {
                 themeDataSource.getThemesByLocation(any(), any(), any())
-            } returns flowOf(emptyList())
+            } returns TestPagingSource(themeEntities)
 
             // When
-            repository.getThemesByLocation(126.852601, 35.159545, 20000)
+            val flow = repository.getThemesByLocation(126.852601, 35.159545, 20000)
+
+            val job = launch { flow.collectLatest { pagingData -> } }
 
             // Then
+            advanceUntilIdle()
+            job.cancel()
             coVerify { themeDataSource.getThemesByLocation(any(), any(), any()) }
         }
 
@@ -131,12 +146,16 @@ class OdiiRepositoryUnitTest {
     fun `Given themes, When getThemesByKeyword called, Then call dataSource`() =
         testScope.runTest {
             // Given
-            coEvery { themeDataSource.getThemesByKeyword(any()) } returns flowOf(emptyList())
+            every { themeDataSource.getThemesByKeyword(any()) } returns TestPagingSource(themeEntities)
 
             // When
-            repository.getThemesByKeyword("백제")
+            val flow = repository.getThemesByKeyword("백제")
+
+            val job = launch { flow.collectLatest { pagingData -> } }
 
             // Then
+            advanceUntilIdle()
+            job.cancel()
             coVerify { themeDataSource.getThemesByKeyword(any()) }
         }
 

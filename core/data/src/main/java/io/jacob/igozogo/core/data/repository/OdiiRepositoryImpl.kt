@@ -30,24 +30,68 @@ class OdiiRepositoryImpl @Inject constructor(
         }.onFailure { e -> throw e }
     }
 
-    override fun getThemes(): Flow<List<Theme>> {
-        return themeDataSource.getThemes().map { it.toTheme() }
+    override fun getThemes(pageSize: Int): Flow<PagingData<Theme>> {
+        return Pager(
+            config = PagingConfig(pageSize = pageSize),
+            pagingSourceFactory = {
+                themeDataSource.getThemes()
+            }
+        ).flow.map { pagingData ->
+            pagingData.map { it.toTheme() }
+        }
     }
 
-    override fun getThemeCategories(): Flow<List<String>> {
-        return themeDataSource.getThemeCategories()
+    override fun getThemeCategories(pageSize: Int): Flow<PagingData<String>> {
+        return Pager(
+            config = PagingConfig(pageSize = pageSize),
+            pagingSourceFactory = {
+                themeDataSource.getThemeCategories()
+            }
+        ).flow
     }
 
-    override fun getThemesByCategory(category: String): Flow<List<Theme>> {
-        return themeDataSource.getThemesByCategory(category).map { it.toTheme() }
+    override fun getThemesByCategory(
+        category: String,
+        pageSize: Int,
+    ): Flow<PagingData<Theme>> {
+        return Pager(
+            config = PagingConfig(pageSize = pageSize),
+            pagingSourceFactory = {
+                themeDataSource.getThemesByCategory(category)
+            }
+        ).flow.map { pagingData ->
+            pagingData.map { it.toTheme() }
+        }
     }
 
-    override fun getThemesByLocation(mapX: Double, mapY: Double, radius: Int): Flow<List<Theme>> {
-        return themeDataSource.getThemesByLocation(mapX, mapY, radius).map { it.toTheme() }
+    override fun getThemesByLocation(
+        mapX: Double,
+        mapY: Double,
+        radius: Int,
+        pageSize: Int,
+    ): Flow<PagingData<Theme>> {
+        return Pager(
+            config = PagingConfig(pageSize = pageSize),
+            pagingSourceFactory = {
+                themeDataSource.getThemesByLocation(mapX, mapY, radius)
+            }
+        ).flow.map { pagingData ->
+            pagingData.map { it.toTheme() }
+        }
     }
 
-    override fun getThemesByKeyword(keyword: String): Flow<List<Theme>> {
-        return themeDataSource.getThemesByKeyword(keyword).map { it.toTheme() }
+    override fun getThemesByKeyword(
+        keyword: String,
+        pageSize: Int,
+    ): Flow<PagingData<Theme>> {
+        return Pager(
+            config = PagingConfig(pageSize = pageSize),
+            pagingSourceFactory = {
+                themeDataSource.getThemesByKeyword(keyword)
+            }
+        ).flow.map { pagingData ->
+            pagingData.map { it.toTheme() }
+        }
     }
 
     override fun getStoriesByTheme(

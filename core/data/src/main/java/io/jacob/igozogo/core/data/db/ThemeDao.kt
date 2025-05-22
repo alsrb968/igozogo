@@ -1,11 +1,11 @@
 package io.jacob.igozogo.core.data.db
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import io.jacob.igozogo.core.data.model.local.odii.ThemeEntity
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ThemeDao {
@@ -18,7 +18,7 @@ interface ThemeDao {
         FROM theme_table
         """
     )
-    fun getThemes(): Flow<List<ThemeEntity>>
+    fun getThemes(): PagingSource<Int, ThemeEntity>
 
     @Query(
         """
@@ -26,7 +26,7 @@ interface ThemeDao {
         FROM theme_table
         """
     )
-    fun getThemeCategories(): Flow<List<String>>
+    fun getThemeCategories(): PagingSource<Int, String>
 
     @Query(
         """
@@ -35,7 +35,7 @@ interface ThemeDao {
         WHERE themeCategory = :category
         """
     )
-    fun getThemesByCategory(category: String): Flow<List<ThemeEntity>>
+    fun getThemesByCategory(category: String): PagingSource<Int, ThemeEntity>
 
     @Query(
         """
@@ -46,7 +46,7 @@ interface ThemeDao {
         ORDER BY ((mapX - :mapX) * (mapX - :mapX) + (mapY - :mapY) * (mapY - :mapY)) ASC
         """
     )
-    fun getThemesByLocation(mapX: Double, mapY: Double, radiusDeg: Double): Flow<List<ThemeEntity>>
+    fun getThemesByLocation(mapX: Double, mapY: Double, radiusDeg: Double): PagingSource<Int, ThemeEntity>
 
     @Query(
         """
@@ -58,7 +58,7 @@ interface ThemeDao {
             OR addr2 LIKE '%' || :keyword || '%'
         """
     )
-    fun getThemesByKeyword(keyword: String): Flow<List<ThemeEntity>>
+    fun getThemesByKeyword(keyword: String): PagingSource<Int, ThemeEntity>
 
     @Query(
         """
