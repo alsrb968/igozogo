@@ -7,7 +7,7 @@ import dagger.hilt.components.SingletonComponent
 import io.jacob.igozogo.core.data.datasource.local.StoryDataSource
 import io.jacob.igozogo.core.data.datasource.local.ThemeDataSource
 import io.jacob.igozogo.core.data.datasource.remote.OdiiDataSource
-import io.jacob.igozogo.core.data.mediator.StoryRemoteMediator
+import io.jacob.igozogo.core.data.repository.StoryRemoteMediator
 import io.jacob.igozogo.core.data.repository.OdiiRepositoryImpl
 import io.jacob.igozogo.core.domain.repository.OdiiRepository
 import javax.inject.Singleton

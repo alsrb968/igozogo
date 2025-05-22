@@ -10,6 +10,7 @@ interface ThemeDataSource {
     fun getThemes(): Flow<List<ThemeEntity>>
     fun getThemeCategories(): Flow<List<String>>
     fun getThemesByCategory(category: String): Flow<List<ThemeEntity>>
+    fun getThemesByLocation(mapX: Double, mapY: Double, radius: Int): Flow<List<ThemeEntity>>
     fun getThemesByKeyword(keyword: String): Flow<List<ThemeEntity>>
     suspend fun deleteThemes()
 }
@@ -31,6 +32,14 @@ class ThemeDataSourceImpl @Inject constructor(
 
     override fun getThemesByCategory(category: String): Flow<List<ThemeEntity>> {
         return dao.getThemesByCategory(category)
+    }
+
+    override fun getThemesByLocation(
+        mapX: Double,
+        mapY: Double,
+        radius: Int
+    ): Flow<List<ThemeEntity>> {
+        return dao.getThemesByLocation(mapX, mapY, radius / 111000.0)
     }
 
     override fun getThemesByKeyword(keyword: String): Flow<List<ThemeEntity>> {

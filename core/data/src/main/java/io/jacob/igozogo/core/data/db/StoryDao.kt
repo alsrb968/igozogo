@@ -33,6 +33,17 @@ interface StoryDao {
         """
         SELECT *
         FROM story_table
+        WHERE mapX BETWEEN :mapX - :radiusDeg AND :mapX + :radiusDeg
+            AND mapY BETWEEN :mapY - :radiusDeg AND :mapY + :radiusDeg
+        ORDER BY ((mapX - :mapX) * (mapX - :mapX) + (mapY - :mapY) * (mapY - :mapY)) ASC
+        """
+    )
+    fun getStoriesByLocation(mapX: Double, mapY: Double, radiusDeg: Double): PagingSource<Int, StoryEntity>
+
+    @Query(
+        """
+        SELECT *
+        FROM story_table
         WHERE title LIKE '%' || :keyword || '%'
             OR audioTitle LIKE '%' || :keyword || '%'
             OR script LIKE '%' || :keyword || '%'

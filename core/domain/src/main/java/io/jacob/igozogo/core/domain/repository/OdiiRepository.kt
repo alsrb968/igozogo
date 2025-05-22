@@ -10,22 +10,24 @@ interface OdiiRepository {
     fun getThemes(): Flow<List<Theme>>
     fun getThemeCategories(): Flow<List<String>>
     fun getThemesByCategory(category: String): Flow<List<Theme>>
+    fun getThemesByLocation(mapX: Double, mapY: Double, radius: Int): Flow<List<Theme>>
     fun getThemesByKeyword(keyword: String): Flow<List<Theme>>
 
     fun getStoriesByTheme(
         themeId: Int,
         themeLangId: Int,
-        pageSize: Int = 20
+        pageSize: Int = 20,
     ): Flow<PagingData<Story>>
 
-//    fun getStoriesByLocation(
-//        mapX: Double,
-//        mapY: Double,
-//        radius: Int,
-//    ): Flow<List<Story>>
+    fun getStoriesByLocation(
+        mapX: Double,
+        mapY: Double,
+        radius: Int,
+        pageSize: Int = 20,
+    ): Flow<PagingData<Story>>
 
     fun getStoriesByKeyword(
         keyword: String,
-        pageSize: Int = 20
+        pageSize: Int = 20,
     ): Flow<PagingData<Story>>
 }

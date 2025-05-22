@@ -1,4 +1,4 @@
-package io.jacob.igozogo.core.data.mediator
+package io.jacob.igozogo.core.data.repository
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
@@ -68,26 +68,30 @@ class StoryRemoteMediator @AssistedInject constructor(
         try {
             val size = state.config.pageSize
 
-            val responses = getStoryResponses(size, page)
-            val endOfPaginationReached = responses.isEmpty()
+            remote.getStoryResponses(size, page).fold(
+                onSuccess = { responses ->
+                    val endOfPaginationReached = responses.isEmpty()
 
-            db.withTransaction {
-                if (loadType == LoadType.REFRESH) {
-                    local.deleteRemoteKeysByQueryType(query.toString())
-                }
+                    db.withTransaction {
+                        if (loadType == LoadType.REFRESH) {
+                            local.deleteRemoteKeysByQueryType(query.toString())
+                        }
 
-                val entities = responses.toStoryEntity()
-                val keys = entities.toStoryRemoteKey(
-                    query = query.toString(),
-                    prevPage = if (page == 1) null else page - 1,
-                    nextPage = if (endOfPaginationReached) null else page + 1,
-                )
+                        val entities = responses.toStoryEntity()
+                        val keys = entities.toStoryRemoteKey(
+                            query = query.toString(),
+                            prevPage = if (page == 1) null else page - 1,
+                            nextPage = if (endOfPaginationReached) null else page + 1,
+                        )
 
-                local.insertStories(entities)
-                local.insertRemoteKeys(keys)
-            }
+                        local.insertStories(entities)
+                        local.insertRemoteKeys(keys)
+                    }
 
-            return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
+                    return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
+                },
+                onFailure = { e -> return MediatorResult.Error(e) }
+            )
 
         } catch (e: Exception) {
             return MediatorResult.Error(e)
@@ -120,12 +124,12 @@ class StoryRemoteMediator @AssistedInject constructor(
         }
     }
 
-    private suspend fun getStoryResponses(
+    private suspend fun OdiiDataSource.getStoryResponses(
         size: Int, page: Int,
-    ): List<StoryResponse> {
+    ): Result<List<StoryResponse>> {
         return when (query) {
             is Query.Theme ->
-                remote.getStoryBasedList(
+                getStoryBasedList(
                     numOfRows = size,
                     pageNo = page,
                     themeId = query.themeId,
@@ -133,7 +137,7 @@ class StoryRemoteMediator @AssistedInject constructor(
                 )
 
             is Query.Location ->
-                remote.getStoryLocationBasedList(
+                getStoryLocationBasedList(
                     numOfRows = size,
                     pageNo = page,
                     mapX = query.mapX,
@@ -142,7 +146,7 @@ class StoryRemoteMediator @AssistedInject constructor(
                 )
 
             is Query.Keyword ->
-                remote.getStorySearchList(
+                getStorySearchList(
                     numOfRows = size,
                     pageNo = page,
                     keyword = query.keyword,

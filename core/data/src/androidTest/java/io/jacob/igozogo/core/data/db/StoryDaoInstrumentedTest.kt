@@ -7,7 +7,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import io.jacob.igozogo.core.data.model.local.odii.StoryEntity
 import kotlinx.coroutines.test.runTest
 import org.junit.After
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -43,15 +44,15 @@ class StoryDaoInstrumentedTest {
             )
         )
         val data = (result as PagingSource.LoadResult.Page).data
-        Assert.assertEquals(1, data.size)
-        Assert.assertEquals("수로왕릉 - 정문", data[0].title)
+        assertEquals(10, data.size)
+        assertEquals("무각사", data[0].title)
     }
 
     @Test
     fun getStoriesByThemeTest() = runTest {
         dao.insertStories(entities)
 
-        val pagingSource1 = dao.getStoriesByTheme(35, 119)
+        val pagingSource1 = dao.getStoriesByTheme(2897, 4473)
         val result1 = pagingSource1.load(
             PagingSource.LoadParams.Refresh(
                 key = null,
@@ -60,7 +61,7 @@ class StoryDaoInstrumentedTest {
             )
         )
         val data1 = (result1 as PagingSource.LoadResult.Page).data
-        Assert.assertEquals(1, data1.size)
+        assertEquals(8, data1.size)
 
         val pagingSource2 = dao.getStoriesByTheme(1, 1)
         val result2 = pagingSource2.load(
@@ -71,14 +72,29 @@ class StoryDaoInstrumentedTest {
             )
         )
         val data2 = (result2 as PagingSource.LoadResult.Page).data
-        Assert.assertEquals(0, data2.size)
+        assertEquals(0, data2.size)
     }
 
     @Test
-    fun getStoriesByKeywordTest() = runTest {
+    fun getStoriesByLocationTest() = runTest {
         dao.insertStories(entities)
 
-        val pagingSource1 = dao.getStoriesByKeyword("수로왕릉")
+        val mapX = 126.852601
+        val mapY = 35.159545
+        val deg = 111000.0
+
+        fun isSortedAscByDistance(
+            entities: List<StoryEntity>
+        ): Boolean {
+            val distances = entities.map { entity ->
+                val dx = entity.mapX - mapX
+                val dy = entity.mapY - mapY
+                dx * dx + dy * dy // sqrt 없이 제곱 거리 비교 (더 빠름)
+            }
+            return distances == distances.sorted()
+        }
+
+        val pagingSource1 = dao.getStoriesByLocation(mapX, mapY, 1000 / deg)
         val result1 = pagingSource1.load(
             PagingSource.LoadParams.Refresh(
                 key = null,
@@ -87,7 +103,35 @@ class StoryDaoInstrumentedTest {
             )
         )
         val data1 = (result1 as PagingSource.LoadResult.Page).data
-        Assert.assertEquals(1, data1.size)
+        assertEquals(10, data1.size)
+        assertTrue(isSortedAscByDistance(data1))
+
+        val pagingSource2 = dao.getStoriesByLocation(mapX, mapY, 700 / deg)
+        val result2 = pagingSource2.load(
+            PagingSource.LoadParams.Refresh(
+                key = null,
+                loadSize = 20,
+                placeholdersEnabled = false,
+            )
+        )
+        val data2 = (result2 as PagingSource.LoadResult.Page).data
+        assertEquals(1, data2.size)
+    }
+
+    @Test
+    fun getStoriesByKeywordTest() = runTest {
+        dao.insertStories(entities)
+
+        val pagingSource1 = dao.getStoriesByKeyword("광주")
+        val result1 = pagingSource1.load(
+            PagingSource.LoadParams.Refresh(
+                key = null,
+                loadSize = 20,
+                placeholdersEnabled = false,
+            )
+        )
+        val data1 = (result1 as PagingSource.LoadResult.Page).data
+        assertEquals(6, data1.size)
 
         val pagingSource2 = dao.getStoriesByKeyword("경복궁")
         val result2 = pagingSource2.load(
@@ -98,27 +142,180 @@ class StoryDaoInstrumentedTest {
             )
         )
         val data2 = (result2 as PagingSource.LoadResult.Page).data
-        Assert.assertEquals(0, data2.size)
+        assertEquals(0, data2.size)
     }
 
     companion object {
         private val entities = listOf(
             StoryEntity(
-                themeId = 35,
-                themeLangId = 119,
-                storyId = 296,
-                storyLangId = 670,
-                title = "수로왕릉 - 정문",
-                mapX = 128.8783827,
-                mapY = 35.2353114,
-                audioTitle = "인도의 문양, 쌍어문의 비밀",
-                script = "인도의 문양, 쌍어문의 비밀  수로왕릉으로 들어가기 전에 커다란 정문을 살펴보고 갈까요? 이곳엔 수로왕의 왕비, 허왕후의 출신과 관련된 비밀스러운 문양이 그려져 있어요.  총 세 개로 나눠진 정문의 윗부분을 보시면 현판이 보이실 거예요. 그 현판 양옆, 그러니까 왼쪽과 오른쪽 문의 위쪽을 자세히 살펴보세요.   물고기 두 마리가 마주 보는 문양을 찾으셨나요?  네, 그게 바로 쌍어문이에요. 자세히 보지 않으면 그냥 지나치기 쉬운 이 작은 문양이 어디서 왔는지에 대해서는 다양한 의견들이 있어요.    그중 가장 크게 이슈가 됐던 주장은, 이 쌍어문이 수로왕의 왕비 허왕후가 그녀의 고향, 인도에서 가져온 문양이라는 거예요.  <삼국유사>에 기록된 허왕후 결혼 설화에 따르면 허왕후는 원래 인도 아유타국의 공주였답니다. 그러던 어느 날, 그녀의 부모님은 딸을 가야의 수로왕과 혼인시키라는 하늘의 계시를 받게 되었어요. 이에 허왕후는 고향에서부터 배를 타고 가야로 건너왔고, 수로왕과 결혼해 수로왕비가 되었다고 합니다.   허왕후의 고향이라는 아유타국은 지금의 인도 “아요디아”로 추정되고 있는데요.  현재, 쌍어문이 이 도시를 대표하는 문양으로 사용되고 있죠. 실제로 아요디아에 가면 학교 정문이나 경찰 모자, 택시 번호판 등에서 쉽게 쌍어문을 발견할 수 있다고 하네요.   하지만 이 주장에 반대하는 의견도 있어요. 물고기 문양은 불교 문화권에서 널리 쓰이는 문양이기 때문에, 조선시대 후기에 세워진 정문의 쌍어문은 후대 불교의 영향으로 새겨진 것으로 생각한답니다.  물론 이에 대해서도, 건물 자체는 후에 세워진 것이 맞지만 쌍어문 자체는 이 지역에서 오랫동안 전해 내려온 것이 아닌가 하는 이야기도 있어요.   이처럼 쌍어문에는 아직까지도 풀리지 않는 수수께끼들이 담겨있어 그 신비감을 더해주고 있답니다. ",
-                playTime = 144,
-                audioUrl = "https://sfj608538-sfj608538.ktcdn.co.kr/file/audio/56/682.mp3",
+                themeId = 2885,
+                themeLangId = 4462,
+                storyId = 4976,
+                storyLangId = 15332,
+                title = "무각사",
+                mapX = 126.8539117,
+                mapY = 35.1529468,
+                audioTitle = "무각사",
+                script = "광주시 서구 치평동 상무지구  상무지구는 현란한 네온사인과 미식가의 입맛을 돋울 다양한 종류의 먹을거리...",
+                playTime = 257,
+                audioUrl = "https://sfj608538-sfj608538.ktcdn.co.kr/file/audio/56/15329.mp3",
                 langCode = "ko",
-                imageUrl = "",
-                createdTime = "20150618171709",
-                modifiedTime = "20240102121142",
+                imageUrl = "https://sfj608538-sfj608538.ktcdn.co.kr/file/image/service/10687.jpg",
+                createdTime = "20230406162945",
+                modifiedTime = "20230406162946"
+            ),
+            StoryEntity(
+                themeId = 2897,
+                themeLangId = 4473,
+                storyId = 4987,
+                storyLangId = 15351,
+                title = "환영인사 및 비엔날레 특별노선 순환형 시티투어버스 소개",
+                mapX = 126.856489,
+                mapY = 35.152982,
+                audioTitle = "환영인사 및 비엔날레 특별노선 순환형 시티투어버스 소개",
+                script = "대한민국 예술여행대표도시 광주광역시를 찾아주신 여러분 환영합니다...",
+                playTime = 153,
+                audioUrl = "https://sfj608538-sfj608538.ktcdn.co.kr/file/audio/56/15340.mp3",
+                langCode = "ko",
+                imageUrl = "https://sfj608538-sfj608538.ktcdn.co.kr/file/image/service/10722.jpg",
+                createdTime = "20230418153343",
+                modifiedTime = "20230530110805"
+            ),
+            StoryEntity(
+                themeId = 2897,
+                themeLangId = 4473,
+                storyId = 4989,
+                storyLangId = 15354,
+                title = "안전 사항 소개",
+                mapX = 126.856489,
+                mapY = 35.152982,
+                audioTitle = "안전 사항 소개",
+                script = "다음은 버스 탑승 시 안전유의 사항에 대해 안내해 드리겠습니다...",
+                playTime = 55,
+                audioUrl = "https://sfj608538-sfj608538.ktcdn.co.kr/file/audio/56/15344.mp3",
+                langCode = "ko",
+                imageUrl = "https://sfj608538-sfj608538.ktcdn.co.kr/file/image/service/10722.jpg",
+                createdTime = "20230418153634",
+                modifiedTime = "20230530110750"
+            ),
+            StoryEntity(
+                themeId = 2897,
+                themeLangId = 4473,
+                storyId = 4990,
+                storyLangId = 15357,
+                title = "2023 광주 비엔날레 소개",
+                mapX = 126.856489,
+                mapY = 35.152982,
+                audioTitle = "2023 광주 비엔날레 소개",
+                script = "세계 3대 비엔날레의 위상을 갖춘 고품격 현대미술축제 [광주 비엔날레]...",
+                playTime = 184,
+                audioUrl = "https://sfj608538-sfj608538.ktcdn.co.kr/file/audio/56/15345.mp3",
+                langCode = "ko",
+                imageUrl = "https://sfj608538-sfj608538.ktcdn.co.kr/file/image/service/10722.jpg",
+                createdTime = "20230418153834",
+                modifiedTime = "20230530110737"
+            ),
+            StoryEntity(
+                themeId = 2897,
+                themeLangId = 4473,
+                storyId = 4991,
+                storyLangId = 15359,
+                title = "파빌리온 전시관 소개",
+                mapX = 126.856489,
+                mapY = 35.152982,
+                audioTitle = "파빌리온 전시관 소개",
+                script = "[광주 비엔날레]는 주 전시 외에도 세계 유수의 문화 예술기관과 광주 지역의 예술기관이 연계해...",
+                playTime = 105,
+                audioUrl = "https://sfj608538-sfj608538.ktcdn.co.kr/file/audio/56/15341.mp3",
+                langCode = "ko",
+                imageUrl = "https://sfj608538-sfj608538.ktcdn.co.kr/file/image/service/10722.jpg",
+                createdTime = "20230418154023",
+                modifiedTime = "20230530110717"
+            ),
+            StoryEntity(
+                themeId = 2897,
+                themeLangId = 4473,
+                storyId = 4992,
+                storyLangId = 15361,
+                title = "비엔날레 특별노선 순환형 시티투어버스 제휴할인 소개",
+                mapX = 126.856489,
+                mapY = 35.152982,
+                audioTitle = "비엔날레 특별노선 순환형 시티투어버스 제휴할인 소개",
+                script = "[비엔날레 특별노선 순환형 시티투어버스]를 이용해주시는 분들께 다양한 제휴할인 혜택을 제공하고 있습니다...",
+                playTime = 53,
+                audioUrl = "https://sfj608538-sfj608538.ktcdn.co.kr/file/audio/56/15346.mp3",
+                langCode = "ko",
+                imageUrl = "https://sfj608538-sfj608538.ktcdn.co.kr/file/image/service/10722.jpg",
+                createdTime = "20230418154516",
+                modifiedTime = "20230530110655"
+            ),
+            StoryEntity(
+                themeId = 2897,
+                themeLangId = 4473,
+                storyId = 5015,
+                storyLangId = 15407,
+                title = "무각사 (비엔날레 관외전시관)",
+                mapX = 126.856489,
+                mapY = 35.152982,
+                audioTitle = "무각사 (비엔날레 관외전시관) ",
+                script = "다음역은 무각사 비엔날레 관외전시관입니다...",
+                playTime = 159,
+                audioUrl = "https://sfj608538-sfj608538.ktcdn.co.kr/file/audio/56/15352.mp3",
+                langCode = "ko",
+                imageUrl = "https://sfj608538-sfj608538.ktcdn.co.kr/file/image/service/10730.jpg",
+                createdTime = "20230418170440",
+                modifiedTime = "20230424110709"
+            ),
+            StoryEntity(
+                themeId = 2897,
+                themeLangId = 4473,
+                storyId = 5017,
+                storyLangId = 15411,
+                title = "광주 송정역",
+                mapX = 126.856489,
+                mapY = 35.152982,
+                audioTitle = "광주 송정역",
+                script = "마지막 종착역은 광주 송정역입니다...",
+                playTime = 143,
+                audioUrl = "https://sfj608538-sfj608538.ktcdn.co.kr/file/audio/56/15354.mp3",
+                langCode = "ko",
+                imageUrl = "https://sfj608538-sfj608538.ktcdn.co.kr/file/image/service/10735.jpg",
+                createdTime = "20230418170631",
+                modifiedTime = "20230424110925"
+            ),
+            StoryEntity(
+                themeId = 2897,
+                themeLangId = 4473,
+                storyId = 5018,
+                storyLangId = 15413,
+                title = "종착역 마지막 안내멘트",
+                mapX = 126.856489,
+                mapY = 35.152982,
+                audioTitle = "종착역 마지막 안내멘트",
+                script = "곧 마지막 종착역 광주 송정역에 도착합니다...",
+                playTime = 30,
+                audioUrl = "https://sfj608538-sfj608538.ktcdn.co.kr/file/audio/56/15355.mp3",
+                langCode = "ko",
+                imageUrl = "https://sfj608538-sfj608538.ktcdn.co.kr/file/image/service/10722.jpg",
+                createdTime = "20230418170714",
+                modifiedTime = "20230530110625"
+            ),
+            StoryEntity(
+                themeId = 2950,
+                themeLangId = 4605,
+                storyId = 5248,
+                storyLangId = 16246,
+                title = "5.18 기념 공원",
+                mapX = 126.8572119,
+                mapY = 35.1556848,
+                audioTitle = "5.18 기념 공원",
+                script = "오늘날 우리나라가 민주주의 국가로 발전할 수 있었던 가장 큰 이유는 앞선 시대의 많은 사람들의 희생이 있었기 때문입니다...",
+                playTime = 192,
+                audioUrl = "https://sfj608538-sfj608538.ktcdn.co.kr/file/audio/56/16173.mp3",
+                langCode = "ko",
+                imageUrl = "https://sfj608538-sfj608538.ktcdn.co.kr/file/image/service/11132.jpg",
+                createdTime = "20230719161804",
+                modifiedTime = "20230719161805"
             )
         )
     }

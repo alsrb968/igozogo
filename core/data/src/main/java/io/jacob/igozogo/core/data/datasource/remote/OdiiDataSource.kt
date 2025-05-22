@@ -11,7 +11,7 @@ interface OdiiDataSource {
         numOfRows: Int,
         pageNo: Int,
         langCode: String = "ko",
-    ): List<ThemeResponse>
+    ): Result<List<ThemeResponse>>
 
     suspend fun getThemeLocationBasedList(
         numOfRows: Int,
@@ -20,14 +20,14 @@ interface OdiiDataSource {
         mapX: Double,
         mapY: Double,
         radius: Int,
-    ): List<ThemeResponse>
+    ): Result<List<ThemeResponse>>
 
     suspend fun getThemeSearchList(
         numOfRows: Int,
         pageNo: Int,
         langCode: String = "ko",
         keyword: String,
-    ): List<ThemeResponse>
+    ): Result<List<ThemeResponse>>
 
     suspend fun getStoryBasedList(
         numOfRows: Int,
@@ -35,7 +35,7 @@ interface OdiiDataSource {
         langCode: String = "ko",
         themeId: Int,
         themeLangId: Int,
-    ): List<StoryResponse>
+    ): Result<List<StoryResponse>>
 
     suspend fun getStoryLocationBasedList(
         numOfRows: Int,
@@ -44,14 +44,14 @@ interface OdiiDataSource {
         mapX: Double,
         mapY: Double,
         radius: Int,
-    ): List<StoryResponse>
+    ): Result<List<StoryResponse>>
 
     suspend fun getStorySearchList(
         numOfRows: Int,
         pageNo: Int,
         langCode: String = "ko",
         keyword: String,
-    ): List<StoryResponse>
+    ): Result<List<StoryResponse>>
 }
 
 class OdiiDataSourceImpl @Inject constructor(
@@ -61,12 +61,14 @@ class OdiiDataSourceImpl @Inject constructor(
         numOfRows: Int,
         pageNo: Int,
         langCode: String,
-    ): List<ThemeResponse> {
-        return api.getThemeBasedList(
-            numOfRows = numOfRows,
-            pageNo = pageNo,
-            langCode = langCode,
-        ).toResponses()
+    ): Result<List<ThemeResponse>> {
+        return runCatching {
+            api.getThemeBasedList(
+                numOfRows = numOfRows,
+                pageNo = pageNo,
+                langCode = langCode,
+            ).toResponses()
+        }
     }
 
     override suspend fun getThemeLocationBasedList(
@@ -76,15 +78,17 @@ class OdiiDataSourceImpl @Inject constructor(
         mapX: Double,
         mapY: Double,
         radius: Int,
-    ): List<ThemeResponse> {
-        return api.getThemeLocationBasedList(
-            numOfRows = numOfRows,
-            pageNo = pageNo,
-            langCode = langCode,
-            mapX = mapX,
-            mapY = mapY,
-            radius = radius,
-        ).toResponses()
+    ): Result<List<ThemeResponse>> {
+        return runCatching {
+            api.getThemeLocationBasedList(
+                numOfRows = numOfRows,
+                pageNo = pageNo,
+                langCode = langCode,
+                mapX = mapX,
+                mapY = mapY,
+                radius = radius,
+            ).toResponses()
+        }
     }
 
     override suspend fun getThemeSearchList(
@@ -92,13 +96,15 @@ class OdiiDataSourceImpl @Inject constructor(
         pageNo: Int,
         langCode: String,
         keyword: String,
-    ): List<ThemeResponse> {
-        return api.getThemeSearchList(
-            numOfRows = numOfRows,
-            pageNo = pageNo,
-            langCode = langCode,
-            keyword = keyword,
-        ).toResponses()
+    ): Result<List<ThemeResponse>> {
+        return runCatching {
+            api.getThemeSearchList(
+                numOfRows = numOfRows,
+                pageNo = pageNo,
+                langCode = langCode,
+                keyword = keyword,
+            ).toResponses()
+        }
     }
 
     override suspend fun getStoryBasedList(
@@ -107,14 +113,16 @@ class OdiiDataSourceImpl @Inject constructor(
         langCode: String,
         themeId: Int,
         themeLangId: Int,
-    ): List<StoryResponse> {
-        return api.getStoryBasedList(
-            numOfRows = numOfRows,
-            pageNo = pageNo,
-            langCode = langCode,
-            themeId = themeId,
-            themeLangId = themeLangId,
-        ).toResponses()
+    ): Result<List<StoryResponse>> {
+        return runCatching {
+            api.getStoryBasedList(
+                numOfRows = numOfRows,
+                pageNo = pageNo,
+                langCode = langCode,
+                themeId = themeId,
+                themeLangId = themeLangId,
+            ).toResponses()
+        }
     }
 
     override suspend fun getStoryLocationBasedList(
@@ -124,15 +132,17 @@ class OdiiDataSourceImpl @Inject constructor(
         mapX: Double,
         mapY: Double,
         radius: Int,
-    ): List<StoryResponse> {
-        return api.getStoryLocationBasedList(
-            numOfRows = numOfRows,
-            pageNo = pageNo,
-            langCode = langCode,
-            mapX = mapX,
-            mapY = mapY,
-            radius = radius,
-        ).toResponses()
+    ): Result<List<StoryResponse>> {
+        return runCatching {
+            api.getStoryLocationBasedList(
+                numOfRows = numOfRows,
+                pageNo = pageNo,
+                langCode = langCode,
+                mapX = mapX,
+                mapY = mapY,
+                radius = radius,
+            ).toResponses()
+        }
     }
 
     override suspend fun getStorySearchList(
@@ -140,12 +150,14 @@ class OdiiDataSourceImpl @Inject constructor(
         pageNo: Int,
         langCode: String,
         keyword: String,
-    ): List<StoryResponse> {
-        return api.getStorySearchList(
-            numOfRows = numOfRows,
-            pageNo = pageNo,
-            langCode = langCode,
-            keyword = keyword,
-        ).toResponses()
+    ): Result<List<StoryResponse>> {
+        return runCatching {
+            api.getStorySearchList(
+                numOfRows = numOfRows,
+                pageNo = pageNo,
+                langCode = langCode,
+                keyword = keyword,
+            ).toResponses()
+        }
     }
 }

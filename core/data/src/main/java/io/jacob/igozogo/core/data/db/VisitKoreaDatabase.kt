@@ -15,7 +15,7 @@ import io.jacob.igozogo.core.data.model.local.odii.ThemeEntity
         StoryRemoteKey::class,
     ],
     version = 1,
-    exportSchema = true,
+    exportSchema = false,
 )
 abstract class VisitKoreaDatabase :RoomDatabase() {
     abstract fun themeDao(): ThemeDao
@@ -27,8 +27,7 @@ abstract class VisitKoreaDatabase :RoomDatabase() {
 
         fun getInstance(context: Context): VisitKoreaDatabase =
             Room.databaseBuilder(context, VisitKoreaDatabase::class.java, DB_NAME)
-//                .fallbackToDestructiveMigration(true)
-//                .allowMainThreadQueries()
+                .fallbackToDestructiveMigration(true)
                 .build()
     }
 }

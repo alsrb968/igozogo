@@ -7,7 +7,8 @@ import io.jacob.igozogo.core.data.model.local.odii.ThemeEntity
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -34,92 +35,163 @@ class ThemeDaoInstrumentedTest {
     fun getThemesTest() = runTest {
         dao.insertThemes(entities)
         val result = dao.getThemes().first()
-        Assert.assertEquals(3, result.size)
-        Assert.assertEquals("백제문화단지", result[0].title)
-        Assert.assertEquals("경주 불국사", result[1].title)
-        Assert.assertEquals("괘릉", result[2].title)
+        assertEquals(5, result.size)
+        assertEquals("광주 양동시장", result[0].title)
+        assertEquals("월봉서원", result[1].title)
+        assertEquals("너브실마을", result[2].title)
+        assertEquals("칠송정", result[3].title)
+        assertEquals("용아생가", result[4].title)
     }
 
     @Test
     fun getThemeCategoriesTest() = runTest {
         dao.insertThemes(entities)
         val result = dao.getThemeCategories().first()
-        Assert.assertEquals(2, result.size)
-        Assert.assertEquals("백제역사여행", result[0])
-        Assert.assertEquals("신라역사여행", result[1])
+        assertEquals(2, result.size)
+        assertEquals("전통시장나들이", result[0])
+        assertEquals("", result[1])
     }
 
     @Test
     fun getThemesByCategoryTest() = runTest {
         dao.insertThemes(entities)
-        val result = dao.getThemesByCategory("신라역사여행").first()
-        Assert.assertEquals(2, result.size)
-        Assert.assertEquals("경주 불국사", result[0].title)
-        Assert.assertEquals("괘릉", result[1].title)
+        val result = dao.getThemesByCategory("").first()
+        assertEquals(4, result.size)
+        assertEquals("월봉서원", result[0].title)
+        assertEquals("너브실마을", result[1].title)
+        assertEquals("칠송정", result[2].title)
+        assertEquals("용아생가", result[3].title)
+    }
+
+    @Test
+    fun getThemesByLocationTest() = runTest {
+        dao.insertThemes(entities)
+
+        val mapX = 126.852601
+        val mapY = 35.159545
+        val deg = 111000.0
+
+        fun isSortedAscByDistance(
+            entities: List<ThemeEntity>
+        ): Boolean {
+            val distances = entities.map { entity ->
+                val dx = entity.mapX - mapX
+                val dy = entity.mapY - mapY
+                dx * dx + dy * dy // sqrt 없이 제곱 거리 비교 (더 빠름)
+            }
+            return distances == distances.sorted()
+        }
+
+        val result1 = dao.getThemesByLocation(126.852601, 35.159545, 20000 / deg).first()
+        assertEquals(5, result1.size)
+        assertTrue(isSortedAscByDistance(result1))
+        assertEquals("광주 양동시장", result1[0].title)
+        assertEquals("용아생가", result1[1].title)
+        assertEquals("월봉서원", result1[2].title)
+        assertEquals("칠송정", result1[3].title)
+        assertEquals("너브실마을", result1[4].title)
+
+        val result2 = dao.getThemesByLocation(126.852601, 35.159545, 10000 / deg).first()
+        assertEquals(2, result2.size)
+        assertTrue(isSortedAscByDistance(result2))
+        assertEquals("광주 양동시장", result2[0].title)
+        assertEquals("용아생가", result2[1].title)
     }
 
     @Test
     fun getThemesByKeywordTest() = runTest {
         dao.insertThemes(entities)
 
-        val result1 = dao.getThemesByKeyword("괘릉").first()
-        Assert.assertEquals(1, result1.size)
-        Assert.assertEquals("괘릉", result1[0].title)
+        val result1 = dao.getThemesByKeyword("전통").first()
+        assertEquals(1, result1.size)
+        assertEquals("광주 양동시장", result1[0].title)
 
-        val result2 = dao.getThemesByKeyword("역사여행").first()
-        Assert.assertEquals(3, result2.size)
-        Assert.assertEquals("백제문화단지", result2[0].title)
-        Assert.assertEquals("경주 불국사", result2[1].title)
-        Assert.assertEquals("괘릉", result2[2].title)
+        val result2 = dao.getThemesByKeyword("광주").first()
+        assertEquals(5, result2.size)
+        assertEquals("광주 양동시장", result2[0].title)
+        assertEquals("월봉서원", result2[1].title)
+        assertEquals("너브실마을", result2[2].title)
+        assertEquals("칠송정", result2[3].title)
+        assertEquals("용아생가", result2[4].title)
     }
 
     companion object {
         private val entities = listOf(
             ThemeEntity(
-                themeId = 1,
-                themeLangId = 1,
-                themeCategory = "백제역사여행",
-                addr1 = "충청남도",
-                addr2 = "부여군",
-                title = "백제문화단지",
-                mapX = 126.905507,
-                mapY = 36.306984,
+                themeId = 367,
+                themeLangId = 1141,
+                themeCategory = "전통시장나들이",
+                addr1 = "광주",
+                addr2 = "",
+                title = "광주 양동시장",
+                mapX = 126.902957,
+                mapY = 35.154165,
                 langCheck = "1111",
                 langCode = "ko",
                 imageUrl = "",
-                createdTime = "20190923193941",
-                modifiedTime = "20200615142618",
+                createdTime = "20190923194557",
+                modifiedTime = "20191024155012"
             ),
             ThemeEntity(
-                themeId = 2,
-                themeLangId = 5,
-                themeCategory = "신라역사여행",
-                addr1 = "경상북도",
-                addr2 = "경주시",
-                title = "경주 불국사",
-                mapX = 129.332099,
-                mapY = 35.790122,
+                themeId = 610,
+                themeLangId = 1452,
+                themeCategory = "",
+                addr1 = "광주",
+                addr2 = "광산구",
+                title = "월봉서원",
+                mapX = 126.744865,
+                mapY = 35.23571,
                 langCheck = "1111",
                 langCode = "ko",
                 imageUrl = "",
-                createdTime = "20190923194000",
-                modifiedTime = "20230725172140",
+                createdTime = "20190923194615",
+                modifiedTime = "20191025221743"
             ),
             ThemeEntity(
-                themeId = 4,
-                themeLangId = 13,
-                themeCategory = "신라역사여행",
-                addr1 = "경상북도",
-                addr2 = "경주시",
-                title = "괘릉",
-                mapX = 129.320083,
-                mapY = 35.759648,
+                themeId = 611,
+                themeLangId = 1456,
+                themeCategory = "",
+                addr1 = "광주",
+                addr2 = "광산구",
+                title = "너브실마을",
+                mapX = 126.738165,
+                mapY = 35.236174,
                 langCheck = "1111",
                 langCode = "ko",
                 imageUrl = "",
-                createdTime = "20190923194001",
-                modifiedTime = "20200921110253",
+                createdTime = "20190923194616",
+                modifiedTime = "20191025221828"
             ),
+            ThemeEntity(
+                themeId = 612,
+                themeLangId = 1460,
+                themeCategory = "",
+                addr1 = "광주",
+                addr2 = "광산구",
+                title = "칠송정",
+                mapX = 126.742135,
+                mapY = 35.236748,
+                langCheck = "1111",
+                langCode = "ko",
+                imageUrl = "",
+                createdTime = "20190923194616",
+                modifiedTime = "20191025221921"
+            ),
+            ThemeEntity(
+                themeId = 613,
+                themeLangId = 1464,
+                themeCategory = "",
+                addr1 = "광주",
+                addr2 = "광산구",
+                title = "용아생가",
+                mapX = 126.795216,
+                mapY = 35.149407,
+                langCheck = "1111",
+                langCode = "ko",
+                imageUrl = "",
+                createdTime = "20190923194616",
+                modifiedTime = "20230406161922"
+            )
         )
     }
 }

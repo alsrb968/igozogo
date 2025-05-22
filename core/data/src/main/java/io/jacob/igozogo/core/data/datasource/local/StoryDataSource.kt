@@ -11,6 +11,12 @@ interface StoryDataSource {
     suspend fun insertStories(stories: List<StoryEntity>)
     fun getStories(): PagingSource<Int, StoryEntity>
     fun getStoriesByTheme(themeId: Int, themeLangId: Int): PagingSource<Int, StoryEntity>
+    fun getStoriesByLocation(
+        mapX: Double,
+        mapY: Double,
+        radius: Int
+    ): PagingSource<Int, StoryEntity>
+
     fun getStoriesByKeyword(keyword: String): PagingSource<Int, StoryEntity>
     suspend fun deleteStories()
 
@@ -34,6 +40,14 @@ class StoryDataSourceImpl @Inject constructor(
 
     override fun getStoriesByTheme(themeId: Int, themeLangId: Int): PagingSource<Int, StoryEntity> {
         return storyDao.getStoriesByTheme(themeId, themeLangId)
+    }
+
+    override fun getStoriesByLocation(
+        mapX: Double,
+        mapY: Double,
+        radius: Int
+    ): PagingSource<Int, StoryEntity> {
+        return storyDao.getStoriesByLocation(mapX, mapY, radius / 111000.0)
     }
 
     override fun getStoriesByKeyword(keyword: String): PagingSource<Int, StoryEntity> {

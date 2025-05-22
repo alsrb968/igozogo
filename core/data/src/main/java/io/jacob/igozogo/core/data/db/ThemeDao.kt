@@ -41,8 +41,21 @@ interface ThemeDao {
         """
         SELECT *
         FROM theme_table
+        WHERE mapX BETWEEN :mapX - :radiusDeg AND :mapX + :radiusDeg
+            AND mapY BETWEEN :mapY - :radiusDeg AND :mapY + :radiusDeg
+        ORDER BY ((mapX - :mapX) * (mapX - :mapX) + (mapY - :mapY) * (mapY - :mapY)) ASC
+        """
+    )
+    fun getThemesByLocation(mapX: Double, mapY: Double, radiusDeg: Double): Flow<List<ThemeEntity>>
+
+    @Query(
+        """
+        SELECT *
+        FROM theme_table
         WHERE title LIKE '%' || :keyword || '%'
             OR themeCategory LIKE '%' || :keyword || '%'
+            OR addr1 LIKE '%' || :keyword || '%'
+            OR addr2 LIKE '%' || :keyword || '%'
         """
     )
     fun getThemesByKeyword(keyword: String): Flow<List<ThemeEntity>>
