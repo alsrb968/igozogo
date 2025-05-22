@@ -47,7 +47,7 @@ class StoryDataSourceImpl @Inject constructor(
         mapY: Double,
         radius: Int
     ): PagingSource<Int, StoryEntity> {
-        return storyDao.getStoriesByLocation(mapX, mapY, radius / 111000.0)
+        return storyDao.getStoriesByLocation(mapX, mapY, radius / METERS_PER_DEGREE)
     }
 
     override fun getStoriesByKeyword(keyword: String): PagingSource<Int, StoryEntity> {
@@ -75,5 +75,9 @@ class StoryDataSourceImpl @Inject constructor(
 
     override suspend fun deleteRemoteKeys() {
         return remoteKeyDao.deleteRemoteKeys()
+    }
+
+    companion object {
+        private const val METERS_PER_DEGREE = 111000.0
     }
 }

@@ -39,7 +39,7 @@ class ThemeDataSourceImpl @Inject constructor(
         mapY: Double,
         radius: Int
     ): PagingSource<Int, ThemeEntity> {
-        return dao.getThemesByLocation(mapX, mapY, radius / 111000.0)
+        return dao.getThemesByLocation(mapX, mapY, radius / METERS_PER_DEGREE)
     }
 
     override fun getThemesByKeyword(keyword: String): PagingSource<Int, ThemeEntity> {
@@ -48,5 +48,9 @@ class ThemeDataSourceImpl @Inject constructor(
 
     override suspend fun deleteThemes() {
         return dao.deleteThemes()
+    }
+
+    companion object {
+        private const val METERS_PER_DEGREE = 111000.0
     }
 }

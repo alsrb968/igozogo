@@ -96,7 +96,6 @@ class ThemeDaoInstrumentedTest {
 
         val mapX = 126.852601
         val mapY = 35.159545
-        val deg = 111000.0
 
         fun isSortedAscByDistance(
             entities: List<ThemeEntity>
@@ -109,7 +108,7 @@ class ThemeDaoInstrumentedTest {
             return distances == distances.sorted()
         }
 
-        val pagingSource1 = dao.getThemesByLocation(mapX, mapY, 20000 / deg)
+        val pagingSource1 = dao.getThemesByLocation(mapX, mapY, 20000 / METERS_PER_DEGREE)
         val result1 = pagingSource1.load(
             PagingSource.LoadParams.Refresh(
                 key = null,
@@ -126,7 +125,7 @@ class ThemeDaoInstrumentedTest {
         assertEquals("칠송정", data1[3].title)
         assertEquals("너브실마을", data1[4].title)
 
-        val pagingSource2 = dao.getThemesByLocation(mapX, mapY, 10000 / deg)
+        val pagingSource2 = dao.getThemesByLocation(mapX, mapY, 10000 / METERS_PER_DEGREE)
         val result2 = pagingSource2.load(
             PagingSource.LoadParams.Refresh(
                 key = null,
@@ -175,6 +174,8 @@ class ThemeDaoInstrumentedTest {
     }
 
     companion object {
+        private const val METERS_PER_DEGREE = 111000.0
+
         private val entities = listOf(
             ThemeEntity(
                 themeId = 367,

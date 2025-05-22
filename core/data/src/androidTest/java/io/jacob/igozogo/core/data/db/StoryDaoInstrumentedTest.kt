@@ -81,7 +81,6 @@ class StoryDaoInstrumentedTest {
 
         val mapX = 126.852601
         val mapY = 35.159545
-        val deg = 111000.0
 
         fun isSortedAscByDistance(
             entities: List<StoryEntity>
@@ -94,7 +93,7 @@ class StoryDaoInstrumentedTest {
             return distances == distances.sorted()
         }
 
-        val pagingSource1 = dao.getStoriesByLocation(mapX, mapY, 1000 / deg)
+        val pagingSource1 = dao.getStoriesByLocation(mapX, mapY, 1000 / METERS_PER_DEGREE)
         val result1 = pagingSource1.load(
             PagingSource.LoadParams.Refresh(
                 key = null,
@@ -106,7 +105,7 @@ class StoryDaoInstrumentedTest {
         assertEquals(10, data1.size)
         assertTrue(isSortedAscByDistance(data1))
 
-        val pagingSource2 = dao.getStoriesByLocation(mapX, mapY, 700 / deg)
+        val pagingSource2 = dao.getStoriesByLocation(mapX, mapY, 700 / METERS_PER_DEGREE)
         val result2 = pagingSource2.load(
             PagingSource.LoadParams.Refresh(
                 key = null,
@@ -146,6 +145,8 @@ class StoryDaoInstrumentedTest {
     }
 
     companion object {
+        private const val METERS_PER_DEGREE = 111000.0
+
         private val entities = listOf(
             StoryEntity(
                 themeId = 2885,
