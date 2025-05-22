@@ -1,10 +1,10 @@
 package io.jacob.igozogo.core.data.db
 
+import androidx.paging.PagingSource
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import io.jacob.igozogo.core.data.model.local.odii.ThemeEntity
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -34,33 +34,60 @@ class ThemeDaoInstrumentedTest {
     @Test
     fun getThemesTest() = runTest {
         dao.insertThemes(entities)
-        val result = dao.getThemes().first()
-        assertEquals(5, result.size)
-        assertEquals("광주 양동시장", result[0].title)
-        assertEquals("월봉서원", result[1].title)
-        assertEquals("너브실마을", result[2].title)
-        assertEquals("칠송정", result[3].title)
-        assertEquals("용아생가", result[4].title)
+
+        val pagingSource = dao.getThemes()
+        val result = pagingSource.load(
+            PagingSource.LoadParams.Refresh(
+                key = null,
+                loadSize = 20,
+                placeholdersEnabled = false
+            )
+        )
+        val data = (result as PagingSource.LoadResult.Page).data
+        assertEquals(5, data.size)
+        assertEquals("광주 양동시장", data[0].title)
+        assertEquals("월봉서원", data[1].title)
+        assertEquals("너브실마을", data[2].title)
+        assertEquals("칠송정", data[3].title)
+        assertEquals("용아생가", data[4].title)
     }
 
     @Test
     fun getThemeCategoriesTest() = runTest {
         dao.insertThemes(entities)
-        val result = dao.getThemeCategories().first()
-        assertEquals(2, result.size)
-        assertEquals("전통시장나들이", result[0])
-        assertEquals("", result[1])
+
+        val pagingSource = dao.getThemeCategories()
+        val result = pagingSource.load(
+            PagingSource.LoadParams.Refresh(
+                key = null,
+                loadSize = 20,
+                placeholdersEnabled = false
+            )
+        )
+        val data = (result as PagingSource.LoadResult.Page).data
+        assertEquals(2, data.size)
+        assertEquals("전통시장나들이", data[0])
+        assertEquals("", data[1])
     }
 
     @Test
     fun getThemesByCategoryTest() = runTest {
         dao.insertThemes(entities)
-        val result = dao.getThemesByCategory("").first()
-        assertEquals(4, result.size)
-        assertEquals("월봉서원", result[0].title)
-        assertEquals("너브실마을", result[1].title)
-        assertEquals("칠송정", result[2].title)
-        assertEquals("용아생가", result[3].title)
+
+        val pagingSource = dao.getThemesByCategory("")
+        val result = pagingSource.load(
+            PagingSource.LoadParams.Refresh(
+                key = null,
+                loadSize = 20,
+                placeholdersEnabled = false
+            )
+        )
+        val data = (result as PagingSource.LoadResult.Page).data
+        assertEquals(4, data.size)
+        assertEquals("월봉서원", data[0].title)
+        assertEquals("너브실마을", data[1].title)
+        assertEquals("칠송정", data[2].title)
+        assertEquals("용아생가", data[3].title)
     }
 
     @Test
@@ -82,37 +109,69 @@ class ThemeDaoInstrumentedTest {
             return distances == distances.sorted()
         }
 
-        val result1 = dao.getThemesByLocation(126.852601, 35.159545, 20000 / deg).first()
-        assertEquals(5, result1.size)
-        assertTrue(isSortedAscByDistance(result1))
-        assertEquals("광주 양동시장", result1[0].title)
-        assertEquals("용아생가", result1[1].title)
-        assertEquals("월봉서원", result1[2].title)
-        assertEquals("칠송정", result1[3].title)
-        assertEquals("너브실마을", result1[4].title)
+        val pagingSource1 = dao.getThemesByLocation(mapX, mapY, 20000 / deg)
+        val result1 = pagingSource1.load(
+            PagingSource.LoadParams.Refresh(
+                key = null,
+                loadSize = 20,
+                placeholdersEnabled = false
+            )
+        )
+        val data1 = (result1 as PagingSource.LoadResult.Page).data
+        assertEquals(5, data1.size)
+        assertTrue(isSortedAscByDistance(data1))
+        assertEquals("광주 양동시장", data1[0].title)
+        assertEquals("용아생가", data1[1].title)
+        assertEquals("월봉서원", data1[2].title)
+        assertEquals("칠송정", data1[3].title)
+        assertEquals("너브실마을", data1[4].title)
 
-        val result2 = dao.getThemesByLocation(126.852601, 35.159545, 10000 / deg).first()
-        assertEquals(2, result2.size)
-        assertTrue(isSortedAscByDistance(result2))
-        assertEquals("광주 양동시장", result2[0].title)
-        assertEquals("용아생가", result2[1].title)
+        val pagingSource2 = dao.getThemesByLocation(mapX, mapY, 10000 / deg)
+        val result2 = pagingSource2.load(
+            PagingSource.LoadParams.Refresh(
+                key = null,
+                loadSize = 20,
+                placeholdersEnabled = false
+            )
+        )
+        val data2 = (result2 as PagingSource.LoadResult.Page).data
+        assertEquals(2, data2.size)
+        assertTrue(isSortedAscByDistance(data2))
+        assertEquals("광주 양동시장", data2[0].title)
+        assertEquals("용아생가", data2[1].title)
     }
 
     @Test
     fun getThemesByKeywordTest() = runTest {
         dao.insertThemes(entities)
 
-        val result1 = dao.getThemesByKeyword("전통").first()
-        assertEquals(1, result1.size)
-        assertEquals("광주 양동시장", result1[0].title)
+        val pagingSource1 = dao.getThemesByKeyword("전통")
+        val result1 = pagingSource1.load(
+            PagingSource.LoadParams.Refresh(
+                key = null,
+                loadSize = 20,
+                placeholdersEnabled = false
+            )
+        )
+        val data1 = (result1 as PagingSource.LoadResult.Page).data
+        assertEquals(1, data1.size)
+        assertEquals("광주 양동시장", data1[0].title)
 
-        val result2 = dao.getThemesByKeyword("광주").first()
-        assertEquals(5, result2.size)
-        assertEquals("광주 양동시장", result2[0].title)
-        assertEquals("월봉서원", result2[1].title)
-        assertEquals("너브실마을", result2[2].title)
-        assertEquals("칠송정", result2[3].title)
-        assertEquals("용아생가", result2[4].title)
+        val pagingSource2 = dao.getThemesByKeyword("광주")
+        val result2 = pagingSource2.load(
+            PagingSource.LoadParams.Refresh(
+                key = null,
+                loadSize = 20,
+                placeholdersEnabled = false
+            )
+        )
+        val data2 = (result2 as PagingSource.LoadResult.Page).data
+        assertEquals(5, data2.size)
+        assertEquals("광주 양동시장", data2[0].title)
+        assertEquals("월봉서원", data2[1].title)
+        assertEquals("너브실마을", data2[2].title)
+        assertEquals("칠송정", data2[3].title)
+        assertEquals("용아생가", data2[4].title)
     }
 
     companion object {
