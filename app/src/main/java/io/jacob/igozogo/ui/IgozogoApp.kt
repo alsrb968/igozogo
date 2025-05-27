@@ -1,10 +1,8 @@
 package io.jacob.igozogo.ui
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -14,18 +12,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.core.os.ConfigurationCompat
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import io.jacob.igozogo.R
-import io.jacob.igozogo.ui.extension.gradientBackground
 import io.jacob.igozogo.ui.home.HomeScreen
 import io.jacob.igozogo.ui.theme.IgozogoTheme
 import io.jacob.igozogo.ui.tooling.DevicePreviews
 import java.util.Locale
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IgozogoApp(
     modifier: Modifier = Modifier,
@@ -39,6 +36,24 @@ fun IgozogoApp(
 
         Scaffold(
             modifier = modifier,
+//            topBar = {
+//                TopAppBar(
+//                    title = {
+//                        Text(
+//                            text = stringResource(R.string.app_name),
+//                            style = MaterialTheme.typography.displaySmall
+//                        )
+//                    },
+//                    actions = {
+//                        IconButton(onClick = { /*TODO*/ }) {
+//                            Icon(
+//                                imageVector = Icons.Default.MoreVert,
+//                                contentDescription = "More"
+//                            )
+//                        }
+//                    }
+//                )
+//            },
             bottomBar = {
                 IgozogoBottomBar(
                     tabs = Screen.screens,
@@ -49,16 +64,28 @@ fun IgozogoApp(
             snackbarHost = {
 
             },
-        ) { padding ->
+        ) { contentPaddingValues ->
             NavHost(
                 modifier = modifier
-                    .consumeWindowInsets(padding)
+                    .padding(contentPaddingValues)
                     .background(MaterialTheme.colorScheme.background),
                 navController = appState.navController,
                 startDestination = Screen.Home.route
             ) {
                 composable(Screen.Home.route) { backstackEntry ->
                     HomeScreen()
+                }
+
+                composable(Screen.Search.route) { backstackEntry ->
+
+                }
+
+                composable(Screen.Bookmark.route) { backstackEntry ->
+
+                }
+
+                composable(Screen.Setting.route) { backstackEntry ->
+
                 }
             }
         }
@@ -84,12 +111,13 @@ fun IgozogoBottomBar(
     ) {
         NavigationBar(
             modifier = modifier
-                .height(85.dp)
-                .gradientBackground(
-                    ratio = 0.7f,
-                    startColor = Color.Transparent,
-                    endColor = MaterialTheme.colorScheme.background
-                )
+                .background(MaterialTheme.colorScheme.background)
+//                .height(85.dp)
+//                .gradientBackground(
+//                    ratio = 0.7f,
+//                    startColor = Color.Transparent,
+//                    endColor = MaterialTheme.colorScheme.background
+//                )
             ,
             containerColor = color,
             contentColor = contentColor,
@@ -100,38 +128,32 @@ fun IgozogoBottomBar(
 
             tabs.forEach { screen ->
                 val selected = screen == currentSection
-                val tint by animateColorAsState(
-                    if (selected) {
-                        MaterialTheme.colorScheme.onBackground
-                    } else {
-                        MaterialTheme.colorScheme.secondary
-                    },
-                    label = "tint"
-                )
-                val text = stringResource(screen.label).uppercase(currentLocale)
+                val text = stringResource(screen.label)
 
                 NavigationBarItem(
+//                    modifier = Modifier
+//                        .padding(horizontal = 16.dp),
                     icon = {
-                        val iconSelected = screen.icons.first
-                        val iconNormal = screen.icons.second
+                        val iconSelected = screen.icons.second
+                        val iconNormal = screen.icons.first
                         Icon(
                             imageVector = screen.icons.let { if (selected) iconNormal else iconSelected },
-                            tint = tint,
                             contentDescription = text
                         )
                     },
                     label = {
                         Text(
                             text = text,
-                            color = tint,
-                            style = MaterialTheme.typography.labelSmall,
+//                            style = MaterialTheme.typography.labelLarge,
                             maxLines = 1
                         )
                     },
                     selected = selected,
                     colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = tint,
-                        selectedTextColor = tint,
+                        selectedIconColor = MaterialTheme.colorScheme.primary,
+                        selectedTextColor = MaterialTheme.colorScheme.primary,
+                        unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                        unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
                         indicatorColor = Color.Transparent
                     ),
                     onClick = { navigateToRoute(screen.route) },
@@ -147,7 +169,7 @@ private fun IgozogoBottomBarPreview() {
     IgozogoTheme {
         IgozogoBottomBar(
             tabs = Screen.screens,
-            currentRoute = Screen.Search.route,
+            currentRoute = Screen.Home.route,
             navigateToRoute = {}
         )
     }

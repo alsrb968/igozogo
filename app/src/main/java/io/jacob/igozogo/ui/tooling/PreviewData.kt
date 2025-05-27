@@ -33,3 +33,5 @@ val PreviewTheme = Theme(
     createdTime = "20240125120046",
     modifiedTime = "20240125120100",
 )
+
+val PreviewThemes = List(5) { PreviewTheme }

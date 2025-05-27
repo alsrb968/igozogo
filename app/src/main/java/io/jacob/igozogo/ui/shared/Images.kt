@@ -16,11 +16,11 @@ import androidx.compose.ui.res.painterResource
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import io.jacob.igozogo.core.design.R
+import io.jacob.igozogo.R
 
 @Composable
 fun ThemeImage(
-    themeImageUrl: String,
+    imageUrl: String,
     contentDescription: String?,
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Crop,
@@ -37,7 +37,7 @@ fun ThemeImage(
 
     val imageLoader = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
-            .data(themeImageUrl)
+            .data(imageUrl)
             .crossfade(true)
             .build(),
         contentScale = contentScale,
