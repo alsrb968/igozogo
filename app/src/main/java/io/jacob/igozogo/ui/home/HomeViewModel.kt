@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.jacob.igozogo.core.domain.model.Place
 import io.jacob.igozogo.core.domain.usecase.GetPlaceCategoriesUseCase
+import io.jacob.igozogo.core.domain.usecase.GetPlacesUseCase
 import io.jacob.igozogo.core.domain.usecase.SyncPlacesUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
@@ -14,6 +16,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val syncPlacesUseCase: SyncPlacesUseCase,
     private val getPlaceCategoriesUseCase: GetPlaceCategoriesUseCase,
+    private val getPlacesUseCase: GetPlacesUseCase,
 ) : ViewModel() {
 
     init {
@@ -24,5 +27,9 @@ class HomeViewModel @Inject constructor(
 
     fun getPlaceCategories(): Flow<PagingData<String>> {
         return getPlaceCategoriesUseCase()
+    }
+
+    fun getPlaces(): Flow<PagingData<Place>> {
+        return getPlacesUseCase()
     }
 }

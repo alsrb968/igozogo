@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
+import io.jacob.igozogo.ui.home.place.PlaceItemList
 import io.jacob.igozogo.ui.shared.ChipItemList
 import timber.log.Timber
 
@@ -18,8 +19,8 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
-
     val categoryPagingItems = viewModel.getPlaceCategories().collectAsLazyPagingItems()
+    val placePagingItems = viewModel.getPlaces().collectAsLazyPagingItems()
 
     Column(
         modifier = modifier
@@ -57,6 +58,16 @@ fun HomeScreen(
                         .fillMaxWidth(),
                     text = "Place",
                     style = MaterialTheme.typography.headlineLarge
+                )
+            }
+
+            item {
+                PlaceItemList(
+                    modifier = Modifier,
+                    places = placePagingItems,
+                    isBookmarked = { false },
+                    onBookmarkToggle = {  },
+                    onClick = {  }
                 )
             }
         }

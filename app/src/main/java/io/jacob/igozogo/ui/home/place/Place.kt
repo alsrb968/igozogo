@@ -16,6 +16,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.paging.compose.LazyPagingItems
 import io.jacob.igozogo.core.domain.model.Place
 import io.jacob.igozogo.ui.shared.StateImage
 import io.jacob.igozogo.ui.shared.ToggleFollowPodcastIconButton
@@ -24,26 +25,30 @@ import io.jacob.igozogo.ui.tooling.DevicePreviews
 import io.jacob.igozogo.ui.tooling.PreviewPlace
 
 @Composable
-fun PlaceCategoryList(
+fun PlaceItemList(
     modifier: Modifier = Modifier,
-    places: List<Place>,
+    places: LazyPagingItems<Place>,
     isBookmarked: (Place) -> Boolean,
     onBookmarkToggle: (Place) -> Unit,
     onClick: (Place) -> Unit,
 ) {
+    val padding = 8.dp
+
     LazyRow(
         modifier = modifier
-            .fillMaxWidth(),
-        contentPadding = PaddingValues(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
+            .fillMaxWidth()
+            .padding(vertical = padding),
+        horizontalArrangement = Arrangement.spacedBy(padding)
     ) {
-        items(places.size) { index ->
-            PlaceItem(
-                place = places[index],
-                isBookmarked = isBookmarked(places[index]),
-                onBookmarkToggle = { onBookmarkToggle(places[index]) },
-                onClick = { onClick(places[index]) }
-            )
+        items(places.itemCount) { index ->
+            places[index]?.let { place ->
+                PlaceItem(
+                    place = place,
+                    isBookmarked = isBookmarked(place),
+                    onBookmarkToggle = { onBookmarkToggle(place) },
+                    onClick = { onClick(place) }
+                )
+            }
         }
     }
 }
