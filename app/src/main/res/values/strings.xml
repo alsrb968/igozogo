@@ -9,7 +9,7 @@
     <!-- Bottom Navigation Tabs -->
     <string name="nav_home">Home</string>
     <string name="nav_search">Search</string>
-    <string name="nav_library">Library</string>
+    <string name="nav_bookmark">Bookmark</string>
     <string name="nav_setting">Setting</string>
 
     <string name="cd_follow">Follow</string>

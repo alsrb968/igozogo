@@ -3,6 +3,7 @@ package io.jacob.igozogo.ui.shared
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -15,22 +16,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import io.jacob.igozogo.R
+import io.jacob.igozogo.ui.theme.IgozogoTheme
+import io.jacob.igozogo.ui.tooling.DevicePreviews
 
 @Composable
-fun ToggleFollowPodcastIconButton(
+fun ToggleFollowIconButton(
     isFollowed: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val clickLabel = stringResource(if (isFollowed) R.string.cd_unfollow else R.string.cd_follow)
     IconButton(
         onClick = onClick,
-        modifier = modifier.semantics {
-//            onClick(label = clickLabel, action = null)
-        }
+        modifier = modifier
     ) {
         Icon(
             // TODO: think about animating these icons
@@ -50,8 +49,8 @@ fun ToggleFollowPodcastIconButton(
             ).value,
             modifier = Modifier
                 .shadow(
-                    elevation = animateDpAsState(if (isFollowed) 0.dp else 1.dp).value,
-                    shape = MaterialTheme.shapes.small
+                    elevation = animateDpAsState(3.dp).value,
+                    shape = CircleShape
                 )
                 .background(
                     color = animateColorAsState(
@@ -64,5 +63,22 @@ fun ToggleFollowPodcastIconButton(
                 )
                 .padding(4.dp)
         )
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun ToggleFollowIconButtonPreview() {
+    IgozogoTheme {
+        Column {
+            ToggleFollowIconButton(
+                isFollowed = true,
+                onClick = {}
+            )
+            ToggleFollowIconButton(
+                isFollowed = false,
+                onClick = {}
+            )
+        }
     }
 }

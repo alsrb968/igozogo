@@ -9,8 +9,14 @@ import io.jacob.igozogo.core.domain.usecase.GetPlaceCategoriesUseCase
 import io.jacob.igozogo.core.domain.usecase.GetPlacesUseCase
 import io.jacob.igozogo.core.domain.usecase.SyncPlacesUseCase
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+sealed interface HomeUiEffect {
+    data object Synced : HomeUiEffect
+}
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -19,9 +25,15 @@ class HomeViewModel @Inject constructor(
     private val getPlacesUseCase: GetPlacesUseCase,
 ) : ViewModel() {
 
+    private val _effect = MutableSharedFlow<HomeUiEffect>(extraBufferCapacity = 1)
+    val effect: SharedFlow<HomeUiEffect> = _effect
+
     init {
         viewModelScope.launch {
-            syncPlacesUseCase()
+            val isSynced = syncPlacesUseCase()
+            if (isSynced) {
+                _effect.emit(HomeUiEffect.Synced)
+            }
         }
     }
 

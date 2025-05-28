@@ -16,6 +16,7 @@ interface ThemeDao {
         """
         SELECT *
         FROM theme_table
+        WHERE imageUrl IS NOT NULL AND imageUrl != ''
         """
     )
     fun getThemes(): PagingSource<Int, ThemeEntity>

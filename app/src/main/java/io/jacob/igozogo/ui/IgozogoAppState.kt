@@ -5,18 +5,9 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.LibraryBooks
-import androidx.compose.material.icons.filled.FindInPage
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.FindInPage
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.LibraryBooks
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.runtime.*
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.Lifecycle
@@ -29,40 +20,40 @@ import io.jacob.igozogo.R
 
 sealed class Screen(
     @StringRes val label: Int,
-    val icons: Pair<ImageVector, ImageVector>,
+    @DrawableRes val icon: Int,
     val route: String
 ) {
     data object Home : Screen(
         label = R.string.nav_home,
-        icons = Icons.Filled.Home to Icons.Outlined.Home,
+        icon = R.drawable.ic_home,
         route = ROUTE_HOME,
     )
 
     data object Search : Screen(
         label = R.string.nav_search,
-        icons = Icons.Filled.FindInPage to Icons.Outlined.FindInPage,
+        icon = R.drawable.ic_search,
         route = ROUTE_SEARCH,
     )
 
-    data object Library : Screen(
-        label = R.string.nav_library,
-        icons = Icons.AutoMirrored.Filled.LibraryBooks to Icons.Outlined.LibraryBooks,
-        route = ROUTE_LIBRARY,
+    data object Bookmark : Screen(
+        label = R.string.nav_bookmark,
+        icon = R.drawable.ic_bookmark,
+        route = ROUTE_BOOKMARK,
     )
 
     data object Setting : Screen(
         label = R.string.nav_setting,
-        icons = Icons.Filled.Settings to Icons.Outlined.Settings,
+        icon = R.drawable.ic_setting,
         route = ROUTE_SETTING,
     )
 
     companion object {
         const val ROUTE_HOME = "home"
         const val ROUTE_SEARCH = "search"
-        const val ROUTE_LIBRARY = "library"
+        const val ROUTE_BOOKMARK = "bookmark"
         const val ROUTE_SETTING = "setting"
 
-        val screens = listOf(Home, Search, Library, Setting)
+        val screens = listOf(Home, Search, Bookmark, Setting)
     }
 }
 

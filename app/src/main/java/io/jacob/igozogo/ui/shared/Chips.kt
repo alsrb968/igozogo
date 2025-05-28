@@ -1,6 +1,5 @@
 package io.jacob.igozogo.ui.shared
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
@@ -9,7 +8,6 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -26,7 +24,7 @@ fun ChipItemList(
     onItemClick: (String) -> Unit
 ) {
     val padding = 8.dp
-    val chipHeight = 32.dp       // Chip 높이
+    val chipHeight = 36.dp       // Chip 높이
     val chipSpacing = 8.dp       // 줄 사이 간격
     val rowCount = 4
 
@@ -37,7 +35,7 @@ fun ChipItemList(
             .height(totalHeight),
         state = rememberLazyStaggeredGridState(),
         rows = StaggeredGridCells.Fixed(rowCount),
-        contentPadding = PaddingValues(vertical = padding),
+        contentPadding = PaddingValues(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(chipSpacing),
         horizontalItemSpacing = chipSpacing,
     ) {
@@ -70,8 +68,6 @@ fun ChipItemList(
 private fun ChipItemListPreview() {
     IgozogoTheme {
         ChipItemList(
-            modifier = Modifier
-                .background(color = MaterialTheme.colorScheme.background),
             chipItems = previewCategoryListLazyPagingItems(),
             onItemClick = {}
         )

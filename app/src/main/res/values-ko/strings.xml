@@ -7,6 +7,6 @@
     <!-- Bottom Navigation Tabs -->
     <string name="nav_home">홈</string>
     <string name="nav_search">검색</string>
-    <string name="nav_library">보관함</string>
+    <string name="nav_bookmark">북마크</string>
     <string name="nav_setting">설정</string>
 </resources>
