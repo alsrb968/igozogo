@@ -19,7 +19,7 @@ import coil.request.ImageRequest
 import io.jacob.igozogo.R
 
 @Composable
-fun ThemeImage(
+fun StateImage(
     imageUrl: String,
     contentDescription: String?,
     modifier: Modifier = Modifier,

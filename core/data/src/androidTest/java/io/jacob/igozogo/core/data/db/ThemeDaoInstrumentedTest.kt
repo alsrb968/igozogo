@@ -173,6 +173,14 @@ class ThemeDaoInstrumentedTest {
         assertEquals("용아생가", data2[4].title)
     }
 
+    @Test
+    fun getThemesCountTest() = runTest {
+        dao.insertThemes(entities)
+
+        val count = dao.getThemesCount()
+        assertEquals(5, count)
+    }
+
     companion object {
         private const val METERS_PER_DEGREE = 111000.0
 

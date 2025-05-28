@@ -5,8 +5,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.jacob.igozogo.core.domain.repository.OdiiRepository
-import io.jacob.igozogo.core.domain.usecase.GetThemeCategoriesUseCase
-import io.jacob.igozogo.core.domain.usecase.SyncThemesUseCase
+import io.jacob.igozogo.core.domain.usecase.GetPlaceCategoriesUseCase
+import io.jacob.igozogo.core.domain.usecase.SyncPlacesUseCase
 import javax.inject.Singleton
 
 @Module
@@ -14,17 +14,17 @@ import javax.inject.Singleton
 object UseCaseModule {
     @Provides
     @Singleton
-    fun provideSyncThemesUseCase(
+    fun provideSyncPlacesUseCase(
         repository: OdiiRepository
-    ): SyncThemesUseCase {
-        return SyncThemesUseCase(repository)
+    ): SyncPlacesUseCase {
+        return SyncPlacesUseCase(repository)
     }
 
     @Provides
     @Singleton
-    fun provideGetThemeCategoriesUseCase(
+    fun provideGetPlaceCategoriesUseCase(
         repository: OdiiRepository
-    ): GetThemeCategoriesUseCase {
-        return GetThemeCategoriesUseCase(repository)
+    ): GetPlaceCategoriesUseCase {
+        return GetPlaceCategoriesUseCase(repository)
     }
 }

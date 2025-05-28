@@ -7,13 +7,13 @@ import android.net.NetworkCapabilities
 import android.os.Build
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bookmarks
+import androidx.compose.material.icons.automirrored.filled.LibraryBooks
+import androidx.compose.material.icons.filled.FindInPage
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.Bookmarks
+import androidx.compose.material.icons.outlined.FindInPage
 import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.LibraryBooks
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -40,14 +40,14 @@ sealed class Screen(
 
     data object Search : Screen(
         label = R.string.nav_search,
-        icons = Icons.Filled.Search to Icons.Outlined.Search,
+        icons = Icons.Filled.FindInPage to Icons.Outlined.FindInPage,
         route = ROUTE_SEARCH,
     )
 
-    data object Bookmark : Screen(
-        label = R.string.nav_bookmark,
-        icons = Icons.Filled.Bookmarks to Icons.Outlined.Bookmarks,
-        route = ROUTE_BOOKMARK,
+    data object Library : Screen(
+        label = R.string.nav_library,
+        icons = Icons.AutoMirrored.Filled.LibraryBooks to Icons.Outlined.LibraryBooks,
+        route = ROUTE_LIBRARY,
     )
 
     data object Setting : Screen(
@@ -59,10 +59,10 @@ sealed class Screen(
     companion object {
         const val ROUTE_HOME = "home"
         const val ROUTE_SEARCH = "search"
-        const val ROUTE_BOOKMARK = "bookmark"
+        const val ROUTE_LIBRARY = "library"
         const val ROUTE_SETTING = "setting"
 
-        val screens = listOf(Home, Search, Bookmark, Setting)
+        val screens = listOf(Home, Search, Library, Setting)
     }
 }
 

@@ -62,6 +62,14 @@ interface ThemeDao {
 
     @Query(
         """
+        SELECT COUNT(*)
+        FROM theme_table
+        """
+    )
+    suspend fun getThemesCount(): Int
+
+    @Query(
+        """
         DELETE
         FROM theme_table
         """

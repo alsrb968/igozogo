@@ -4,6 +4,7 @@ import io.jacob.igozogo.core.data.TestPagingSource
 import io.jacob.igozogo.core.data.datasource.local.StoryDataSource
 import io.jacob.igozogo.core.data.datasource.local.ThemeDataSource
 import io.jacob.igozogo.core.data.datasource.remote.OdiiDataSource
+import io.jacob.igozogo.core.data.mapper.toPlace
 import io.jacob.igozogo.core.data.mapper.toStoryEntity
 import io.jacob.igozogo.core.data.mapper.toThemeEntity
 import io.jacob.igozogo.core.data.model.local.odii.ThemeEntity
@@ -50,7 +51,7 @@ class OdiiRepositoryUnitTest {
     }
 
     @Test
-    fun `Given getThemeBasedList successful, When syncThemes called, Then insertThemes into db`() =
+    fun `Given getThemeBasedList successful, When syncPlaces called, Then insertThemes into db`() =
         testScope.runTest {
             // Given
             coEvery {
@@ -60,7 +61,7 @@ class OdiiRepositoryUnitTest {
             coEvery { themeDataSource.insertThemes(capture(slot)) } just Runs
 
             // When
-            repository.syncThemes()
+            repository.syncPlaces()
 
             // Then
             coVerify { odiiDataSource.getThemeBasedList(any(), any()) }
@@ -73,13 +74,13 @@ class OdiiRepositoryUnitTest {
         }
 
     @Test
-    fun `Given themes, When getThemes called, Then call dataSource`() =
+    fun `Given themes, When getPlaces called, Then call dataSource`() =
         testScope.runTest {
             // Given
             coEvery { themeDataSource.getThemes() } returns TestPagingSource(themeEntities)
 
             // When
-            val flow = repository.getThemes()
+            val flow = repository.getPlaces()
 
             val job = launch { flow.collectLatest { pagingData -> } }
 
@@ -90,13 +91,13 @@ class OdiiRepositoryUnitTest {
         }
 
     @Test
-    fun `Given themes, When getThemeCategories called, Then call dataSource`() =
+    fun `Given themes, When getPlaceCategories called, Then call dataSource`() =
         testScope.runTest {
             // Given
             coEvery { themeDataSource.getThemeCategories() } returns TestPagingSource(listOf())
 
             // When
-            val flow = repository.getThemeCategories()
+            val flow = repository.getPlaceCategories()
 
             val job = launch { flow.collectLatest { pagingData -> } }
 
@@ -107,13 +108,13 @@ class OdiiRepositoryUnitTest {
         }
 
     @Test
-    fun `Given themes, When getThemesByCategory called, Then call dataSource`() =
+    fun `Given themes, When getPlacesByCategory called, Then call dataSource`() =
         testScope.runTest {
             // Given
             coEvery { themeDataSource.getThemesByCategory(any()) } returns TestPagingSource(themeEntities)
 
             // When
-            val flow = repository.getThemesByCategory("백제역사여행")
+            val flow = repository.getPlacesByCategory("백제역사여행")
 
             val job = launch { flow.collectLatest { pagingData -> } }
 
@@ -124,7 +125,7 @@ class OdiiRepositoryUnitTest {
         }
 
     @Test
-    fun `Given themes, When getThemesByLocation called, Then call dataSource`() =
+    fun `Given themes, When getPlacesByLocation called, Then call dataSource`() =
         testScope.runTest {
             // Given
             every {
@@ -132,7 +133,7 @@ class OdiiRepositoryUnitTest {
             } returns TestPagingSource(themeEntities)
 
             // When
-            val flow = repository.getThemesByLocation(126.852601, 35.159545, 20000)
+            val flow = repository.getPlacesByLocation(126.852601, 35.159545, 20000)
 
             val job = launch { flow.collectLatest { pagingData -> } }
 
@@ -143,13 +144,13 @@ class OdiiRepositoryUnitTest {
         }
 
     @Test
-    fun `Given themes, When getThemesByKeyword called, Then call dataSource`() =
+    fun `Given themes, When getPlacesByKeyword called, Then call dataSource`() =
         testScope.runTest {
             // Given
             every { themeDataSource.getThemesByKeyword(any()) } returns TestPagingSource(themeEntities)
 
             // When
-            val flow = repository.getThemesByKeyword("백제")
+            val flow = repository.getPlacesByKeyword("백제")
 
             val job = launch { flow.collectLatest { pagingData -> } }
 
@@ -160,7 +161,21 @@ class OdiiRepositoryUnitTest {
         }
 
     @Test
-    fun `Given RemoteMediator, When getStoriesByTheme called, Then call dataSource`() =
+    fun `Given themes, When getPlacesCount called, Then call dataSource`() =
+        testScope.runTest {
+            // Given
+            coEvery { themeDataSource.getThemesCount() } returns 10
+
+            // When
+            val count = repository.getPlacesCount()
+
+            // Then
+            assertEquals(10, count)
+            coVerify { themeDataSource.getThemesCount() }
+        }
+
+    @Test
+    fun `Given RemoteMediator, When getStoriesByPlace called, Then call dataSource`() =
         testScope.runTest {
             // Given
             val fakeRemoteMediator = mockk<StoryRemoteMediator>(relaxed = true)
@@ -170,7 +185,7 @@ class OdiiRepositoryUnitTest {
             } returns TestPagingSource(storyEntities)
 
             // When
-            val flow = repository.getStoriesByTheme(1, 1, pageSize = 10)
+            val flow = repository.getStoriesByPlace(place = place, pageSize = 10)
 
             val job = launch { flow.collectLatest { pagingData -> } }
 
@@ -328,5 +343,7 @@ class OdiiRepositoryUnitTest {
         )
 
         private val storyEntities = storyResponses.toStoryEntity()
+
+        private val place = themeEntities[0].toPlace()
     }
 }

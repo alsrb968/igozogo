@@ -80,7 +80,7 @@ fun IgozogoApp(
 
                 }
 
-                composable(Screen.Bookmark.route) { backstackEntry ->
+                composable(Screen.Library.route) { backstackEntry ->
 
                 }
 

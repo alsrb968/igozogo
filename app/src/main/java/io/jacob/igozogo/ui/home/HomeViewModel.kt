@@ -4,25 +4,25 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.jacob.igozogo.core.domain.usecase.GetThemeCategoriesUseCase
-import io.jacob.igozogo.core.domain.usecase.SyncThemesUseCase
+import io.jacob.igozogo.core.domain.usecase.GetPlaceCategoriesUseCase
+import io.jacob.igozogo.core.domain.usecase.SyncPlacesUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val syncThemesUseCase: SyncThemesUseCase,
-    private val getThemeCategoriesUseCase: GetThemeCategoriesUseCase,
+    private val syncPlacesUseCase: SyncPlacesUseCase,
+    private val getPlaceCategoriesUseCase: GetPlaceCategoriesUseCase,
 ) : ViewModel() {
 
-    fun syncThemes() {
+    init {
         viewModelScope.launch {
-            syncThemesUseCase()
+            syncPlacesUseCase()
         }
     }
 
-    fun getThemeCategories(): Flow<PagingData<String>> {
-        return getThemeCategoriesUseCase()
+    fun getPlaceCategories(): Flow<PagingData<String>> {
+        return getPlaceCategoriesUseCase()
     }
 }

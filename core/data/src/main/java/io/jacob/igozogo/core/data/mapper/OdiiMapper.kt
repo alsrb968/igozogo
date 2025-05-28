@@ -6,8 +6,8 @@ import io.jacob.igozogo.core.data.model.local.odii.ThemeEntity
 import io.jacob.igozogo.core.data.model.remote.ResponseWrapper
 import io.jacob.igozogo.core.data.model.remote.odii.StoryResponse
 import io.jacob.igozogo.core.data.model.remote.odii.ThemeResponse
+import io.jacob.igozogo.core.domain.model.Place
 import io.jacob.igozogo.core.domain.model.Story
-import io.jacob.igozogo.core.domain.model.Theme
 
 fun <T> ResponseWrapper<T>.toResponses(): List<T> {
     return this.response.body.items.item
@@ -35,11 +35,11 @@ fun List<ThemeResponse>.toThemeEntity(): List<ThemeEntity> {
     return map { it.toThemeEntity() }
 }
 
-fun ThemeEntity.toTheme(): Theme {
-    return Theme(
-        themeId = themeId,
-        themeLangId = themeLangId,
-        themeCategory = themeCategory,
+fun ThemeEntity.toPlace(): Place {
+    return Place(
+        placeId = themeId,
+        placeLangId = themeLangId,
+        placeCategory = themeCategory,
         addr1 = addr1,
         addr2 = addr2,
         title = title,
@@ -53,8 +53,8 @@ fun ThemeEntity.toTheme(): Theme {
     )
 }
 
-fun List<ThemeEntity>.toTheme(): List<Theme> {
-    return map { it.toTheme() }
+fun List<ThemeEntity>.toPlace(): List<Place> {
+    return map { it.toPlace() }
 }
 
 fun StoryResponse.toStoryEntity(): StoryEntity {
@@ -83,8 +83,8 @@ fun List<StoryResponse>.toStoryEntity(): List<StoryEntity> {
 
 fun StoryEntity.toStory(): Story {
     return Story(
-        themeId = themeId,
-        themeLangId = themeLangId,
+        placeId = themeId,
+        placeLangId = themeLangId,
         storyId = storyId,
         storyLangId = storyLangId,
         title = title,

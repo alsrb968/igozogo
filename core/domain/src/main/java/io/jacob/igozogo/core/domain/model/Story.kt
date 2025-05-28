@@ -1,8 +1,8 @@
 package io.jacob.igozogo.core.domain.model
 
 data class Story(
-    val themeId: Int,
-    val themeLangId: Int,
+    val placeId: Int,
+    val placeLangId: Int,
     val storyId: Int,
     val storyLangId: Int,
     val title: String,

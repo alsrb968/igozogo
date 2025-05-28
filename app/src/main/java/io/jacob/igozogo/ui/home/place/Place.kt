@@ -1,17 +1,12 @@
-package io.jacob.igozogo.ui.home.category
+package io.jacob.igozogo.ui.home.place
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,19 +16,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import io.jacob.igozogo.core.domain.model.Theme
-import io.jacob.igozogo.ui.shared.ThemeImage
+import io.jacob.igozogo.core.domain.model.Place
+import io.jacob.igozogo.ui.shared.StateImage
+import io.jacob.igozogo.ui.shared.ToggleFollowPodcastIconButton
 import io.jacob.igozogo.ui.theme.IgozogoTheme
 import io.jacob.igozogo.ui.tooling.DevicePreviews
-import io.jacob.igozogo.ui.tooling.PreviewThemes
+import io.jacob.igozogo.ui.tooling.PreviewPlace
 
 @Composable
-fun ThemeCategoryList(
+fun PlaceCategoryList(
     modifier: Modifier = Modifier,
-    themes: List<Theme>,
-    isBookmarked: (Theme) -> Boolean,
-    onBookmarkToggle: (Theme) -> Unit,
-    onClick: (Theme) -> Unit,
+    places: List<Place>,
+    isBookmarked: (Place) -> Boolean,
+    onBookmarkToggle: (Place) -> Unit,
+    onClick: (Place) -> Unit,
 ) {
     LazyRow(
         modifier = modifier
@@ -41,21 +37,21 @@ fun ThemeCategoryList(
         contentPadding = PaddingValues(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        items(themes.size) { index ->
-            ThemeCategoryItem(
-                theme = themes[index],
-                isBookmarked = isBookmarked(themes[index]),
-                onBookmarkToggle = { onBookmarkToggle(themes[index]) },
-                onClick = { onClick(themes[index]) }
+        items(places.size) { index ->
+            PlaceItem(
+                place = places[index],
+                isBookmarked = isBookmarked(places[index]),
+                onBookmarkToggle = { onBookmarkToggle(places[index]) },
+                onClick = { onClick(places[index]) }
             )
         }
     }
 }
 
 @Composable
-fun ThemeCategoryItem(
+fun PlaceItem(
     modifier: Modifier = Modifier,
-    theme: Theme,
+    place: Place,
     isBookmarked: Boolean,
     onBookmarkToggle: () -> Unit,
     onClick: () -> Unit,
@@ -73,30 +69,19 @@ fun ThemeCategoryItem(
                 .clip(RoundedCornerShape(30.dp))
         ) {
 
-            ThemeImage(
-                imageUrl = theme.imageUrl,
-                contentDescription = theme.title,
+            StateImage(
+                imageUrl = place.imageUrl,
+                contentDescription = place.title,
                 modifier = Modifier
                     .fillMaxSize()
             )
 
-            IconButton(
+            ToggleFollowPodcastIconButton(
                 modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(6.dp),
+                    .align(Alignment.TopEnd),
+                isFollowed = isBookmarked,
                 onClick = { onBookmarkToggle() }
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .background(
-                            color = MaterialTheme.colorScheme.background,
-                            shape = CircleShape,
-                        ).padding(4.dp),
-                    imageVector = if (isBookmarked) Icons.Filled.Bookmark else Icons.Outlined.BookmarkBorder,
-                    contentDescription = "Bookmark",
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
+            )
 
             Column(
                 modifier = Modifier
@@ -106,7 +91,7 @@ fun ThemeCategoryItem(
             ) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = theme.title,
+                    text = place.title,
                     style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colorScheme.onPrimary,
                     maxLines = 2,
@@ -130,7 +115,7 @@ fun ThemeCategoryItem(
 
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = "${theme.addr1} ${theme.addr2}",
+                        text = "${place.addr1} ${place.addr2}",
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onPrimary,
                         maxLines = 1,
@@ -145,11 +130,11 @@ fun ThemeCategoryItem(
 
 @DevicePreviews
 @Composable
-private fun ThemeCategoryListPreview() {
+private fun PlaceItemPreview() {
     IgozogoTheme {
-        ThemeCategoryList(
-            themes = PreviewThemes,
-            isBookmarked = { true },
+        PlaceItem(
+            place = PreviewPlace,
+            isBookmarked = false,
             onBookmarkToggle = {},
             onClick = {}
         )
