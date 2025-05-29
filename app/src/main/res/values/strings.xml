@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Igozogo</string>
+    <string name="app_name">Igozogo</string>
 
     <!-- Disconnect Dialog -->
     <string name="network_error_title">Network connection error</string>
@@ -16,4 +16,9 @@
     <string name="cd_unfollow">Unfollow</string>
     <string name="cd_following">Following</string>
     <string name="cd_not_following">Not following</string>
+
+    <string name="place_sync_completed">Places sync completed</string>
+    <string name="category">Category</string>
+    <string name="place">Place</string>
+    <string name="more">More</string>
 </resources>

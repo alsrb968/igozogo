@@ -8,9 +8,12 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
+import io.jacob.igozogo.R
 import io.jacob.igozogo.ui.home.place.PlaceItemList
 import io.jacob.igozogo.ui.shared.ChipItemList
 import io.jacob.igozogo.ui.shared.TitleTextItem
@@ -23,13 +26,14 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     onSnackbar: (String) -> Unit,
 ) {
+    val context = LocalContext.current
     val categoryPagingItems = viewModel.getPlaceCategories().collectAsLazyPagingItems()
     val placePagingItems = viewModel.getPlaces().collectAsLazyPagingItems()
 
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
-                is HomeUiEffect.Synced -> onSnackbar("Places synced")
+                is HomeUiEffect.Synced -> onSnackbar(context.getString(R.string.place_sync_completed))
             }
         }
     }
@@ -40,7 +44,7 @@ fun HomeScreen(
         state = rememberLazyListState()
     ) {
         item {
-            TitleTextItem(text = "Category 카테고리")
+            TitleTextItem(text = stringResource(R.string.category))
         }
 
         item {
@@ -56,7 +60,7 @@ fun HomeScreen(
         }
 
         item {
-            TitleTextItem(text = "Place 장소", onMore = {  })
+            TitleTextItem(text = stringResource(R.string.place), onMore = {  })
         }
 
         item {
