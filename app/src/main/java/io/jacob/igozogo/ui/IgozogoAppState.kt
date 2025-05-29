@@ -11,12 +11,14 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.Lifecycle
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavDestination
-import androidx.navigation.NavGraph
-import androidx.navigation.NavHostController
+import androidx.navigation.*
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
 import io.jacob.igozogo.R
+import io.jacob.igozogo.feature.bookmark.navigation.navigateToBookmark
+import io.jacob.igozogo.feature.home.navigation.navigateToHome
+import io.jacob.igozogo.navigation.BottomBarDestination
 
 sealed class Screen(
     @StringRes val label: Int,
@@ -69,6 +71,31 @@ class IgozogoAppState(
     val navController: NavHostController,
     private val context: Context,
 ) {
+    private val previousDestination = mutableStateOf<NavDestination?>(null)
+
+    val currentDestination: NavDestination?
+        @Composable get() {
+            // Collect the currentBackStackEntryFlow as a state
+            val currentEntry = navController.currentBackStackEntryFlow
+                .collectAsState(initial = null)
+
+            // Fallback to previousDestination if currentEntry is null
+            return currentEntry.value?.destination.also { destination ->
+                if (destination != null) {
+                    previousDestination.value = destination
+                }
+            } ?: previousDestination.value
+        }
+
+    val currentBottomBarDestination: BottomBarDestination?
+        @Composable get() {
+            return BottomBarDestination.entries.firstOrNull { bottomBarDestination ->
+                currentDestination?.hasRoute(route = bottomBarDestination.route) == true
+            }
+        }
+
+    val bottomBarDestinations: List<BottomBarDestination> = BottomBarDestination.entries
+
     var isOnline by mutableStateOf(checkIfOnline())
         private set
 
@@ -76,15 +103,21 @@ class IgozogoAppState(
         isOnline = checkIfOnline()
     }
 
-    fun navigateToBottomBarRoute(route: String) {
-        if (route != navController.currentDestination?.route) {
-            navController.navigate(route) {
-                launchSingleTop = true
-                restoreState = true
-                popUpTo(findStartDestination(navController.graph).id) {
-                    saveState = true
-                }
+    fun navigateToBottomBarDestination(destination: BottomBarDestination) {
+        val bottomBarNavOptions = navOptions {
+            popUpTo(navController.graph.findStartDestination().id) {
+                saveState = true
             }
+            launchSingleTop = true
+            restoreState = true
+        }
+
+        when (destination) {
+            BottomBarDestination.HOME -> navController.navigateToHome(bottomBarNavOptions)
+            BottomBarDestination.SEARCH -> navController.navigateToHome(bottomBarNavOptions)
+            BottomBarDestination.BOOKMARK -> navController.navigateToBookmark(bottomBarNavOptions)
+            BottomBarDestination.SETTING -> navController.navigateToHome(bottomBarNavOptions)
+
         }
     }
 

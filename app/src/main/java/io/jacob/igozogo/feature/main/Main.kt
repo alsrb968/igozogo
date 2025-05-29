@@ -15,14 +15,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import io.jacob.igozogo.feature.bookmark.BookmarkScreen
-import io.jacob.igozogo.feature.bookmark.navigation.bookmarkScreen
-import io.jacob.igozogo.feature.home.HomeScreen
+import io.jacob.igozogo.navigation.BottomBarDestination
+import io.jacob.igozogo.navigation.IgozogoNavHost
 import io.jacob.igozogo.ui.IgozogoAppState
-import io.jacob.igozogo.ui.Screen
 import io.jacob.igozogo.ui.theme.IgozogoTheme
 import io.jacob.igozogo.ui.tooling.DevicePreviews
 import kotlinx.coroutines.launch
@@ -65,66 +61,73 @@ fun MainScreen(
 //            },
         bottomBar = {
             IgozogoBottomBar(
-                tabs = Screen.screens,
-                currentRoute = currentRoute ?: Screen.Home.route,
-                navigateToRoute = appState::navigateToBottomBarRoute
+                tabs = appState.bottomBarDestinations,
+                currentDestination = appState.currentBottomBarDestination ?: BottomBarDestination.HOME,
+                navigateToDestination = appState::navigateToBottomBarDestination
             )
         },
         snackbarHost = {
             SnackbarHost(snackbarHostState)
         },
     ) { contentPaddingValues ->
-        NavHost(
-            modifier = modifier
+        IgozogoNavHost(
+            modifier = Modifier
                 .padding(contentPaddingValues),
-            navController = appState.navController,
-            startDestination = Screen.Home.route
-        ) {
-            composable(Screen.Home.route) { backstackEntry ->
-                HomeScreen(
-                    onSnackbar = ::onSnackbar
-                )
-            }
+            appState = appState,
+            onSnackbar = ::onSnackbar
+        )
 
-            composable(Screen.Search.route) { backstackEntry ->
-
-            }
-
-            composable(Screen.Bookmark.route) { backstackEntry ->
-                BookmarkScreen(
-                    onSnackbar = ::onSnackbar
-                )
-            }
-
-            bookmarkScreen(
-                onSnackbar = ::onSnackbar
-            )
-
-            composable(Screen.Setting.route) { backstackEntry ->
-
-            }
-        }
+//        NavHost(
+//            modifier = modifier
+//                .padding(contentPaddingValues),
+//            navController = appState.navController,
+//            startDestination = Screen.Home.route
+//        ) {
+//            composable(Screen.Home.route) { backstackEntry ->
+//                HomeScreen(
+//                    onSnackbar = ::onSnackbar
+//                )
+//            }
+//
+//            composable(Screen.Search.route) { backstackEntry ->
+//
+//            }
+//
+//            composable(Screen.Bookmark.route) { backstackEntry ->
+//                BookmarkScreen(
+//                    onSnackbar = ::onSnackbar
+//                )
+//            }
+//
+//            bookmarkScreen(
+//                onSnackbar = ::onSnackbar
+//            )
+//
+//            composable(Screen.Setting.route) { backstackEntry ->
+//
+//            }
+//        }
     }
 }
 
 @Composable
 fun IgozogoBottomBar(
     modifier: Modifier = Modifier,
-    tabs: List<Screen>,
-    currentRoute: String,
-    navigateToRoute: (String) -> Unit,
+    tabs: List<BottomBarDestination>,
+    currentDestination: BottomBarDestination,
+    navigateToDestination: (BottomBarDestination) -> Unit,
 ) {
-    val currentSection = tabs.firstOrNull { it.route == currentRoute } ?: tabs.first()
+    val currentSection = tabs.firstOrNull { it == currentDestination } ?: tabs.first()
 
     AnimatedVisibility(
-        visible = tabs.map { it.route }.contains(currentRoute)
+        visible = tabs.map { it }.contains(currentDestination)
     ) {
         NavigationBar(
             modifier = modifier,
         ) {
-            tabs.forEach { screen ->
-                val selected = screen == currentSection
-                val text = stringResource(screen.label)
+            tabs.forEach { destination ->
+                val selected = destination == currentSection
+                val text = stringResource(destination.label)
 
                 NavigationBarItem(
                     icon = {
@@ -134,7 +137,7 @@ fun IgozogoBottomBar(
                         ) {
                             Icon(
                                 modifier = Modifier,
-                                painter = painterResource(id = screen.icon),
+                                painter = painterResource(id = destination.icon),
                                 contentDescription = text
                             )
 
@@ -154,7 +157,7 @@ fun IgozogoBottomBar(
                         unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant,
                         indicatorColor = Color.Transparent
                     ),
-                    onClick = { navigateToRoute(screen.route) },
+                    onClick = { navigateToDestination(destination) },
                 )
             }
         }
@@ -166,9 +169,9 @@ fun IgozogoBottomBar(
 private fun IgozogoBottomBarPreview() {
     IgozogoTheme {
         IgozogoBottomBar(
-            tabs = Screen.screens,
-            currentRoute = Screen.Home.route,
-            navigateToRoute = {}
+            tabs = BottomBarDestination.entries,
+            currentDestination = BottomBarDestination.HOME,
+            navigateToDestination = {}
         )
     }
 }
