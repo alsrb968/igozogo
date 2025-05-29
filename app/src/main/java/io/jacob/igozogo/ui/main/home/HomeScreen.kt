@@ -1,4 +1,4 @@
-package io.jacob.igozogo.ui.home
+package io.jacob.igozogo.ui.main.home
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import io.jacob.igozogo.R
-import io.jacob.igozogo.ui.home.place.PlaceItemList
+import io.jacob.igozogo.ui.main.home.place.PlaceItemList
 import io.jacob.igozogo.ui.shared.ChipItemList
 import io.jacob.igozogo.ui.shared.TitleTextItem
 import kotlinx.coroutines.flow.collectLatest

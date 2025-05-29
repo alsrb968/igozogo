@@ -20,7 +20,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import io.jacob.igozogo.ui.IgozogoAppState
 import io.jacob.igozogo.ui.Screen
-import io.jacob.igozogo.ui.home.HomeScreen
+import io.jacob.igozogo.ui.main.bookmark.BookmarkScreen
+import io.jacob.igozogo.ui.main.bookmark.navigation.bookmarkScreen
+import io.jacob.igozogo.ui.main.home.HomeScreen
 import io.jacob.igozogo.ui.theme.IgozogoTheme
 import io.jacob.igozogo.ui.tooling.DevicePreviews
 import kotlinx.coroutines.launch
@@ -89,8 +91,14 @@ fun MainScreen(
             }
 
             composable(Screen.Bookmark.route) { backstackEntry ->
-
+                BookmarkScreen(
+                    onSnackbar = ::onSnackbar
+                )
             }
+
+            bookmarkScreen(
+                onSnackbar = ::onSnackbar
+            )
 
             composable(Screen.Setting.route) { backstackEntry ->
 

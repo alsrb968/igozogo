@@ -1,4 +1,4 @@
-package io.jacob.igozogo.ui.home.place
+package io.jacob.igozogo.ui.main.home.place
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
