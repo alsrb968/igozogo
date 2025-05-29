@@ -1,3 +1,24 @@
 <resources>
-    <string name="app_name" translatable="false">Igozogo</string>
+    <string name="app_name">Igozogo</string>
+
+    <!-- Disconnect Dialog -->
+    <string name="network_error_title">Network connection error</string>
+    <string name="network_error_message">Please check your network connection and try again.</string>
+    <string name="retry">Retry</string>
+
+    <!-- Bottom Navigation Tabs -->
+    <string name="nav_home">Home</string>
+    <string name="nav_search">Search</string>
+    <string name="nav_bookmark">Bookmark</string>
+    <string name="nav_setting">Setting</string>
+
+    <string name="cd_follow">Follow</string>
+    <string name="cd_unfollow">Unfollow</string>
+    <string name="cd_following">Following</string>
+    <string name="cd_not_following">Not following</string>
+
+    <string name="place_sync_completed">Places sync completed</string>
+    <string name="category">Category</string>
+    <string name="place">Place</string>
+    <string name="more">More</string>
 </resources>

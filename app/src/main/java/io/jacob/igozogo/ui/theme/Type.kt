@@ -1,34 +1,42 @@
 package io.jacob.igozogo.ui.theme
 
 import androidx.compose.material3.Typography
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.googlefonts.GoogleFont
+import io.jacob.igozogo.R
 
-// Set of Material typography styles to start with
-val Typography = Typography(
-    bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp,
-        lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
-    )
-    /* Other default text styles to override
-    titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
-    ),
-    labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
-    )
-    */
+val provider = GoogleFont.Provider(
+    providerAuthority = "com.google.android.gms.fonts",
+    providerPackage = "com.google.android.gms",
+    certificates = R.array.com_google_android_gms_fonts_certs
+)
+
+val Pretendard = FontFamily(
+    Font(R.font.pretendard_light, FontWeight.Light),
+    Font(R.font.pretendard_regular, FontWeight.Normal),
+    Font(R.font.pretendard_medium, FontWeight.Medium),
+    Font(R.font.pretendard_bold, FontWeight.Bold),
+)
+
+// Default Material 3 typography values
+val baseline = Typography()
+
+val IgozogoTypography = Typography(
+    displayLarge = baseline.displayLarge.copy(fontFamily = Pretendard, fontWeight = FontWeight.Bold),
+    displayMedium = baseline.displayMedium.copy(fontFamily = Pretendard, fontWeight = FontWeight.Bold),
+    displaySmall = baseline.displaySmall.copy(fontFamily = Pretendard, fontWeight = FontWeight.Bold),
+    headlineLarge = baseline.headlineLarge.copy(fontFamily = Pretendard, fontWeight = FontWeight.Bold),
+    headlineMedium = baseline.headlineMedium.copy(fontFamily = Pretendard, fontWeight = FontWeight.Bold),
+    headlineSmall = baseline.headlineSmall.copy(fontFamily = Pretendard, fontWeight = FontWeight.Bold),
+    titleLarge = baseline.titleLarge.copy(fontFamily = Pretendard),
+    titleMedium = baseline.titleMedium.copy(fontFamily = Pretendard),
+    titleSmall = baseline.titleSmall.copy(fontFamily = Pretendard),
+    bodyLarge = baseline.bodyLarge.copy(fontFamily = Pretendard),
+    bodyMedium = baseline.bodyMedium.copy(fontFamily = Pretendard),
+    bodySmall = baseline.bodySmall.copy(fontFamily = Pretendard),
+    labelLarge = baseline.labelLarge.copy(fontFamily = Pretendard),
+    labelMedium = baseline.labelMedium.copy(fontFamily = Pretendard),
+    labelSmall = baseline.labelSmall.copy(fontFamily = Pretendard),
 )

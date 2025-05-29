@@ -18,8 +18,8 @@ import io.jacob.igozogo.core.data.model.local.odii.StoryRemoteKey
 import io.jacob.igozogo.core.data.model.remote.odii.StoryResponse
 
 sealed interface Query {
-    data class Theme(val themeId: Int, val themeLangId: Int) : Query {
-        override fun toString() = "theme:$themeId:$themeLangId"
+    data class Place(val placeId: Int, val placeLangId: Int) : Query {
+        override fun toString() = "place:$placeId:$placeLangId"
     }
 
     data class Location(val mapX: Double, val mapY: Double, val radius: Int) : Query {
@@ -128,12 +128,12 @@ class StoryRemoteMediator @AssistedInject constructor(
         size: Int, page: Int,
     ): Result<List<StoryResponse>> {
         return when (query) {
-            is Query.Theme ->
+            is Query.Place ->
                 getStoryBasedList(
                     numOfRows = size,
                     pageNo = page,
-                    themeId = query.themeId,
-                    themeLangId = query.themeLangId,
+                    themeId = query.placeId,
+                    themeLangId = query.placeLangId,
                 )
 
             is Query.Location ->

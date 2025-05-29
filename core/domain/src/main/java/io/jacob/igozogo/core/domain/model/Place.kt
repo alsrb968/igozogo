@@ -1,9 +1,9 @@
 package io.jacob.igozogo.core.domain.model
 
-data class Theme(
-    val themeId: Int,
-    val themeLangId: Int,
-    val themeCategory: String,
+data class Place(
+    val placeId: Int,
+    val placeLangId: Int,
+    val placeCategory: String,
     val addr1: String,
     val addr2: String,
     val title: String,

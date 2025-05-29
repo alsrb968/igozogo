@@ -1,35 +1,36 @@
 package io.jacob.igozogo.core.domain.repository
 
 import androidx.paging.PagingData
+import io.jacob.igozogo.core.domain.model.Place
 import io.jacob.igozogo.core.domain.model.Story
-import io.jacob.igozogo.core.domain.model.Theme
 import kotlinx.coroutines.flow.Flow
 
 interface OdiiRepository {
-    suspend fun syncThemes()
+    suspend fun syncPlaces(size: Int = 100)
 
-    fun getThemes(pageSize: Int = 20): Flow<PagingData<Theme>>
+    fun getPlaces(pageSize: Int = 20): Flow<PagingData<Place>>
 
-    fun getThemeCategories(pageSize: Int = 20): Flow<PagingData<String>>
+    fun getPlaceCategories(pageSize: Int = 20): Flow<PagingData<String>>
 
-    fun getThemesByCategory(
+    fun getPlacesByCategory(
         category: String,
         pageSize: Int = 20,
-    ): Flow<PagingData<Theme>>
+    ): Flow<PagingData<Place>>
 
-    fun getThemesByLocation(
+    fun getPlacesByLocation(
         mapX: Double, mapY: Double, radius: Int,
         pageSize: Int = 20,
-    ): Flow<PagingData<Theme>>
+    ): Flow<PagingData<Place>>
 
-    fun getThemesByKeyword(
+    fun getPlacesByKeyword(
         keyword: String,
         pageSize: Int = 20,
-    ): Flow<PagingData<Theme>>
+    ): Flow<PagingData<Place>>
 
-    fun getStoriesByTheme(
-        themeId: Int,
-        themeLangId: Int,
+    suspend fun getPlacesCount(): Int
+
+    fun getStoriesByPlace(
+        place: Place,
         pageSize: Int = 20,
     ): Flow<PagingData<Story>>
 

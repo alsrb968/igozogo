@@ -49,7 +49,6 @@ android {
 }
 
 dependencies {
-    implementation(projects.core.design)
     implementation(projects.core.data)
     implementation(projects.core.domain)
 

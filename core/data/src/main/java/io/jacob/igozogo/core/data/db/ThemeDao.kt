@@ -16,6 +16,7 @@ interface ThemeDao {
         """
         SELECT *
         FROM theme_table
+        WHERE imageUrl IS NOT NULL AND imageUrl != ''
         """
     )
     fun getThemes(): PagingSource<Int, ThemeEntity>
@@ -59,6 +60,14 @@ interface ThemeDao {
         """
     )
     fun getThemesByKeyword(keyword: String): PagingSource<Int, ThemeEntity>
+
+    @Query(
+        """
+        SELECT COUNT(*)
+        FROM theme_table
+        """
+    )
+    suspend fun getThemesCount(): Int
 
     @Query(
         """
