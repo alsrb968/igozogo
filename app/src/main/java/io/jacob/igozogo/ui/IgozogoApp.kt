@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import io.jacob.igozogo.R
-import io.jacob.igozogo.ui.main.MainScreen
+import io.jacob.igozogo.feature.main.MainScreen
 import io.jacob.igozogo.ui.theme.IgozogoTheme
 import io.jacob.igozogo.ui.tooling.DevicePreviews
 

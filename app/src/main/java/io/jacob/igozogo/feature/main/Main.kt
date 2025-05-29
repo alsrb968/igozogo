@@ -1,4 +1,4 @@
-package io.jacob.igozogo.ui.main
+package io.jacob.igozogo.feature.main
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
@@ -18,11 +18,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import io.jacob.igozogo.feature.bookmark.BookmarkScreen
+import io.jacob.igozogo.feature.bookmark.navigation.bookmarkScreen
+import io.jacob.igozogo.feature.home.HomeScreen
 import io.jacob.igozogo.ui.IgozogoAppState
 import io.jacob.igozogo.ui.Screen
-import io.jacob.igozogo.ui.main.bookmark.BookmarkScreen
-import io.jacob.igozogo.ui.main.bookmark.navigation.bookmarkScreen
-import io.jacob.igozogo.ui.main.home.HomeScreen
 import io.jacob.igozogo.ui.theme.IgozogoTheme
 import io.jacob.igozogo.ui.tooling.DevicePreviews
 import kotlinx.coroutines.launch

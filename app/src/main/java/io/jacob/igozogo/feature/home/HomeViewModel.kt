@@ -1,4 +1,4 @@
-package io.jacob.igozogo.ui.main.home
+package io.jacob.igozogo.feature.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

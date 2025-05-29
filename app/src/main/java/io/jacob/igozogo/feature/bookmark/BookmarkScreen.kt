@@ -1,4 +1,4 @@
-package io.jacob.igozogo.ui.main.bookmark
+package io.jacob.igozogo.feature.bookmark
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
