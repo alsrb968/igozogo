@@ -106,7 +106,7 @@ fun IgozogoBottomBar(
     currentRoute: String,
     navigateToRoute: (String) -> Unit,
 ) {
-    val currentSection = tabs.first { it.route == currentRoute }
+    val currentSection = tabs.firstOrNull { it.route == currentRoute } ?: tabs.first()
 
     AnimatedVisibility(
         visible = tabs.map { it.route }.contains(currentRoute)
