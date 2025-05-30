@@ -31,9 +31,14 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    buildFeatures {
+        compose = true
+    }
 }
 
 dependencies {
+    implementation(projects.core.domain)
+
     implementation(libs.jakewharton.timber)
 
     implementation(libs.androidx.core.ktx)
@@ -45,6 +50,9 @@ dependencies {
 
     //----- Coil
     implementation(libs.io.coil.compose)
+
+    //----- Paging
+    implementation(libs.androidx.paging.compose)
 
     // ----- Test
     testImplementation(libs.junit)
