@@ -10,12 +10,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import io.jacob.igozogo.R
+import io.jacob.igozogo.core.design.R
+import io.jacob.igozogo.core.design.component.IgozogoNavigationBar
+import io.jacob.igozogo.core.design.component.IgozogoNavigationBarItem
+import io.jacob.igozogo.core.design.theme.IgozogoTheme
+import io.jacob.igozogo.core.design.tooling.DevicePreviews
 import io.jacob.igozogo.navigation.IgozogoNavHost
-import io.jacob.igozogo.ui.shared.IgozogoNavigationBar
-import io.jacob.igozogo.ui.shared.IgozogoNavigationBarItem
-import io.jacob.igozogo.ui.theme.IgozogoTheme
-import io.jacob.igozogo.ui.tooling.DevicePreviews
 
 @Composable
 fun IgozogoApp(

@@ -24,5 +24,7 @@ include(":app")
 include(":core:data")
 include(":core:domain")
 include(":core:design")
+include(":feature:home")
+include(":feature:bookmark")
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")

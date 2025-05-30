@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
@@ -8,24 +8,14 @@ plugins {
 }
 
 android {
-    namespace = "io.jacob.igozogo"
+    namespace = "io.jacob.igozogo.feature.bookmark"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "io.jacob.igozogo"
         minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    packaging {
-        resources {
-            excludes += "/META-INF/LICENSE.md"
-            excludes += "/META-INF/LICENSE-notice.md"
-        }
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -50,16 +40,12 @@ android {
 }
 
 dependencies {
-    implementation(projects.core.data)
     implementation(projects.core.domain)
     implementation(projects.core.design)
-    implementation(projects.feature.home)
-    implementation(projects.feature.bookmark)
 
     implementation(libs.jakewharton.timber)
 
     implementation(libs.androidx.core.ktx)
-    implementation(libs.kotlinx.serialization.json)
 
     //----- Compose
     implementation(platform(libs.androidx.compose.bom))
@@ -75,14 +61,6 @@ dependencies {
     //----- Dagger Hilt
     implementation(libs.google.hilt.android)
     ksp(libs.google.hilt.compiler)
-    // For Robolectric tests.
-    testImplementation(libs.google.hilt.testing)
-    // ...with Kotlin.
-    kspTest(libs.google.hilt.compiler)
-    // For instrumented tests.
-    androidTestImplementation(libs.google.hilt.testing)
-    // ...with Kotlin.
-    kspAndroidTest(libs.google.hilt.compiler)
 
     // ----- Test
     testImplementation(libs.junit)
