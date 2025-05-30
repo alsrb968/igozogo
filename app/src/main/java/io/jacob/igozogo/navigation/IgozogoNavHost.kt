@@ -12,7 +12,7 @@ import io.jacob.igozogo.ui.IgozogoAppState
 fun IgozogoNavHost(
     modifier: Modifier = Modifier,
     appState: IgozogoAppState,
-    onSnackbar: (String) -> Unit,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
     val navController = appState.navController
     NavHost(
@@ -21,10 +21,10 @@ fun IgozogoNavHost(
         modifier = modifier,
     ) {
         homeScreen(
-            onSnackbar = onSnackbar
+            onShowSnackbar = onShowSnackbar
         )
         bookmarkScreen(
-            onSnackbar = onSnackbar
+            onShowSnackbar = onShowSnackbar
         )
     }
 }

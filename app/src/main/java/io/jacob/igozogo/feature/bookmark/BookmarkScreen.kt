@@ -1,10 +1,12 @@
 package io.jacob.igozogo.feature.bookmark
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -14,23 +16,32 @@ import androidx.compose.ui.unit.dp
 import io.jacob.igozogo.R
 import io.jacob.igozogo.ui.theme.IgozogoTheme
 import io.jacob.igozogo.ui.tooling.DevicePreviews
+import kotlinx.coroutines.flow.MutableSharedFlow
+import timber.log.Timber
 
 @Composable
 fun BookmarkRoute(
     modifier: Modifier = Modifier,
-    onSnackbar: (String) -> Unit,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
     BookmarkScreen(
         modifier = modifier,
-        onSnackbar = onSnackbar,
+        onShowSnackbar = onShowSnackbar,
     )
 }
 
 @Composable
 fun BookmarkScreen(
     modifier: Modifier = Modifier,
-    onSnackbar: (String) -> Unit,
+    onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
+    val event = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+
+    LaunchedEffect(event) {
+        val snackBarResult = onShowSnackbar("Bookmark", "Clicked")
+        Timber.i("Snackbar result: $snackBarResult")
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -39,9 +50,11 @@ fun BookmarkScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
+                .clickable {
+                    event.tryEmit(Unit)
+                },
             painter = painterResource(id = R.drawable.img_empty_bookmark),
-//            colorFilter = if (iconTint != Color.Unspecified) ColorFilter.tint(iconTint) else null,
             contentDescription = null,
         )
 
@@ -70,6 +83,8 @@ fun BookmarkScreen(
 @Composable
 private fun BookmarkScreenPreview() {
     IgozogoTheme {
-        BookmarkScreen(onSnackbar = {})
+        BookmarkScreen(
+            onShowSnackbar = { _, _ -> true }
+        )
     }
 }

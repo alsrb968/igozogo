@@ -5,8 +5,6 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat.getSystemService
@@ -15,49 +13,9 @@ import androidx.navigation.*
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
-import io.jacob.igozogo.R
 import io.jacob.igozogo.feature.bookmark.navigation.navigateToBookmark
 import io.jacob.igozogo.feature.home.navigation.navigateToHome
 import io.jacob.igozogo.navigation.BottomBarDestination
-
-sealed class Screen(
-    @StringRes val label: Int,
-    @DrawableRes val icon: Int,
-    val route: String
-) {
-    data object Home : Screen(
-        label = R.string.nav_home,
-        icon = R.drawable.ic_home,
-        route = ROUTE_HOME,
-    )
-
-    data object Search : Screen(
-        label = R.string.nav_search,
-        icon = R.drawable.ic_search,
-        route = ROUTE_SEARCH,
-    )
-
-    data object Bookmark : Screen(
-        label = R.string.nav_bookmark,
-        icon = R.drawable.ic_bookmark,
-        route = ROUTE_BOOKMARK,
-    )
-
-    data object Setting : Screen(
-        label = R.string.nav_setting,
-        icon = R.drawable.ic_setting,
-        route = ROUTE_SETTING,
-    )
-
-    companion object {
-        const val ROUTE_HOME = "home"
-        const val ROUTE_SEARCH = "search"
-        const val ROUTE_BOOKMARK = "bookmark"
-        const val ROUTE_SETTING = "setting"
-
-        val screens = listOf(Home, Search, Bookmark, Setting)
-    }
-}
 
 @Composable
 fun rememberIgozogoAppState(

@@ -1,9 +1,6 @@
 package io.jacob.igozogo.ui.shared
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -20,28 +17,35 @@ import io.jacob.igozogo.ui.tooling.DevicePreviews
 fun TitleTextItem(
     modifier: Modifier = Modifier,
     text: String,
-    onMore: (() -> Unit)? = null
+    onMore: (() -> Unit)? = null,
+    content: @Composable () -> Unit = {}
 ) {
-    Row(
+    Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(
-            modifier = modifier,
-            text = text,
-            style = MaterialTheme.typography.headlineMedium
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = text,
+                style = MaterialTheme.typography.headlineMedium
+            )
 
-        onMore?.let {
-            TextButton(
-                onClick = it,
-            ) {
-                Text(text = stringResource(R.string.more))
+            onMore?.let {
+                TextButton(
+                    onClick = it,
+                ) {
+                    Text(text = stringResource(R.string.more))
+                }
             }
         }
+
+        content()
     }
 }
 

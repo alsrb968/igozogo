@@ -1,30 +1,92 @@
 package io.jacob.igozogo.ui
 
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import io.jacob.igozogo.R
-import io.jacob.igozogo.feature.main.MainScreen
+import io.jacob.igozogo.navigation.IgozogoNavHost
+import io.jacob.igozogo.ui.shared.IgozogoNavigationBar
+import io.jacob.igozogo.ui.shared.IgozogoNavigationBarItem
 import io.jacob.igozogo.ui.theme.IgozogoTheme
 import io.jacob.igozogo.ui.tooling.DevicePreviews
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IgozogoApp(
     modifier: Modifier = Modifier,
     appState: IgozogoAppState = rememberIgozogoAppState()
 ) {
     if (appState.isOnline) {
-        MainScreen(
+        val snackbarHostState = remember { SnackbarHostState() }
+
+        IgozogoApp(
             modifier = modifier,
-            appState = appState
+            appState = appState,
+            snackbarHostState = snackbarHostState,
         )
     } else {
         OfflineDialog { appState.refreshOnline() }
+    }
+}
+
+@Composable
+fun IgozogoApp(
+    modifier: Modifier = Modifier,
+    appState: IgozogoAppState,
+    snackbarHostState: SnackbarHostState,
+) {
+    Scaffold(
+        modifier = modifier,
+        bottomBar = {
+            IgozogoNavigationBar {
+                appState.bottomBarDestinations.forEach { destination ->
+                    val text = stringResource(destination.label)
+
+                    IgozogoNavigationBarItem(
+                        icon = {
+                            Icon(
+                                painter = painterResource(id = destination.icon),
+                                contentDescription = text
+                            )
+                        },
+                        label = {
+                            Text(
+                                text = text,
+                                style = MaterialTheme.typography.labelLarge,
+                                maxLines = 1
+                            )
+                        },
+                        selected = destination == appState.currentBottomBarDestination,
+                        onClick = { appState.navigateToBottomBarDestination(destination) },
+                    )
+                }
+            }
+        },
+        snackbarHost = {
+            SnackbarHost(
+                snackbarHostState,
+                modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
+            )
+        },
+    ) { contentPaddingValues ->
+        IgozogoNavHost(
+            modifier = Modifier
+                .padding(contentPaddingValues),
+            appState = appState,
+            onShowSnackbar = { message, action ->
+                snackbarHostState.showSnackbar(
+                    message = message,
+                    actionLabel = action,
+                    duration = SnackbarDuration.Short,
+                ) == SnackbarResult.ActionPerformed
+            },
+        )
     }
 }
 
