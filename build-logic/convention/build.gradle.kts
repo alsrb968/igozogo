@@ -7,22 +7,21 @@ plugins {
 group = "io.jacob.igozogo.buildlogic"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 kotlin {
     compilerOptions {
-        jvmTarget = JvmTarget.JVM_11
+        jvmTarget = JvmTarget.JVM_17
     }
 }
 
 dependencies {
     compileOnly(libs.android.gradlePlugin)
-    compileOnly(libs.android.tools.common)
     compileOnly(libs.compose.gradlePlugin)
     compileOnly(libs.kotlin.gradlePlugin)
     compileOnly(libs.ksp.gradlePlugin)
-//    compileOnly(libs.room.gradlePlugin)
+    compileOnly(libs.room.gradlePlugin)
 }
 
 tasks {
@@ -62,9 +61,9 @@ gradlePlugin {
             id = libs.plugins.igozogo.android.room.get().pluginId
             implementationClass = "AndroidRoomConventionPlugin"
         }
-        register("hilt") {
-            id = libs.plugins.igozogo.hilt.get().pluginId
-            implementationClass = "HiltConventionPlugin"
+        register("androidHilt") {
+            id = libs.plugins.igozogo.android.hilt.get().pluginId
+            implementationClass = "AndroidHiltConventionPlugin"
         }
     }
 }

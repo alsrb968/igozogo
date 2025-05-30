@@ -39,7 +39,7 @@ android {
 dependencies {
     implementation(projects.core.domain)
 
-    implementation(libs.jakewharton.timber)
+    implementation(libs.timber)
 
     implementation(libs.androidx.core.ktx)
 
@@ -49,7 +49,7 @@ dependencies {
     debugImplementation(libs.bundles.androidx.compose.debug)
 
     //----- Coil
-    implementation(libs.io.coil.compose)
+    implementation(libs.coil.compose)
 
     //----- Paging
     implementation(libs.androidx.paging.compose)
@@ -62,5 +62,5 @@ dependencies {
     androidTestImplementation(libs.kotlinx.coroutines.test)
 
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
 }

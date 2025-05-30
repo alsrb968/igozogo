@@ -32,8 +32,8 @@ android {
 }
 
 dependencies {
-    implementation(libs.jakewharton.timber)
-    implementation(libs.javax.inject)
+    implementation(libs.timber)
+    implementation(libs.inject)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.paging.common)

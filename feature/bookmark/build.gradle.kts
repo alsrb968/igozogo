@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
+    alias(libs.plugins.igozogo.android.hilt)
 }
 
 android {
@@ -43,7 +43,7 @@ dependencies {
     implementation(projects.core.domain)
     implementation(projects.core.design)
 
-    implementation(libs.jakewharton.timber)
+    implementation(libs.timber)
 
     implementation(libs.androidx.core.ktx)
 
@@ -53,14 +53,14 @@ dependencies {
     debugImplementation(libs.bundles.androidx.compose.debug)
 
     //----- Coil
-    implementation(libs.io.coil.compose)
+    implementation(libs.coil.compose)
 
     //----- Paging
     implementation(libs.androidx.paging.compose)
 
     //----- Dagger Hilt
-    implementation(libs.google.hilt.android)
-    ksp(libs.google.hilt.compiler)
+//    implementation(libs.google.hilt.android)
+//    ksp(libs.google.hilt.compiler)
 
     // ----- Test
     testImplementation(libs.junit)
@@ -72,5 +72,5 @@ dependencies {
     androidTestImplementation(libs.mockk.android)
 
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
 }

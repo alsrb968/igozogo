@@ -10,7 +10,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
+    alias(libs.plugins.igozogo.android.hilt)
 }
 
 android {
@@ -60,13 +60,13 @@ android {
 dependencies {
     implementation(projects.core.domain)
 
-    implementation(libs.jakewharton.timber)
+    implementation(libs.timber)
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.core.ktx)
 
     //----- Dagger Hilt
-    implementation(libs.google.hilt.android)
-    ksp(libs.google.hilt.compiler)
+//    implementation(libs.google.hilt.android)
+//    ksp(libs.google.hilt.compiler)
 
     //----- Room
     implementation(libs.androidx.room.runtime)
