@@ -34,7 +34,7 @@ fun HomeRoute(
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
-                is HomeUiEffect.Synced -> onShowSnackbar(context.getString(R.string.place_sync_completed), "OK")
+                is HomeUiEffect.Synced -> onShowSnackbar(context.getString(R.string.core_design_place_sync_completed), "OK")
             }
         }
     }
@@ -57,7 +57,7 @@ fun HomeScreen(
         state = rememberLazyListState()
     ) {
         item {
-            TitleTextItem(text = stringResource(R.string.category)) {
+            TitleTextItem(text = stringResource(R.string.core_design_category)) {
                 ChipItemList(
                     modifier = Modifier,
                     chipItems = categories,
@@ -71,7 +71,7 @@ fun HomeScreen(
         }
 
         item {
-            TitleTextItem(text = stringResource(R.string.place), onMore = { }) {
+            TitleTextItem(text = stringResource(R.string.core_design_place), onMore = { }) {
                 PlaceItemList(
                     modifier = Modifier,
                     places = places,

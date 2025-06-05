@@ -2,7 +2,6 @@ package io.jacob.igozogo
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
-import io.jacob.igozogo.core.design.R
 import timber.log.Timber
 
 @HiltAndroidApp

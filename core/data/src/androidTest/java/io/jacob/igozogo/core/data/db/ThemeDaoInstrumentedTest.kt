@@ -196,7 +196,7 @@ class ThemeDaoInstrumentedTest {
                 mapY = 35.154165,
                 langCheck = "1111",
                 langCode = "ko",
-                imageUrl = "",
+                imageUrl = "https://example.com/image1.jpg",
                 createdTime = "20190923194557",
                 modifiedTime = "20191024155012"
             ),
@@ -211,7 +211,7 @@ class ThemeDaoInstrumentedTest {
                 mapY = 35.23571,
                 langCheck = "1111",
                 langCode = "ko",
-                imageUrl = "",
+                imageUrl = "https://example.com/image2.jpg",
                 createdTime = "20190923194615",
                 modifiedTime = "20191025221743"
             ),
@@ -226,7 +226,7 @@ class ThemeDaoInstrumentedTest {
                 mapY = 35.236174,
                 langCheck = "1111",
                 langCode = "ko",
-                imageUrl = "",
+                imageUrl = "https://example.com/image3.jpg",
                 createdTime = "20190923194616",
                 modifiedTime = "20191025221828"
             ),
@@ -241,7 +241,7 @@ class ThemeDaoInstrumentedTest {
                 mapY = 35.236748,
                 langCheck = "1111",
                 langCode = "ko",
-                imageUrl = "",
+                imageUrl = "https://example.com/image4.jpg",
                 createdTime = "20190923194616",
                 modifiedTime = "20191025221921"
             ),
@@ -256,7 +256,7 @@ class ThemeDaoInstrumentedTest {
                 mapY = 35.149407,
                 langCheck = "1111",
                 langCode = "ko",
-                imageUrl = "",
+                imageUrl = "https://example.com/image5.jpg",
                 createdTime = "20190923194616",
                 modifiedTime = "20230406161922"
             )

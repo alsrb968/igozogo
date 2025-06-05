@@ -1,4 +1,5 @@
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google {
             content {
@@ -20,10 +21,13 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Igozogo"
+
 include(":app")
+
 include(":core:data")
 include(":core:domain")
 include(":core:design")
+
 include(":feature:home")
 include(":feature:bookmark")
 

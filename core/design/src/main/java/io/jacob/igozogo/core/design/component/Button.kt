@@ -38,8 +38,8 @@ fun ToggleFollowIconButton(
                 else -> Icons.Default.Add
             },
             contentDescription = when {
-                isFollowed -> stringResource(R.string.cd_following)
-                else -> stringResource(R.string.cd_not_following)
+                isFollowed -> stringResource(R.string.core_design_cd_following)
+                else -> stringResource(R.string.core_design_cd_not_following)
             },
             tint = animateColorAsState(
                 when {

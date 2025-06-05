@@ -54,7 +54,7 @@ fun BookmarkScreen(
                 .clickable {
                     event.tryEmit(Unit)
                 },
-            painter = painterResource(id = R.drawable.img_empty_bookmark),
+            painter = painterResource(id = R.drawable.core_design_img_empty_bookmark),
             contentDescription = null,
         )
 
