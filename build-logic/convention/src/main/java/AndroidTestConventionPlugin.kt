@@ -1,19 +1,25 @@
+import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.dsl.LibraryExtension
 import io.jacob.igozogo.libs
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.dependencies
 
 class AndroidTestConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
-//            apply(plugin = "com.android.test")
-            apply(plugin = "org.jetbrains.kotlin.android")
-
-//            extensions.configure<TestExtension> {
-//                configureKotlinAndroid(this)
-//                defaultConfig.targetSdk = 35
-//            }
+            extensions.findByType(ApplicationExtension::class.java)?.apply {
+                packaging.resources {
+                    excludes += "/META-INF/LICENSE.md"
+                    excludes += "/META-INF/LICENSE-notice.md"
+                }
+            }
+            extensions.findByType(LibraryExtension::class.java)?.apply {
+                packaging.resources {
+                    excludes += "/META-INF/LICENSE.md"
+                    excludes += "/META-INF/LICENSE-notice.md"
+                }
+            }
 
             dependencies {
                 "testImplementation"(libs.findLibrary("junit").get())

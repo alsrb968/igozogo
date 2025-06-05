@@ -9,8 +9,6 @@ android {
 }
 
 dependencies {
-//    implementation(libs.androidx.core.ktx)
-
     //----- Coil
     implementation(libs.coil.compose)
 
