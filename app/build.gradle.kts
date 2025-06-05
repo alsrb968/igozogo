@@ -48,10 +48,4 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-
-    //----- Coil
-    implementation(libs.coil.compose)
-
-    //----- Paging
-    implementation(libs.androidx.paging.compose)
 }

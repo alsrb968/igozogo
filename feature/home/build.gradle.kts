@@ -9,9 +9,5 @@ android {
 }
 
 dependencies {
-    //----- Coil
-    implementation(libs.coil.compose)
 
-    //----- Paging
-    implementation(libs.androidx.paging.compose)
 }
