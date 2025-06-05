@@ -10,7 +10,7 @@ import io.jacob.igozogo.core.design.R
 val provider = GoogleFont.Provider(
     providerAuthority = "com.google.android.gms.fonts",
     providerPackage = "com.google.android.gms",
-    certificates = R.array.com_google_android_gms_fonts_certs
+    certificates = R.array.core_design_com_google_android_gms_fonts_certs
 )
 
 val Pretendard = FontFamily(

@@ -2,7 +2,7 @@ package io.jacob.igozogo.navigation
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import io.jacob.igozogo.core.design.R
+import io.jacob.igozogo.R
 import io.jacob.igozogo.feature.bookmark.navigation.BookmarkRoute
 import io.jacob.igozogo.feature.home.navigation.HomeRoute
 import kotlin.reflect.KClass

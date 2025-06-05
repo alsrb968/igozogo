@@ -12,7 +12,7 @@ import io.jacob.igozogo.core.domain.model.Place
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
-fun previewThemeImage(): Painter = painterResource(id = R.drawable.preview_theme)
+fun previewThemeImage(): Painter = painterResource(id = R.drawable.core_design_preview_theme)
 
 val PreviewLoremIpsum = """
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras ullamcorper pharetra massa,

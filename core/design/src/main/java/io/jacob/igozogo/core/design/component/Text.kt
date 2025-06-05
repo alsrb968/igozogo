@@ -40,7 +40,7 @@ fun TitleTextItem(
                 TextButton(
                     onClick = it,
                 ) {
-                    Text(text = stringResource(R.string.more))
+                    Text(text = stringResource(R.string.core_design_more))
                 }
             }
         }
