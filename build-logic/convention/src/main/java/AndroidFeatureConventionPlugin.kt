@@ -21,16 +21,16 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
                 "implementation"(project(":core:domain"))
                 "implementation"(project(":core:design"))
 
-                "implementation"(libs.findLibrary("androidx.hilt.navigation.compose").get())
-                "implementation"(libs.findLibrary("androidx.lifecycle.runtime.compose").get())
-                "implementation"(libs.findLibrary("androidx.lifecycle.viewModel.compose").get())
-                "implementation"(libs.findLibrary("androidx.navigation.compose").get())
                 "implementation"(libs.findLibrary("kotlinx.serialization.json").get())
 
-                "testImplementation"(libs.findLibrary("androidx.navigation.testing").get())
-                "androidTestImplementation"(
-                    libs.findLibrary("androidx.lifecycle.runtime.testing").get(),
-                )
+                "implementation"(libs.findLibrary("androidx.activity.compose").get())
+                "implementation"(libs.findLibrary("androidx.animation.compose").get())
+                "implementation"(libs.findLibrary("androidx.constraintlayout.compose").get())
+                "implementation"(libs.findLibrary("androidx.foundation.compose").get())
+                "implementation"(libs.findLibrary("androidx.hilt.navigation.compose").get())
+                "implementation"(libs.findLibrary("androidx.lifecycle.runtime.compose").get())
+                "implementation"(libs.findLibrary("androidx.lifecycle.viewmodel.compose").get())
+                "implementation"(libs.findLibrary("androidx.navigation.compose").get())
             }
         }
     }

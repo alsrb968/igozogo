@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.igozogo.android.hilt)
+    alias(libs.plugins.igozogo.android.test)
+    alias(libs.plugins.igozogo.android.application)
 }
 
 android {
@@ -85,13 +87,13 @@ dependencies {
 //    kspAndroidTest(libs.google.hilt.compiler)
 
     // ----- Test
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    testImplementation(libs.kotlinx.coroutines.test)
-    androidTestImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.mockk)
-    androidTestImplementation(libs.mockk.android)
+//    testImplementation(libs.junit)
+//    androidTestImplementation(libs.androidx.junit)
+//    androidTestImplementation(libs.androidx.espresso.core)
+//    testImplementation(libs.kotlinx.coroutines.test)
+//    androidTestImplementation(libs.kotlinx.coroutines.test)
+//    testImplementation(libs.mockk)
+//    androidTestImplementation(libs.mockk.android)
 
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)

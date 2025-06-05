@@ -10,7 +10,9 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.igozogo.android.room)
     alias(libs.plugins.igozogo.android.hilt)
+    alias(libs.plugins.igozogo.android.test)
 }
 
 android {
@@ -69,14 +71,14 @@ dependencies {
 //    ksp(libs.google.hilt.compiler)
 
     //----- Room
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.paging)
-    ksp(libs.androidx.room.compiler)
-    // optional - Kotlin Extensions and Coroutines support for Room
-    implementation(libs.androidx.room.ktx)
-    // optional - Test helpers
-    testImplementation(libs.androidx.room.testing)
-    ksp(libs.xerial.sqlite)
+//    implementation(libs.androidx.room.runtime)
+//    implementation(libs.androidx.room.paging)
+//    ksp(libs.androidx.room.compiler)
+//    // optional - Kotlin Extensions and Coroutines support for Room
+//    implementation(libs.androidx.room.ktx)
+//    // optional - Test helpers
+//    testImplementation(libs.androidx.room.testing)
+//    ksp(libs.xerial.sqlite)
 
     //----- Paging
     implementation(libs.androidx.paging.runtime)
@@ -89,11 +91,11 @@ dependencies {
     implementation(libs.google.gson)
 
     // ----- Test
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    testImplementation(libs.kotlinx.coroutines.test)
-    androidTestImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.mockk)
-    androidTestImplementation(libs.mockk.android)
+//    testImplementation(libs.junit)
+//    androidTestImplementation(libs.androidx.junit)
+//    androidTestImplementation(libs.androidx.espresso.core)
+//    testImplementation(libs.kotlinx.coroutines.test)
+//    androidTestImplementation(libs.kotlinx.coroutines.test)
+//    testImplementation(libs.mockk)
+//    androidTestImplementation(libs.mockk.android)
 }

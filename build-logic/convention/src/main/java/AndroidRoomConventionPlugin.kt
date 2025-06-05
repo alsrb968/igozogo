@@ -1,3 +1,4 @@
+import androidx.room.gradle.RoomExtension
 import com.google.devtools.ksp.gradle.KspExtension
 import io.jacob.igozogo.libs
 import org.gradle.api.Plugin
@@ -16,10 +17,20 @@ class AndroidRoomConventionPlugin : Plugin<Project> {
                 arg("room.generateKotlin", "true")
             }
 
+            extensions.configure<RoomExtension> {
+                // The schemas directory contains a schema file for each version of the Room database.
+                // This is required to enable Room auto migrations.
+                // See https://developer.android.com/reference/kotlin/androidx/room/AutoMigration.
+                schemaDirectory("$projectDir/schemas")
+            }
+
             dependencies {
-                "implementation"(libs.findLibrary("room.runtime").get())
-                "implementation"(libs.findLibrary("room.ktx").get())
-                "ksp"(libs.findLibrary("room.compiler").get())
+                "implementation"(libs.findLibrary("androidx.room.runtime").get())
+                "implementation"(libs.findLibrary("androidx.room.ktx").get())
+                "implementation"(libs.findLibrary("androidx.room.paging").get())
+                "ksp"(libs.findLibrary("androidx.room.compiler").get())
+                "ksp"(libs.findLibrary("xerial.sqlite").get())
+                "testImplementation"(libs.findLibrary("androidx.room.testing").get())
             }
         }
     }
