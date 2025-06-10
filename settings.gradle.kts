@@ -30,5 +30,6 @@ include(":core:design")
 
 include(":feature:home")
 include(":feature:bookmark")
+include(":feature:placedetail")
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
