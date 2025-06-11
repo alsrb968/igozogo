@@ -62,7 +62,7 @@ fun PlaceDetailScreen(
                 },
                 navigationIcon = {
                     IconButton(
-                        onClick = { onBackClick }
+                        onClick = onBackClick
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
