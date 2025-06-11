@@ -12,6 +12,7 @@ interface ThemeDataSource {
     fun getThemesByCategory(category: String): PagingSource<Int, ThemeEntity>
     fun getThemesByLocation(mapX: Double, mapY: Double, radius: Int): PagingSource<Int, ThemeEntity>
     fun getThemesByKeyword(keyword: String): PagingSource<Int, ThemeEntity>
+    suspend fun getThemeById(themeId: Int, themeLangId: Int): ThemeEntity?
     suspend fun getThemesCount(): Int
     suspend fun deleteThemes()
 }
@@ -45,6 +46,13 @@ class ThemeDataSourceImpl @Inject constructor(
 
     override fun getThemesByKeyword(keyword: String): PagingSource<Int, ThemeEntity> {
         return dao.getThemesByKeyword(keyword)
+    }
+
+    override suspend fun getThemeById(
+        themeId: Int,
+        themeLangId: Int
+    ): ThemeEntity? {
+        return dao.getThemeById(themeId, themeLangId)
     }
 
     override suspend fun getThemesCount(): Int {

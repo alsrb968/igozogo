@@ -94,6 +94,13 @@ class OdiiRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getPlaceById(
+        placeId: Int,
+        placeLangId: Int
+    ): Place? {
+        return themeDataSource.getThemeById(placeId, placeLangId)?.toPlace()
+    }
+
     override suspend fun getPlacesCount(): Int {
         return themeDataSource.getThemesCount()
     }

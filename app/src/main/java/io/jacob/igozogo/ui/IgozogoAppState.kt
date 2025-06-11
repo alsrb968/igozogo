@@ -75,12 +75,7 @@ class IgozogoAppState(
             BottomBarDestination.SEARCH -> navController.navigateToHome(bottomBarNavOptions)
             BottomBarDestination.BOOKMARK -> navController.navigateToBookmark(bottomBarNavOptions)
             BottomBarDestination.SETTING -> navController.navigateToHome(bottomBarNavOptions)
-
         }
-    }
-
-    fun navigateBack() {
-        navController.popBackStack()
     }
 
     @SuppressLint("ObsoleteSdkInt")

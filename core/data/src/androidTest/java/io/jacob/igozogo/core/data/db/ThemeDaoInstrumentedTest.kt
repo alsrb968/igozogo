@@ -7,8 +7,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import io.jacob.igozogo.core.data.model.local.odii.ThemeEntity
 import kotlinx.coroutines.test.runTest
 import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -171,6 +170,16 @@ class ThemeDaoInstrumentedTest {
         assertEquals("너브실마을", data2[2].title)
         assertEquals("칠송정", data2[3].title)
         assertEquals("용아생가", data2[4].title)
+    }
+
+    @Test
+    fun getThemeById() = runTest {
+        dao.insertThemes(entities)
+
+        val theme = dao.getThemeById(themeId = 367, themeLangId = 1141)
+        assertNotNull(theme)
+        assertEquals("전통시장나들이", theme?.themeCategory)
+        assertEquals("광주 양동시장", theme?.title)
     }
 
     @Test

@@ -5,6 +5,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.outlined.FileDownload
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -40,7 +42,7 @@ fun StoryItem(
             ) {
                 StateImage(
                     modifier = Modifier
-                        .size(90.dp)
+                        .size(70.dp)
                         .clip(shape = RoundedCornerShape(8.dp)),
                     imageUrl = story.imageUrl,
                     contentDescription = story.audioTitle
@@ -48,66 +50,124 @@ fun StoryItem(
 
                 Spacer(modifier = Modifier.width(8.dp))
 
-                Column(
-                    modifier = Modifier
-                ) {
-                    Text(
-                        text = story.humanReadableModifiedTime,
-                        style = MaterialTheme.typography.labelSmall,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-
-                    Text(
-                        text = story.audioTitle,
-                        style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-
-                    Text(
-                        text = story.script,
-                        style = MaterialTheme.typography.labelMedium,
-                        maxLines = 3,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
+                StoryContent(
+                    story = story,
+                )
             }
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
-                IconButton(
-                    onClick = { /* TODO */ }
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.PlaylistAdd,
-                        contentDescription = "Add to playlist"
-                    )
-                }
+            StoryAction(
+                story = story,
+                onAdd = { /* TODO */ },
+                onDownload = { /* TODO */ },
+                onShare = { /* TODO */ },
+                onPlay = { /* TODO */ }
+            )
+        }
+    }
+}
 
-                Button(
-                    modifier = Modifier
-                        .defaultMinSize(minHeight = 1.dp),
-                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
-                    onClick = { /* TODO */ }
-                ) {
-                    Icon(
-                        modifier = Modifier.size(ButtonDefaults.IconSize),
-                        imageVector = Icons.Default.PlayArrow,
-                        contentDescription = "Play"
-                    )
+@Composable
+fun StoryContent(
+    modifier: Modifier = Modifier,
+    story: Story
+) {
+    Column(
+        modifier = modifier
+    ) {
+        Text(
+            text = story.humanReadableModifiedTime,
+            style = MaterialTheme.typography.labelSmall,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
 
-                    Spacer(modifier = Modifier.width(4.dp))
+        Text(
+            text = story.audioTitle,
+            style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
 
-                    Text(
-                        text = story.humanReadablePlayTime,
-                        style = MaterialTheme.typography.labelSmall
-                    )
-                }
-            }
+        Text(
+            text = story.script,
+            style = MaterialTheme.typography.labelSmall,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
+@Composable
+fun StoryAction(
+    modifier: Modifier = Modifier,
+    story: Story,
+    onAdd: (Story) -> Unit,
+    onDownload: (Story) -> Unit,
+    onShare: (Story) -> Unit,
+    onPlay: (Story) -> Unit,
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(40.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        IconButton(
+            modifier = Modifier
+                .size(32.dp),
+            onClick = { onAdd(story) }
+        ) {
+            Icon(
+                modifier = Modifier.size(ButtonDefaults.IconSize),
+                imageVector = Icons.AutoMirrored.Filled.PlaylistAdd,
+                contentDescription = "Add to playlist"
+            )
+        }
+
+        IconButton(
+            modifier = Modifier
+                .size(32.dp),
+            onClick = { onDownload(story) }
+        ) {
+            Icon(
+                modifier = Modifier.size(ButtonDefaults.IconSize),
+                imageVector = Icons.Outlined.FileDownload,
+                contentDescription = "Download"
+            )
+        }
+
+        IconButton(
+            modifier = Modifier
+                .size(32.dp),
+            onClick = { onShare(story) }
+        ) {
+            Icon(
+                modifier = Modifier.size(ButtonDefaults.IconSize),
+                imageVector = Icons.Outlined.Share,
+                contentDescription = "Share"
+            )
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Button(
+            modifier = Modifier
+                .defaultMinSize(minHeight = 1.dp),
+            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+            onClick = { onPlay(story) }
+        ) {
+            Icon(
+                modifier = Modifier.size(ButtonDefaults.IconSize),
+                imageVector = Icons.Default.PlayArrow,
+                contentDescription = "Play"
+            )
+
+            Spacer(modifier = Modifier.width(4.dp))
+
+            Text(
+                text = story.humanReadablePlayTime,
+                style = MaterialTheme.typography.labelSmall
+            )
         }
     }
 }

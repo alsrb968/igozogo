@@ -10,6 +10,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import io.jacob.igozogo.core.design.R
 import io.jacob.igozogo.core.domain.model.Place
 import io.jacob.igozogo.core.domain.model.Story
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 
 @Composable
@@ -66,3 +67,7 @@ val PreviewStory = Story(
     createdTime = "20230725102801",
     modifiedTime = "20250609093610"
 )
+
+val PreviewStoriesPagingData = flow<PagingData<Story>> {
+    flowOf(PagingData.from(List(10) { PreviewStory }))
+}

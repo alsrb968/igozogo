@@ -1,9 +1,7 @@
 package io.jacob.igozogo.core.domain.model
 
 import io.jacob.igozogo.core.domain.util.toHumanReadableDate
-import kotlinx.serialization.Serializable
 
-@Serializable
 data class Place(
     val placeId: Int,
     val placeLangId: Int,

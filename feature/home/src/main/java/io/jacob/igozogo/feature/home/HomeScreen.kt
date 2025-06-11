@@ -26,6 +26,7 @@ import timber.log.Timber
 fun HomeRoute(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
+    onPlaceClick: (Place) -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
     val context = LocalContext.current
@@ -41,7 +42,8 @@ fun HomeRoute(
     HomeScreen(
         modifier = modifier,
         categories = categoryPagingItems,
-        places = placePagingItems
+        places = placePagingItems,
+        onPlaceClick = onPlaceClick,
     )
 }
 
@@ -50,6 +52,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
     categories: LazyPagingItems<String>,
     places: LazyPagingItems<Place>,
+    onPlaceClick: (Place) -> Unit,
 ) {
     LazyColumn(
         modifier = modifier
@@ -77,7 +80,9 @@ fun HomeScreen(
                     places = places,
                     isBookmarked = { false },
                     onBookmarkToggle = { },
-                    onClick = { }
+                    onClick = { place ->
+                        onPlaceClick(place)
+                    }
                 )
             }
         }

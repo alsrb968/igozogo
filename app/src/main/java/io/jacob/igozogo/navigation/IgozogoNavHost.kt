@@ -6,6 +6,8 @@ import androidx.navigation.compose.NavHost
 import io.jacob.igozogo.feature.bookmark.navigation.bookmarkScreen
 import io.jacob.igozogo.feature.home.navigation.HomeRoute
 import io.jacob.igozogo.feature.home.navigation.homeScreen
+import io.jacob.igozogo.feature.placedetail.navigation.navigateToPlaceDetail
+import io.jacob.igozogo.feature.placedetail.navigation.placeDetailScreen
 import io.jacob.igozogo.ui.IgozogoAppState
 
 @Composable
@@ -21,9 +23,14 @@ fun IgozogoNavHost(
         modifier = modifier,
     ) {
         homeScreen(
+            onPlaceClick = navController::navigateToPlaceDetail,
             onShowSnackbar = onShowSnackbar
         )
         bookmarkScreen(
+            onShowSnackbar = onShowSnackbar
+        )
+        placeDetailScreen(
+            onBackClick = navController::popBackStack,
             onShowSnackbar = onShowSnackbar
         )
     }

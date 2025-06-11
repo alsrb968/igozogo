@@ -5,10 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.jacob.igozogo.core.domain.repository.OdiiRepository
-import io.jacob.igozogo.core.domain.usecase.GetPlaceCategoriesUseCase
-import io.jacob.igozogo.core.domain.usecase.GetPlacesUseCase
-import io.jacob.igozogo.core.domain.usecase.GetStoriesByPlaceUseCase
-import io.jacob.igozogo.core.domain.usecase.SyncPlacesUseCase
+import io.jacob.igozogo.core.domain.usecase.*
 import javax.inject.Singleton
 
 @Module
@@ -36,6 +33,14 @@ object UseCaseModule {
         repository: OdiiRepository
     ): GetPlacesUseCase {
         return GetPlacesUseCase(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetPlaceByIdUseCase(
+        repository: OdiiRepository
+    ): GetPlaceByIdUseCase {
+        return GetPlaceByIdUseCase(repository)
     }
 
     @Provides
