@@ -4,7 +4,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import io.jacob.igozogo.R
 import io.jacob.igozogo.feature.bookmark.navigation.BookmarkRoute
-import io.jacob.igozogo.feature.home.navigation.HomeRoute
+import io.jacob.igozogo.feature.home.navigation.HomeBaseRoute
 import kotlin.reflect.KClass
 
 enum class BottomBarDestination(
@@ -16,12 +16,12 @@ enum class BottomBarDestination(
     HOME(
         label = R.string.nav_home,
         icon = R.drawable.ic_home,
-        route = HomeRoute::class,
+        route = HomeBaseRoute::class,
     ),
     SEARCH(
         label = R.string.nav_search,
         icon = R.drawable.ic_search,
-        route = HomeRoute::class, // TODO
+        route = HomeBaseRoute::class, // TODO
     ),
     BOOKMARK(
         label = R.string.nav_bookmark,
@@ -31,6 +31,6 @@ enum class BottomBarDestination(
     SETTING(
         label = R.string.nav_setting,
         icon = R.drawable.ic_setting,
-        route = HomeRoute::class, // TODO
+        route = HomeBaseRoute::class, // TODO
     ),
 }

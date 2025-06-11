@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import io.jacob.igozogo.feature.bookmark.BookmarkRoute
 import kotlinx.serialization.Serializable
 
-@Serializable object BookmarkRoute
+@Serializable data object BookmarkRoute
 
 fun NavController.navigateToBookmark(navOptions: NavOptions) =
     navigate(route = BookmarkRoute, navOptions)
