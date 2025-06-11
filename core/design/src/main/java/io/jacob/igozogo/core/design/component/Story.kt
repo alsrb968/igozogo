@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,7 +17,6 @@ import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
 import io.jacob.igozogo.core.design.tooling.PreviewStory
 import io.jacob.igozogo.core.domain.model.Story
-import io.jacob.igozogo.core.domain.util.toHumanReadableDate
 
 @Composable
 fun StoryItem(
@@ -52,7 +52,7 @@ fun StoryItem(
                     modifier = Modifier
                 ) {
                     Text(
-                        text = story.modifiedTime.toHumanReadableDate(),
+                        text = story.humanReadableModifiedTime,
                         style = MaterialTheme.typography.labelSmall,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -85,6 +85,26 @@ fun StoryItem(
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.PlaylistAdd,
                         contentDescription = "Add to playlist"
+                    )
+                }
+
+                Button(
+                    modifier = Modifier
+                        .defaultMinSize(minHeight = 1.dp),
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                    onClick = { /* TODO */ }
+                ) {
+                    Icon(
+                        modifier = Modifier.size(ButtonDefaults.IconSize),
+                        imageVector = Icons.Default.PlayArrow,
+                        contentDescription = "Play"
+                    )
+
+                    Spacer(modifier = Modifier.width(4.dp))
+
+                    Text(
+                        text = story.humanReadablePlayTime,
+                        style = MaterialTheme.typography.labelSmall
                     )
                 }
             }

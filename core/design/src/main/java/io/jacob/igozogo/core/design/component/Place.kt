@@ -134,7 +134,7 @@ fun PlaceItem(
 
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = "${place.addr1} ${place.addr2}",
+                        text = "${place.address1} ${place.address2}",
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onPrimary,
                         maxLines = 1,
