@@ -8,6 +8,8 @@ import io.jacob.igozogo.feature.home.navigation.HomeBaseRoute
 import io.jacob.igozogo.feature.home.navigation.homeSection
 import io.jacob.igozogo.feature.placedetail.navigation.navigateToPlaceDetail
 import io.jacob.igozogo.feature.placedetail.navigation.placeDetailScreen
+import io.jacob.igozogo.feature.search.navigation.searchScreen
+import io.jacob.igozogo.feature.setting.navigation.settingScreen
 import io.jacob.igozogo.ui.IgozogoAppState
 
 @Composable
@@ -31,7 +33,13 @@ fun IgozogoNavHost(
                 onShowSnackbar = onShowSnackbar
             )
         }
+        searchScreen(
+            onShowSnackbar = onShowSnackbar
+        )
         bookmarkScreen(
+            onShowSnackbar = onShowSnackbar
+        )
+        settingScreen(
             onShowSnackbar = onShowSnackbar
         )
     }

@@ -29,7 +29,9 @@ include(":core:domain")
 include(":core:design")
 
 include(":feature:home")
+include(":feature:search")
 include(":feature:bookmark")
+include(":feature:setting")
 include(":feature:placedetail")
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
