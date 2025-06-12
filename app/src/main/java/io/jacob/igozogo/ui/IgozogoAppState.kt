@@ -7,7 +7,6 @@ import android.net.NetworkCapabilities
 import android.os.Build
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.util.trace
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -17,12 +16,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import io.jacob.igozogo.feature.bookmark.navigation.navigateToBookmark
-import io.jacob.igozogo.feature.home.navigation.HomeRoute
 import io.jacob.igozogo.feature.home.navigation.navigateToHome
 import io.jacob.igozogo.feature.search.navigation.navigateToSearch
 import io.jacob.igozogo.feature.setting.navigation.navigateToSetting
 import io.jacob.igozogo.navigation.BottomBarDestination
-import timber.log.Timber
 
 @Composable
 fun rememberIgozogoAppState(
@@ -68,55 +65,50 @@ class IgozogoAppState(
         isOnline = checkIfOnline()
     }
 
+    private fun navigateToBottomBarBaseRoute(
+        destination: BottomBarDestination,
+        navigateToBottomBarRoute: () -> Unit
+    ) {
+        val currentEntry = navController.currentBackStackEntry
+        val currentDestination = navController.currentDestination
+        val startDestination = navController.graph.findStartDestination()
+
+        val isInGraph = currentEntry?.destination?.hierarchy
+            ?.any { it.hasRoute(destination.baseRoute) } == true
+
+        val isAtRoot = currentDestination == startDestination
+
+        if (isInGraph && !isAtRoot) {
+            navController.popBackStack(destination.route, inclusive = false)
+        } else {
+            navigateToBottomBarRoute()
+        }
+    }
+
     fun navigateToBottomBarDestination(destination: BottomBarDestination) {
-        Timber.d("navigate to ${destination.name}, ${destination.baseRoute}")
-        trace("Navigation: ${destination.name}") {
-            val bottomBarNavOptions = navOptions {
-                popUpTo(navController.graph.findStartDestination().id) {
-                    saveState = true
+        val bottomBarNavOptions = navOptions {
+            popUpTo(navController.graph.findStartDestination().id) {
+                saveState = true
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
+
+        when (destination) {
+            BottomBarDestination.HOME -> {
+                navigateToBottomBarBaseRoute(destination) {
+                    navController.navigateToHome(bottomBarNavOptions)
                 }
-                launchSingleTop = true
-                restoreState = true
             }
-            val currentEntry = navController.currentBackStackEntry
-            val currentDestination = currentEntry?.destination
-            val startDestination = navController.graph.findStartDestination()
-            Timber.d("startDestination: $startDestination")
-            Timber.d("currentDestination: $currentDestination")
-            currentEntry?.destination?.hierarchy?.forEachIndexed { index, h ->
-                Timber.i("[$index] hierarchy: ${h.route}")
-            }
-            val isInHomeGraph = currentEntry?.destination
-                ?.hierarchy
-                ?.any { it.hasRoute(destination.baseRoute) } == true
 
-            val isAtHomeRoot = currentDestination == startDestination
+            BottomBarDestination.SEARCH ->
+                navController.navigateToSearch(bottomBarNavOptions)
 
-            Timber.i("isInHomeGraph: $isInHomeGraph")
-            Timber.i("isAtHomeRoot: $isAtHomeRoot")
-            when (destination) {
-                BottomBarDestination.HOME -> {
+            BottomBarDestination.BOOKMARK ->
+                navController.navigateToBookmark(bottomBarNavOptions)
 
-                    when {
-                        isInHomeGraph && !isAtHomeRoot -> {
-                            navController.popBackStack(HomeRoute, inclusive = false)
-                        }
-
-                        !isInHomeGraph -> {
-                            navController.navigateToHome(bottomBarNavOptions)
-                        }
-
-                        // 이미 HomeRoute이면 아무 동작 안 함
-                    }
-                }
-
-                BottomBarDestination.SEARCH -> navController.navigateToSearch(bottomBarNavOptions)
-                BottomBarDestination.BOOKMARK -> navController.navigateToBookmark(
-                    bottomBarNavOptions
-                )
-
-                BottomBarDestination.SETTING -> navController.navigateToSetting(bottomBarNavOptions)
-            }
+            BottomBarDestination.SETTING ->
+                navController.navigateToSetting(bottomBarNavOptions)
         }
     }
 
