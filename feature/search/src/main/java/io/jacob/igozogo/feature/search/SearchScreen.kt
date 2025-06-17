@@ -1,9 +1,6 @@
 package io.jacob.igozogo.feature.search
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
@@ -43,7 +40,8 @@ fun SearchScreen(
 ) {
     Box(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .windowInsetsPadding(WindowInsets.statusBars),
     ) {
         SearchBar(
             modifier = Modifier

@@ -82,10 +82,11 @@ fun IgozogoApp(
                 modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
             )
         },
-    ) { contentPaddingValues ->
+    ) { paddingValues ->
         IgozogoNavHost(
             modifier = Modifier
-                .padding(contentPaddingValues),
+                .padding(bottom = paddingValues.calculateBottomPadding())
+            ,
             appState = appState,
             onShowSnackbar = { message, action ->
                 snackbarHostState.showSnackbar(

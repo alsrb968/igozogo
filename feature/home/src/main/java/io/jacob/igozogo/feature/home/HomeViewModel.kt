@@ -3,6 +3,7 @@ package io.jacob.igozogo.feature.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.jacob.igozogo.core.domain.model.Place
 import io.jacob.igozogo.core.domain.usecase.GetPlaceCategoriesUseCase
@@ -38,10 +39,10 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getPlaceCategories(): Flow<PagingData<String>> {
-        return getPlaceCategoriesUseCase()
+        return getPlaceCategoriesUseCase().cachedIn(viewModelScope)
     }
 
     fun getPlaces(): Flow<PagingData<Place>> {
-        return getPlacesUseCase()
+        return getPlacesUseCase().cachedIn(viewModelScope)
     }
 }

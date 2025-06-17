@@ -2,10 +2,6 @@ package io.jacob.igozogo.core.design.component
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bookmarks
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.Bookmarks
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Search
@@ -25,7 +21,7 @@ fun RowScope.IgozogoNavigationBarItem(
     enabled: Boolean = true,
     alwaysShowLabel: Boolean = true,
     icon: @Composable () -> Unit,
-    selectedIcon : @Composable () -> Unit = icon,
+    selectedIcon: @Composable () -> Unit = icon,
     label: @Composable (() -> Unit)? = null,
 ) {
     NavigationBarItem(
@@ -69,12 +65,6 @@ fun IgozogoNavigationBarPreview() {
         Icons.Outlined.Bookmarks,
         Icons.Outlined.Settings,
     )
-    val selectedIcons = listOf(
-        Icons.Filled.Home,
-        Icons.Filled.Search,
-        Icons.Filled.Bookmarks,
-        Icons.Filled.Settings,
-    )
 
     IgozogoTheme {
         IgozogoNavigationBar {
@@ -86,13 +76,13 @@ fun IgozogoNavigationBarPreview() {
                             contentDescription = null
                         )
                     },
-                    selectedIcon = {
-                        Icon(
-                            imageVector = selectedIcons[index],
-                            contentDescription = null
+                    label = {
+                        Text(
+                            text = item,
+                            style = MaterialTheme.typography.labelLarge,
+                            maxLines = 1
                         )
                     },
-                    label = { Text(item) },
                     selected = index == 0,
                     onClick = { },
                 )

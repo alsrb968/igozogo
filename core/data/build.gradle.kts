@@ -34,7 +34,7 @@ dependencies {
     implementation(libs.androidx.media3.exoplayer)
 
     //----- Paging
-    implementation(libs.androidx.paging.common)
+    implementation(libs.androidx.paging.runtime)
 
     //----- Retrofit
     implementation(libs.squareup.retrofit2.retrofit)

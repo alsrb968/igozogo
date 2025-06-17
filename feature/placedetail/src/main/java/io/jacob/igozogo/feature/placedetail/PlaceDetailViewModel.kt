@@ -3,6 +3,7 @@ package io.jacob.igozogo.feature.placedetail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -31,7 +32,7 @@ class PlaceDetailViewModel @AssistedInject constructor(
         viewModelScope.launch {
             try {
                 getPlaceByIdUseCase(placeId, placeLangId)?.let { place ->
-                    val stories = getStoriesByPlaceUseCase(place)
+                    val stories = getStoriesByPlaceUseCase(place).cachedIn(viewModelScope)
                     _state.value = PlaceDetailUiState.Success(place, stories)
                 } ?: run {
                     _state.value = PlaceDetailUiState.Error

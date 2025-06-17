@@ -1,10 +1,9 @@
 package io.jacob.igozogo.feature.home
 
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -18,6 +17,10 @@ import io.jacob.igozogo.core.design.R
 import io.jacob.igozogo.core.design.component.ChipItemList
 import io.jacob.igozogo.core.design.component.PlaceItemList
 import io.jacob.igozogo.core.design.component.TitleTextItem
+import io.jacob.igozogo.core.design.theme.IgozogoTheme
+import io.jacob.igozogo.core.design.tooling.DevicePreviews
+import io.jacob.igozogo.core.design.tooling.previewCategoryListLazyPagingItems
+import io.jacob.igozogo.core.design.tooling.previewPlacesLazyPagingItems
 import io.jacob.igozogo.core.domain.model.Place
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
@@ -56,7 +59,8 @@ fun HomeScreen(
 ) {
     LazyColumn(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .windowInsetsPadding(WindowInsets.statusBars),
         state = rememberLazyListState()
     ) {
         item {
@@ -88,8 +92,23 @@ fun HomeScreen(
         }
 
         item {
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(300.dp))
         }
 
+        item {
+            Text(text = "End of list")
+        }
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun HomeScreenPreview() {
+    IgozogoTheme {
+        HomeScreen(
+            categories = previewCategoryListLazyPagingItems(),
+            places = previewPlacesLazyPagingItems(),
+            onPlaceClick = {}
+        )
     }
 }
