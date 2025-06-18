@@ -3,24 +3,20 @@ package io.jacob.igozogo.feature.home
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.compose.LazyPagingItems
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
 import io.jacob.igozogo.core.design.R
-import io.jacob.igozogo.core.design.component.ChipItemList
-import io.jacob.igozogo.core.design.component.PlaceItemList
-import io.jacob.igozogo.core.design.component.TitleTextItem
-import io.jacob.igozogo.core.design.theme.IgozogoTheme
-import io.jacob.igozogo.core.design.tooling.DevicePreviews
-import io.jacob.igozogo.core.design.tooling.previewCategoryListLazyPagingItems
-import io.jacob.igozogo.core.design.tooling.previewPlacesLazyPagingItems
+import io.jacob.igozogo.core.design.component.*
 import io.jacob.igozogo.core.domain.model.Place
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
@@ -33,28 +29,37 @@ fun HomeRoute(
     onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
     val context = LocalContext.current
-    val categoryPagingItems = viewModel.getPlaceCategories().collectAsLazyPagingItems()
-    val placePagingItems = viewModel.getPlaces().collectAsLazyPagingItems()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
-                is HomeUiEffect.Synced -> onShowSnackbar(context.getString(R.string.core_design_place_sync_completed), "OK")
+                is HomeEffect.Synced -> onShowSnackbar(context.getString(R.string.core_design_place_sync_completed), "OK")
+                is HomeEffect.NavigateToCategoryDetails -> { /* TODO */ }
+                is HomeEffect.NavigateToPlaceDetails -> { /* TODO */ }
+                is HomeEffect.NavigateToStoryDetails -> { /* TODO */ }
             }
         }
     }
-    HomeScreen(
-        modifier = modifier,
-        categories = categoryPagingItems,
-        places = placePagingItems,
-        onPlaceClick = onPlaceClick,
-    )
+
+    when (val s = state) {
+        is HomeState.Loading -> LoadingWheel(modifier = modifier)
+        is HomeState.Error -> {}
+        is HomeState.Success -> {
+            HomeScreen(
+                modifier = modifier,
+                feedSections = s.feedSections,
+                onPlaceClick = onPlaceClick,
+            )
+        }
+    }
 }
 
+@OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
-    categories: LazyPagingItems<String>,
-    places: LazyPagingItems<Place>,
+    feedSections: List<FeedSection>,
     onPlaceClick: (Place) -> Unit,
 ) {
     LazyColumn(
@@ -63,36 +68,54 @@ fun HomeScreen(
             .windowInsetsPadding(WindowInsets.statusBars),
         state = rememberLazyListState()
     ) {
-        item {
-            TitleTextItem(text = stringResource(R.string.core_design_category)) {
-                ChipItemList(
-                    modifier = Modifier,
-                    chipItems = categories,
-                    onItemClick = { Timber.Forest.i(it) }
-                )
-            }
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(16.dp))
-        }
-
-        item {
-            TitleTextItem(text = stringResource(R.string.core_design_place), onMore = { }) {
-                PlaceItemList(
-                    modifier = Modifier,
-                    places = places,
-                    isBookmarked = { false },
-                    onBookmarkToggle = { },
-                    onClick = { place ->
-                        onPlaceClick(place)
+        items(feedSections.size) { index ->
+            val section = feedSections[index]
+            when (section) {
+                is FeedSection.Categories -> {
+                    TitleTextItem(
+                        modifier = Modifier
+                            .padding(bottom = 16.dp),
+                        text = stringResource(R.string.core_design_category)
+                    ) {
+                        ChipItemList(
+                            chipItems = section.categories.collectAsLazyPagingItems().itemSnapshotList.items,
+                            onItemClick = { Timber.i(it) }
+                        )
                     }
-                )
-            }
-        }
+                }
 
-        item {
-            Spacer(modifier = Modifier.height(300.dp))
+                is FeedSection.Places -> {
+                    TitleTextItem(
+                        modifier = Modifier
+                            .padding(bottom = 16.dp),
+                        text = stringResource(R.string.core_design_place), onMore = { }
+                    ) {
+                        PlaceItemList(
+                            places = section.places.collectAsLazyPagingItems().itemSnapshotList.items,
+                            isBookmarked = { false },
+                            onBookmarkToggle = { },
+                            onItemClick = { place ->
+                                onPlaceClick(place)
+                            }
+                        )
+                    }
+                }
+
+                is FeedSection.Stories -> {
+                    TitleTextItem(
+                        modifier = Modifier
+                            .padding(bottom = 16.dp),
+                        text = "이야기", onMore = { }
+                    ) {
+                        StoryItemList(
+                            stories = section.stories.collectAsLazyPagingItems().itemSnapshotList.items,
+                            onItemClick = { story ->
+//                                onClick(story)
+                            }
+                        )
+                    }
+                }
+            }
         }
 
         item {
@@ -101,14 +124,14 @@ fun HomeScreen(
     }
 }
 
-@DevicePreviews
-@Composable
-private fun HomeScreenPreview() {
-    IgozogoTheme {
-        HomeScreen(
-            categories = previewCategoryListLazyPagingItems(),
-            places = previewPlacesLazyPagingItems(),
-            onPlaceClick = {}
-        )
-    }
-}
+//@DevicePreviews
+//@Composable
+//private fun HomeScreenPreview() {
+//    IgozogoTheme {
+//        HomeScreen(
+//            categories = previewCategoryListLazyPagingItems(),
+//            places = previewPlacesLazyPagingItems(),
+//            onPlaceClick = {}
+//        )
+//    }
+//}

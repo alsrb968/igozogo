@@ -15,7 +15,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.paging.compose.LazyPagingItems
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
 import io.jacob.igozogo.core.design.tooling.PreviewPlace
@@ -24,10 +23,10 @@ import io.jacob.igozogo.core.domain.model.Place
 @Composable
 fun PlaceItemList(
     modifier: Modifier = Modifier,
-    places: LazyPagingItems<Place>,
+    places: List<Place>,
     isBookmarked: (Place) -> Boolean,
     onBookmarkToggle: (Place) -> Unit,
-    onClick: (Place) -> Unit,
+    onItemClick: (Place) -> Unit,
 ) {
     val padding = 16.dp
 
@@ -37,13 +36,16 @@ fun PlaceItemList(
         horizontalArrangement = Arrangement.spacedBy(padding),
         contentPadding = PaddingValues(horizontal = padding)
     ) {
-        items(places.itemCount) { index ->
-            places[index]?.let { place ->
+        items(
+            count = places.size,
+            key = { places[it].placeLangId },
+        ) { index ->
+            places[index].let { place ->
                 PlaceItem(
                     place = place,
                     isBookmarked = isBookmarked(place),
                     onBookmarkToggle = { onBookmarkToggle(place) },
-                    onClick = { onClick(place) }
+                    onClick = { onItemClick(place) }
                 )
             }
         }

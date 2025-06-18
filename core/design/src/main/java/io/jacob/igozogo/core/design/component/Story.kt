@@ -1,6 +1,7 @@
 package io.jacob.igozogo.core.design.component
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
@@ -21,16 +22,46 @@ import io.jacob.igozogo.core.design.tooling.PreviewStory
 import io.jacob.igozogo.core.domain.model.Story
 
 @Composable
+fun StoryItemList(
+    modifier: Modifier = Modifier,
+    stories: List<Story>,
+    onItemClick: (Story) -> Unit,
+) {
+    val padding = 16.dp
+
+    LazyRow(
+        modifier = modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(padding),
+        contentPadding = PaddingValues(horizontal = padding)
+    ) {
+        items(
+            count = stories.size,
+            key = { stories[it].storyLangId },
+        ) { index ->
+            stories[index].let { story ->
+                StoryItem(
+                    modifier = Modifier
+                        .width(400.dp),
+                    story = story,
+                    onClick = onItemClick
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun StoryItem(
     modifier: Modifier = Modifier,
     story: Story,
-    onItemClick: (Story) -> Unit
+    onClick: (Story) -> Unit
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
             .padding(16.dp),
-        onClick = { onItemClick(story) }
+        onClick = { onClick(story) }
     ) {
         Column(
             modifier = Modifier
@@ -107,7 +138,7 @@ fun StoryAction(
     onPlay: (Story) -> Unit,
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(40.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -178,7 +209,7 @@ private fun StoryItemPreview() {
     IgozogoTheme {
         StoryItem(
             story = PreviewStory,
-            onItemClick = {}
+            onClick = {}
         )
     }
 }

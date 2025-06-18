@@ -152,7 +152,7 @@ fun PlaceDetailScreen(
                 stories[index]?.let { story ->
                     StoryItem(
                         story = story,
-                        onItemClick = { /* TODO */ }
+                        onClick = { /* TODO */ }
                     )
                 }
             }
