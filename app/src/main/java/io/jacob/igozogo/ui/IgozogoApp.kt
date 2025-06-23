@@ -10,12 +10,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
 import io.jacob.igozogo.R
 import io.jacob.igozogo.core.design.component.IgozogoNavigationBar
 import io.jacob.igozogo.core.design.component.IgozogoNavigationBarItem
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
 import io.jacob.igozogo.navigation.IgozogoNavHost
+import kotlin.reflect.KClass
 
 @Composable
 fun IgozogoApp(
@@ -41,11 +45,15 @@ fun IgozogoApp(
     appState: IgozogoAppState,
     snackbarHostState: SnackbarHostState,
 ) {
+    val currentDestination = appState.currentDestination
+
     Scaffold(
         modifier = modifier,
         bottomBar = {
             IgozogoNavigationBar {
                 appState.bottomBarDestinations.forEach { destination ->
+                    val selected = currentDestination
+                        .isRouteInHierarchy(destination.baseRoute)
                     val text = stringResource(destination.label)
 
                     IgozogoNavigationBarItem(
@@ -62,7 +70,7 @@ fun IgozogoApp(
                                 maxLines = 1
                             )
                         },
-                        selected = destination == appState.currentBottomBarDestination,
+                        selected = selected,
                         onClick = { appState.navigateToBottomBarDestination(destination) },
                     )
                 }
@@ -74,10 +82,11 @@ fun IgozogoApp(
                 modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
             )
         },
-    ) { contentPaddingValues ->
+    ) { paddingValues ->
         IgozogoNavHost(
             modifier = Modifier
-                .padding(contentPaddingValues),
+                .padding(bottom = paddingValues.calculateBottomPadding())
+            ,
             appState = appState,
             onShowSnackbar = { message, action ->
                 snackbarHostState.showSnackbar(
@@ -103,6 +112,11 @@ fun OfflineDialog(onRetry: () -> Unit) {
         }
     )
 }
+
+private fun NavDestination?.isRouteInHierarchy(route: KClass<*>) =
+    this?.hierarchy?.any {
+        it.hasRoute(route)
+    } ?: false
 
 @DevicePreviews
 @Composable

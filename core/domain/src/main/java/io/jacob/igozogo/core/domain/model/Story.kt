@@ -1,5 +1,8 @@
 package io.jacob.igozogo.core.domain.model
 
+import io.jacob.igozogo.core.domain.util.toHumanReadableDate
+import io.jacob.igozogo.core.domain.util.toHumanReadableTime
+
 data class Story(
     val placeId: Int,
     val placeLangId: Int,
@@ -16,4 +19,13 @@ data class Story(
     val imageUrl: String,
     val createdTime: String,
     val modifiedTime: String,
-)
+) {
+    val humanReadablePlayTime: String
+        get() = playTime.toHumanReadableTime()
+
+    val humanReadableCreatedTime: String
+        get() = createdTime.toHumanReadableDate()
+
+    val humanReadableModifiedTime: String
+        get() = modifiedTime.toHumanReadableDate()
+}

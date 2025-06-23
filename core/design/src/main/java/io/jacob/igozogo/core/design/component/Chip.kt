@@ -12,15 +12,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.paging.compose.LazyPagingItems
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
-import io.jacob.igozogo.core.design.tooling.previewCategoryListLazyPagingItems
+import io.jacob.igozogo.core.design.tooling.PreviewCategoryList
 
 @Composable
 fun ChipItemList(
     modifier: Modifier = Modifier,
-    chipItems: LazyPagingItems<String>,
+    chipItems: List<String>,
     onItemClick: (String) -> Unit
 ) {
     val padding = 8.dp
@@ -40,10 +39,10 @@ fun ChipItemList(
         horizontalItemSpacing = chipSpacing,
     ) {
         items(
-            count = chipItems.itemCount,
-            key = { index -> chipItems[index] ?: index }
+            count = chipItems.size,
+            key = { index -> chipItems[index] }
         ) { index ->
-            chipItems[index]?.let { item ->
+            chipItems[index].let { item ->
                 if (item.isEmpty()) {
                     return@items
                 }
@@ -68,7 +67,7 @@ fun ChipItemList(
 private fun ChipItemListPreview() {
     IgozogoTheme {
         ChipItemList(
-            chipItems = previewCategoryListLazyPagingItems(),
+            chipItems = PreviewCategoryList,
             onItemClick = {}
         )
     }

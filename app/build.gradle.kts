@@ -32,7 +32,10 @@ dependencies {
     implementation(projects.core.domain)
     implementation(projects.core.design)
     implementation(projects.feature.home)
+    implementation(projects.feature.search)
     implementation(projects.feature.bookmark)
+    implementation(projects.feature.setting)
+    implementation(projects.feature.placedetail)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.kotlinx.serialization.json)

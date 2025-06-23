@@ -27,6 +27,8 @@ interface OdiiRepository {
         pageSize: Int = 20,
     ): Flow<PagingData<Place>>
 
+    suspend fun getPlaceById(placeId: Int, placeLangId: Int): Place?
+
     suspend fun getPlacesCount(): Int
 
     fun getStoriesByPlace(

@@ -8,13 +8,17 @@ import android.os.Build
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat.getSystemService
-import androidx.lifecycle.Lifecycle
-import androidx.navigation.*
+import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navOptions
 import io.jacob.igozogo.feature.bookmark.navigation.navigateToBookmark
 import io.jacob.igozogo.feature.home.navigation.navigateToHome
+import io.jacob.igozogo.feature.search.navigation.navigateToSearch
+import io.jacob.igozogo.feature.setting.navigation.navigateToSetting
 import io.jacob.igozogo.navigation.BottomBarDestination
 
 @Composable
@@ -61,6 +65,26 @@ class IgozogoAppState(
         isOnline = checkIfOnline()
     }
 
+    private fun navigateToBottomBarBaseRoute(
+        destination: BottomBarDestination,
+        navigateToBottomBarRoute: () -> Unit
+    ) {
+        val currentEntry = navController.currentBackStackEntry
+        val currentDestination = navController.currentDestination
+        val startDestination = navController.graph.findStartDestination()
+
+        val isInGraph = currentEntry?.destination?.hierarchy
+            ?.any { it.hasRoute(destination.baseRoute) } == true
+
+        val isAtRoot = currentDestination == startDestination
+
+        if (isInGraph && !isAtRoot) {
+            navController.popBackStack(destination.route, inclusive = false)
+        } else {
+            navigateToBottomBarRoute()
+        }
+    }
+
     fun navigateToBottomBarDestination(destination: BottomBarDestination) {
         val bottomBarNavOptions = navOptions {
             popUpTo(navController.graph.findStartDestination().id) {
@@ -71,16 +95,21 @@ class IgozogoAppState(
         }
 
         when (destination) {
-            BottomBarDestination.HOME -> navController.navigateToHome(bottomBarNavOptions)
-            BottomBarDestination.SEARCH -> navController.navigateToHome(bottomBarNavOptions)
-            BottomBarDestination.BOOKMARK -> navController.navigateToBookmark(bottomBarNavOptions)
-            BottomBarDestination.SETTING -> navController.navigateToHome(bottomBarNavOptions)
+            BottomBarDestination.HOME -> {
+                navigateToBottomBarBaseRoute(destination) {
+                    navController.navigateToHome(bottomBarNavOptions)
+                }
+            }
 
+            BottomBarDestination.SEARCH ->
+                navController.navigateToSearch(bottomBarNavOptions)
+
+            BottomBarDestination.BOOKMARK ->
+                navController.navigateToBookmark(bottomBarNavOptions)
+
+            BottomBarDestination.SETTING ->
+                navController.navigateToSetting(bottomBarNavOptions)
         }
-    }
-
-    fun navigateBack() {
-        navController.popBackStack()
     }
 
     @SuppressLint("ObsoleteSdkInt")
@@ -96,14 +125,4 @@ class IgozogoAppState(
             cm?.activeNetworkInfo?.isConnectedOrConnecting == true
         }
     }
-}
-
-private fun NavBackStackEntry.lifecycleIsResumed() =
-    this.lifecycle.currentState == Lifecycle.State.RESUMED
-
-private val NavGraph.startDestination: NavDestination?
-    get() = findNode(startDestinationId)
-
-private tailrec fun findStartDestination(graph: NavDestination): NavDestination {
-    return if (graph is NavGraph) findStartDestination(graph.startDestination!!) else graph
 }

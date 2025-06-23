@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.*
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 
@@ -111,7 +112,9 @@ class OdiiRepositoryUnitTest {
     fun `Given themes, When getPlacesByCategory called, Then call dataSource`() =
         testScope.runTest {
             // Given
-            coEvery { themeDataSource.getThemesByCategory(any()) } returns TestPagingSource(themeEntities)
+            coEvery { themeDataSource.getThemesByCategory(any()) } returns TestPagingSource(
+                themeEntities
+            )
 
             // When
             val flow = repository.getPlacesByCategory("백제역사여행")
@@ -147,7 +150,9 @@ class OdiiRepositoryUnitTest {
     fun `Given themes, When getPlacesByKeyword called, Then call dataSource`() =
         testScope.runTest {
             // Given
-            every { themeDataSource.getThemesByKeyword(any()) } returns TestPagingSource(themeEntities)
+            every { themeDataSource.getThemesByKeyword(any()) } returns TestPagingSource(
+                themeEntities
+            )
 
             // When
             val flow = repository.getPlacesByKeyword("백제")
@@ -158,6 +163,21 @@ class OdiiRepositoryUnitTest {
             advanceUntilIdle()
             job.cancel()
             coVerify { themeDataSource.getThemesByKeyword(any()) }
+        }
+
+    @Test
+    fun `Given themes, When getPlaceById called, Then call dataSource`() =
+        testScope.runTest {
+            // Given
+            coEvery { themeDataSource.getThemeById(any(), any()) } returns themeEntities[0]
+
+            // When
+            val _place = repository.getPlaceById(1, 2)
+
+            // Then
+            assertNotNull(_place)
+            assertEquals(place, _place)
+            coVerify { themeDataSource.getThemeById(any(), any()) }
         }
 
     @Test

@@ -47,7 +47,11 @@ interface ThemeDao {
         ORDER BY ((mapX - :mapX) * (mapX - :mapX) + (mapY - :mapY) * (mapY - :mapY)) ASC
         """
     )
-    fun getThemesByLocation(mapX: Double, mapY: Double, radiusDeg: Double): PagingSource<Int, ThemeEntity>
+    fun getThemesByLocation(
+        mapX: Double,
+        mapY: Double,
+        radiusDeg: Double
+    ): PagingSource<Int, ThemeEntity>
 
     @Query(
         """
@@ -60,6 +64,15 @@ interface ThemeDao {
         """
     )
     fun getThemesByKeyword(keyword: String): PagingSource<Int, ThemeEntity>
+
+    @Query(
+        """
+        SELECT *
+        FROM theme_table
+        WHERE themeId = :themeId AND themeLangId = :themeLangId
+        """
+    )
+    suspend fun getThemeById(themeId: Int, themeLangId: Int): ThemeEntity?
 
     @Query(
         """

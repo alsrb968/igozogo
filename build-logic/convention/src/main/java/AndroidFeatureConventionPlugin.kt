@@ -11,7 +11,6 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
         with(target) {
             apply(plugin = "igozogo.android.library")
             apply(plugin = "igozogo.android.hilt")
-            apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
 
             extensions.configure<LibraryExtension> {
                 testOptions.animationsDisabled = true
@@ -20,8 +19,6 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
             dependencies {
                 "implementation"(project(":core:domain"))
                 "implementation"(project(":core:design"))
-
-                "implementation"(libs.findLibrary("kotlinx.serialization.json").get())
 
                 "implementation"(libs.findLibrary("androidx.activity.compose").get())
                 "implementation"(libs.findLibrary("androidx.animation.compose").get())
