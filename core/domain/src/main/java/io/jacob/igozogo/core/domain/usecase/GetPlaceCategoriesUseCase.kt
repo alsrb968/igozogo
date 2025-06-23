@@ -9,6 +9,6 @@ class GetPlaceCategoriesUseCase @Inject constructor(
     private val repository: PlaceRepository
 ) {
     operator fun invoke(): Flow<PagingData<String>> {
-        return repository.getPlaceCategories()
+        return repository.getPlaceCategoriesPaging()
     }
 }

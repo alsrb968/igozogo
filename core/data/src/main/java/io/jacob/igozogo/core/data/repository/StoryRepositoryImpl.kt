@@ -15,7 +15,11 @@ class StoryRepositoryImpl @Inject constructor(
     private val storyDataSource: StoryDataSource,
     private val storyRemoteMediatorFactory: StoryRemoteMediator.Factory,
 ) : StoryRepository {
-    override fun getStoriesByPlace(
+    override suspend fun getStories(size: Int): List<Story> {
+        return storyDataSource.getStories(size).toStory()
+    }
+
+    override fun getStoriesByPlacePaging(
         place: Place,
         pageSize: Int
     ): Flow<PagingData<Story>> {
@@ -25,17 +29,19 @@ class StoryRepositoryImpl @Inject constructor(
             config = PagingConfig(pageSize = pageSize),
             remoteMediator = storyRemoteMediatorFactory.create(query),
             pagingSourceFactory = {
-                storyDataSource.getStoriesByTheme(place.placeId, place.placeLangId)
+                storyDataSource.getStoriesByThemePagingSource(place.placeId, place.placeLangId)
             }
         ).flow.map { pagingData ->
             pagingData.map { it.toStory() }
         }
     }
 
-    override fun getStoriesByLocation(
-        mapX: Double,
-        mapY: Double,
-        radius: Int,
+    override suspend fun getStoriesByPlace(place: Place): List<Story> {
+        return storyDataSource.getStoriesByTheme(place.placeId, place.placeLangId).toStory()
+    }
+
+    override fun getStoriesByLocationPaging(
+        mapX: Double, mapY: Double, radius: Int,
         pageSize: Int
     ): Flow<PagingData<Story>> {
         val query = Query.Location(mapX, mapY, radius)
@@ -44,14 +50,21 @@ class StoryRepositoryImpl @Inject constructor(
             config = PagingConfig(pageSize = pageSize),
             remoteMediator = storyRemoteMediatorFactory.create(query),
             pagingSourceFactory = {
-                storyDataSource.getStoriesByLocation(mapX, mapY, radius)
+                storyDataSource.getStoriesByLocationPagingSource(mapX, mapY, radius)
             }
         ).flow.map { pagingData ->
             pagingData.map { it.toStory() }
         }
     }
 
-    override fun getStoriesByKeyword(
+    override suspend fun getStoriesByLocation(
+        mapX: Double, mapY: Double, radius: Int,
+        size: Int
+    ): List<Story> {
+        return storyDataSource.getStoriesByLocation(mapX, mapY, radius, size).toStory()
+    }
+
+    override fun getStoriesByKeywordPaging(
         keyword: String,
         pageSize: Int
     ): Flow<PagingData<Story>> {
@@ -61,10 +74,17 @@ class StoryRepositoryImpl @Inject constructor(
             config = PagingConfig(pageSize = pageSize),
             remoteMediator = storyRemoteMediatorFactory.create(query),
             pagingSourceFactory = {
-                storyDataSource.getStoriesByKeyword(keyword)
+                storyDataSource.getStoriesByKeywordPagingSource(keyword)
             }
         ).flow.map { pagingData ->
             pagingData.map { it.toStory() }
         }
+    }
+
+    override suspend fun getStoriesByKeyword(
+        keyword: String,
+        size: Int
+    ): List<Story> {
+        return storyDataSource.getStoriesByKeyword(keyword, size).toStory()
     }
 }

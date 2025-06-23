@@ -18,7 +18,16 @@ interface StoryDao {
         FROM story_table
         """
     )
-    fun getStories(): PagingSource<Int, StoryEntity>
+    fun getStoriesPagingSource(): PagingSource<Int, StoryEntity>
+
+    @Query(
+        """
+        SELECT *
+        FROM story_table
+        LIMIT :size
+        """
+    )
+    suspend fun getStories(size: Int): List<StoryEntity>
 
     @Query(
         """
@@ -27,7 +36,18 @@ interface StoryDao {
         WHERE themeId = :themeId AND themeLangId = :themeLangId
         """
     )
-    fun getStoriesByTheme(themeId: Int, themeLangId: Int): PagingSource<Int, StoryEntity>
+    fun getStoriesByThemePagingSource(
+        themeId: Int, themeLangId: Int
+    ): PagingSource<Int, StoryEntity>
+
+    @Query(
+        """
+        SELECT *
+        FROM story_table
+        WHERE themeId = :themeId AND themeLangId = :themeLangId
+        """
+    )
+    suspend fun getStoriesByTheme(themeId: Int, themeLangId: Int): List<StoryEntity>
 
     @Query(
         """
@@ -38,7 +58,24 @@ interface StoryDao {
         ORDER BY ((mapX - :mapX) * (mapX - :mapX) + (mapY - :mapY) * (mapY - :mapY)) ASC
         """
     )
-    fun getStoriesByLocation(mapX: Double, mapY: Double, radiusDeg: Double): PagingSource<Int, StoryEntity>
+    fun getStoriesByLocationPagingSource(
+        mapX: Double, mapY: Double, radiusDeg: Double
+    ): PagingSource<Int, StoryEntity>
+
+    @Query(
+        """
+        SELECT *
+        FROM story_table
+        WHERE mapX BETWEEN :mapX - :radiusDeg AND :mapX + :radiusDeg
+            AND mapY BETWEEN :mapY - :radiusDeg AND :mapY + :radiusDeg
+        ORDER BY ((mapX - :mapX) * (mapX - :mapX) + (mapY - :mapY) * (mapY - :mapY)) ASC
+        LIMIT :size
+        """
+    )
+    suspend fun getStoriesByLocation(
+        mapX: Double, mapY: Double, radiusDeg: Double,
+        size: Int
+    ): List<StoryEntity>
 
     @Query(
         """
@@ -49,7 +86,19 @@ interface StoryDao {
             OR script LIKE '%' || :keyword || '%'
         """
     )
-    fun getStoriesByKeyword(keyword: String): PagingSource<Int, StoryEntity>
+    fun getStoriesByKeywordPagingSource(keyword: String): PagingSource<Int, StoryEntity>
+
+    @Query(
+        """
+        SELECT *
+        FROM story_table
+        WHERE title LIKE '%' || :keyword || '%'
+            OR audioTitle LIKE '%' || :keyword || '%'
+            OR script LIKE '%' || :keyword || '%'
+        LIMIT :size
+        """
+    )
+    suspend fun getStoriesByKeyword(keyword: String, size: Int): List<StoryEntity>
 
     @Query(
         """

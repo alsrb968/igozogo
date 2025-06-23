@@ -7,11 +7,23 @@ import javax.inject.Inject
 
 interface ThemeDataSource {
     suspend fun insertThemes(themes: List<ThemeEntity>)
-    fun getThemes(): PagingSource<Int, ThemeEntity>
-    fun getThemeCategories(): PagingSource<Int, String>
-    fun getThemesByCategory(category: String): PagingSource<Int, ThemeEntity>
-    fun getThemesByLocation(mapX: Double, mapY: Double, radius: Int): PagingSource<Int, ThemeEntity>
-    fun getThemesByKeyword(keyword: String): PagingSource<Int, ThemeEntity>
+    fun getThemesPagingSource(): PagingSource<Int, ThemeEntity>
+    suspend fun getThemes(size: Int): List<ThemeEntity>
+    fun getThemeCategoriesPagingSource(): PagingSource<Int, String>
+    suspend fun getThemeCategories(): List<String>
+    fun getThemesByCategoryPagingSource(category: String): PagingSource<Int, ThemeEntity>
+    suspend fun getThemesByCategory(category: String, size: Int): List<ThemeEntity>
+    fun getThemesByLocationPagingSource(
+        mapX: Double, mapY: Double, radius: Int
+    ): PagingSource<Int, ThemeEntity>
+
+    suspend fun getThemesByLocation(
+        mapX: Double, mapY: Double, radius: Int,
+        size: Int
+    ): List<ThemeEntity>
+
+    fun getThemesByKeywordPagingSource(keyword: String): PagingSource<Int, ThemeEntity>
+    suspend fun getThemesByKeyword(keyword: String, size: Int): List<ThemeEntity>
     suspend fun getThemeById(themeId: Int, themeLangId: Int): ThemeEntity?
     suspend fun getThemesCount(): Int
     suspend fun deleteThemes()
@@ -24,34 +36,52 @@ class ThemeDataSourceImpl @Inject constructor(
         return dao.insertThemes(themes)
     }
 
-    override fun getThemes(): PagingSource<Int, ThemeEntity> {
-        return dao.getThemes()
+    override fun getThemesPagingSource(): PagingSource<Int, ThemeEntity> {
+        return dao.getThemesPagingSource()
     }
 
-    override fun getThemeCategories(): PagingSource<Int, String> {
+    override suspend fun getThemes(size: Int): List<ThemeEntity> {
+        return dao.getThemes(size)
+    }
+
+    override fun getThemeCategoriesPagingSource(): PagingSource<Int, String> {
+        return dao.getThemeCategoriesPagingSource()
+    }
+
+    override suspend fun getThemeCategories(): List<String> {
         return dao.getThemeCategories()
     }
 
-    override fun getThemesByCategory(category: String): PagingSource<Int, ThemeEntity> {
-        return dao.getThemesByCategory(category)
+    override fun getThemesByCategoryPagingSource(category: String): PagingSource<Int, ThemeEntity> {
+        return dao.getThemesByCategoryPagingSource(category)
     }
 
-    override fun getThemesByLocation(
-        mapX: Double,
-        mapY: Double,
-        radius: Int
+    override suspend fun getThemesByCategory(category: String, size: Int): List<ThemeEntity> {
+        return dao.getThemesByCategory(category, size)
+    }
+
+    override fun getThemesByLocationPagingSource(
+        mapX: Double, mapY: Double, radius: Int
     ): PagingSource<Int, ThemeEntity> {
-        return dao.getThemesByLocation(mapX, mapY, radius / METERS_PER_DEGREE)
+        return dao.getThemesByLocationPagingSource(mapX, mapY, radius / METERS_PER_DEGREE)
     }
 
-    override fun getThemesByKeyword(keyword: String): PagingSource<Int, ThemeEntity> {
-        return dao.getThemesByKeyword(keyword)
+    override suspend fun getThemesByLocation(
+        mapX: Double, mapY: Double, radius: Int,
+        size: Int
+    ): List<ThemeEntity> {
+        return dao.getThemesByLocation(mapX, mapY, radius / METERS_PER_DEGREE, size)
     }
 
-    override suspend fun getThemeById(
-        themeId: Int,
-        themeLangId: Int
-    ): ThemeEntity? {
+    override fun getThemesByKeywordPagingSource(keyword: String): PagingSource<Int, ThemeEntity> {
+        return dao.getThemesByKeywordPagingSource(keyword)
+    }
+
+    override suspend fun getThemesByKeyword(keyword: String, size: Int): List<ThemeEntity> {
+        return dao.getThemesByKeyword(keyword, size)
+    }
+
+    override suspend fun getThemeById(themeId: Int, themeLangId: Int): ThemeEntity? {
         return dao.getThemeById(themeId, themeLangId)
     }
 

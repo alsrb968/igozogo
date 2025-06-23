@@ -11,6 +11,6 @@ class GetStoriesByPlaceUseCase @Inject constructor(
     private val repository: StoryRepository
 ) {
     operator fun invoke(place: Place): Flow<PagingData<Story>> {
-        return repository.getStoriesByPlace(place)
+        return repository.getStoriesByPlacePaging(place)
     }
 }

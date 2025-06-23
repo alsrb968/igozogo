@@ -27,68 +27,95 @@ class PlaceRepositoryImpl @Inject constructor(
         }.onFailure { e -> throw e }
     }
 
-    override fun getPlaces(pageSize: Int): Flow<PagingData<Place>> {
+    override fun getPlacesPaging(pageSize: Int): Flow<PagingData<Place>> {
         return Pager(
             config = PagingConfig(pageSize = pageSize),
             pagingSourceFactory = {
-                themeDataSource.getThemes()
+                themeDataSource.getThemesPagingSource()
             }
         ).flow.map { pagingData ->
             pagingData.map { it.toPlace() }
         }
     }
 
-    override fun getPlaceCategories(pageSize: Int): Flow<PagingData<String>> {
+    override suspend fun getPlaces(size: Int): List<Place> {
+        return themeDataSource.getThemes(size).toPlace()
+    }
+
+    override fun getPlaceCategoriesPaging(pageSize: Int): Flow<PagingData<String>> {
         return Pager(
             config = PagingConfig(pageSize = pageSize),
             pagingSourceFactory = {
-                themeDataSource.getThemeCategories()
+                themeDataSource.getThemeCategoriesPagingSource()
             }
         ).flow
     }
 
-    override fun getPlacesByCategory(
+    override suspend fun getPlaceCategories(): List<String> {
+        return themeDataSource.getThemeCategories()
+    }
+
+    override fun getPlacesByCategoryPaging(
         category: String,
         pageSize: Int,
     ): Flow<PagingData<Place>> {
         return Pager(
             config = PagingConfig(pageSize = pageSize),
             pagingSourceFactory = {
-                themeDataSource.getThemesByCategory(category)
+                themeDataSource.getThemesByCategoryPagingSource(category)
             }
         ).flow.map { pagingData ->
             pagingData.map { it.toPlace() }
         }
     }
 
-    override fun getPlacesByLocation(
-        mapX: Double,
-        mapY: Double,
-        radius: Int,
+    override suspend fun getPlacesByCategory(
+        category: String,
+        size: Int
+    ): List<Place> {
+        return themeDataSource.getThemesByCategory(category, size).toPlace()
+    }
+
+    override fun getPlacesByLocationPaging(
+        mapX: Double, mapY: Double, radius: Int,
         pageSize: Int,
     ): Flow<PagingData<Place>> {
         return Pager(
             config = PagingConfig(pageSize = pageSize),
             pagingSourceFactory = {
-                themeDataSource.getThemesByLocation(mapX, mapY, radius)
+                themeDataSource.getThemesByLocationPagingSource(mapX, mapY, radius)
             }
         ).flow.map { pagingData ->
             pagingData.map { it.toPlace() }
         }
     }
 
-    override fun getPlacesByKeyword(
+    override suspend fun getPlacesByLocation(
+        mapX: Double, mapY: Double, radius: Int,
+        size: Int
+    ): List<Place> {
+        return themeDataSource.getThemesByLocation(mapX, mapY, radius, size).toPlace()
+    }
+
+    override fun getPlacesByKeywordPaging(
         keyword: String,
         pageSize: Int,
     ): Flow<PagingData<Place>> {
         return Pager(
             config = PagingConfig(pageSize = pageSize),
             pagingSourceFactory = {
-                themeDataSource.getThemesByKeyword(keyword)
+                themeDataSource.getThemesByKeywordPagingSource(keyword)
             }
         ).flow.map { pagingData ->
             pagingData.map { it.toPlace() }
         }
+    }
+
+    override suspend fun getPlacesByKeyword(
+        keyword: String,
+        size: Int
+    ): List<Place> {
+        return themeDataSource.getThemesByKeyword(keyword, size).toPlace()
     }
 
     override suspend fun getPlaceById(

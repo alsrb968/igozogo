@@ -8,6 +8,7 @@ import io.jacob.igozogo.core.data.mapper.toThemeEntity
 import io.jacob.igozogo.core.data.model.remote.odii.StoryResponse
 import io.jacob.igozogo.core.data.model.remote.odii.ThemeResponse
 import io.jacob.igozogo.core.domain.repository.StoryRepository
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
@@ -45,66 +46,122 @@ class StoryRepositoryUnitTest {
     }
 
     @Test
-    fun `Given RemoteMediator, When getStoriesByPlace called, Then call dataSource`() =
+    fun `Given Stories, When getStories called, Then call dataSource`() =
+        testScope.runTest {
+            // Given
+            coEvery { storyDataSource.getStories(any()) } returns storyEntities
+
+            // When
+            repository.getStories()
+
+            // Then
+            coVerify { storyDataSource.getStories(any()) }
+        }
+
+    @Test
+    fun `Given RemoteMediator, When getStoriesByPlacePaging called, Then call dataSource`() =
         testScope.runTest {
             // Given
             val fakeRemoteMediator = mockk<StoryRemoteMediator>(relaxed = true)
             every { storyRemoteMediatorFactory.create(any()) } returns fakeRemoteMediator
             every {
-                storyDataSource.getStoriesByTheme(any(), any())
+                storyDataSource.getStoriesByThemePagingSource(any(), any())
             } returns TestPagingSource(storyEntities)
 
             // When
-            val flow = repository.getStoriesByPlace(place = place, pageSize = 10)
+            val flow = repository.getStoriesByPlacePaging(place = place, pageSize = 10)
 
             val job = launch { flow.collectLatest { pagingData -> } }
 
             // Then
             advanceUntilIdle()
             job.cancel()
+            coVerify { storyDataSource.getStoriesByThemePagingSource(any(), any()) }
+        }
+
+    @Test
+    fun `Given Stories, When getStoriesByTheme called, Then call dataSource`() =
+        testScope.runTest {
+            // Given
+            coEvery { storyDataSource.getStoriesByTheme(any(), any()) } returns storyEntities
+
+            // When
+            repository.getStoriesByPlace(place = place)
+
+            // Then
             coVerify { storyDataSource.getStoriesByTheme(any(), any()) }
         }
 
     @Test
-    fun `Given RemoteMediator, When getStoriesByLocation called, Then call dataSource`() =
+    fun `Given RemoteMediator, When getStoriesByLocationPaging called, Then call dataSource`() =
         testScope.runTest {
             // Given
             val fakeRemoteMediator = mockk<StoryRemoteMediator>(relaxed = true)
             every { storyRemoteMediatorFactory.create(any()) } returns fakeRemoteMediator
             every {
-                storyDataSource.getStoriesByLocation(any(), any(), any())
+                storyDataSource.getStoriesByLocationPagingSource(any(), any(), any())
             } returns TestPagingSource(storyEntities)
 
             // When
-            val flow = repository.getStoriesByLocation(1.0, 1.0, 1)
+            val flow = repository.getStoriesByLocationPaging(1.0, 1.0, 1)
 
             val job = launch { flow.collectLatest { pagingData -> } }
 
             // Then
             advanceUntilIdle()
             job.cancel()
-            coVerify { storyDataSource.getStoriesByLocation(any(), any(), any()) }
+            coVerify { storyDataSource.getStoriesByLocationPagingSource(any(), any(), any()) }
         }
 
     @Test
-    fun `Given RemoteMediator, When getStoriesByKeyword called, Then call dataSource`() =
+    fun `Given Stories, When getStoriesByLocation called, Then call dataSource`() =
+        testScope.runTest {
+            // Given
+            coEvery {
+                storyDataSource.getStoriesByLocation(any(), any(), any(), any())
+            } returns storyEntities
+
+            // When
+            repository.getStoriesByLocation(1.0, 1.0, 1, 10)
+
+            // Then
+            coVerify { storyDataSource.getStoriesByLocation(any(), any(), any(), any()) }
+        }
+
+    @Test
+    fun `Given RemoteMediator, When getStoriesByKeywordPaging called, Then call dataSource`() =
         testScope.runTest {
             // Given
             val fakeRemoteMediator = mockk<StoryRemoteMediator>(relaxed = true)
             every { storyRemoteMediatorFactory.create(any()) } returns fakeRemoteMediator
             every {
-                storyDataSource.getStoriesByKeyword(any())
+                storyDataSource.getStoriesByKeywordPagingSource(any())
             } returns TestPagingSource(storyEntities)
 
             // When
-            val flow = repository.getStoriesByKeyword("test", 1)
+            val flow = repository.getStoriesByKeywordPaging("test", 1)
 
             val job = launch { flow.collectLatest { pagingData -> } }
 
             // Then
             advanceUntilIdle()
             job.cancel()
-            coVerify { storyDataSource.getStoriesByKeyword(any()) }
+            coVerify { storyDataSource.getStoriesByKeywordPagingSource(any()) }
+        }
+
+    @Test
+    fun `Given Stories, When getStoriesByKeyword called, Then call dataSource`() =
+        testScope.runTest {
+            // Given
+            coEvery { storyDataSource.getStoriesByKeyword(any(), any()) } returns storyEntities
+
+            // When
+            repository.getStoriesByKeyword("test", 10)
+
+            // Then
+            coVerify {
+                storyDataSource.getStoriesByKeyword(any(), any())
+            }
         }
 
     companion object {

@@ -10,6 +10,6 @@ class GetPlacesUseCase @Inject constructor(
     private val repository: PlaceRepository
 ) {
     operator fun invoke(): Flow<PagingData<Place>> {
-        return repository.getPlaces()
+        return repository.getPlacesPaging()
     }
 }

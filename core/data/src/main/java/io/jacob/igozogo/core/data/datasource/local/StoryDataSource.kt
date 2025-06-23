@@ -2,79 +2,85 @@ package io.jacob.igozogo.core.data.datasource.local
 
 import androidx.paging.PagingSource
 import io.jacob.igozogo.core.data.db.StoryDao
-import io.jacob.igozogo.core.data.db.StoryRemoteKeyDao
 import io.jacob.igozogo.core.data.model.local.odii.StoryEntity
-import io.jacob.igozogo.core.data.model.local.odii.StoryRemoteKey
 import javax.inject.Inject
 
 interface StoryDataSource {
     suspend fun insertStories(stories: List<StoryEntity>)
-    fun getStories(): PagingSource<Int, StoryEntity>
-    fun getStoriesByTheme(themeId: Int, themeLangId: Int): PagingSource<Int, StoryEntity>
-    fun getStoriesByLocation(
-        mapX: Double,
-        mapY: Double,
-        radius: Int
+    fun getStoriesPagingSource(): PagingSource<Int, StoryEntity>
+    suspend fun getStories(size: Int): List<StoryEntity>
+    fun getStoriesByThemePagingSource(
+        themeId: Int, themeLangId: Int
     ): PagingSource<Int, StoryEntity>
 
-    fun getStoriesByKeyword(keyword: String): PagingSource<Int, StoryEntity>
-    suspend fun deleteStories()
+    suspend fun getStoriesByTheme(
+        themeId: Int, themeLangId: Int
+    ): List<StoryEntity>
 
-    suspend fun insertRemoteKeys(keys: List<StoryRemoteKey>)
-    suspend fun getRemoteKey(id: Int, queryType: String): StoryRemoteKey?
-    suspend fun deleteRemoteKeysByQueryType(queryType: String)
-    suspend fun deleteRemoteKeys()
+    fun getStoriesByLocationPagingSource(
+        mapX: Double, mapY: Double, radius: Int
+    ): PagingSource<Int, StoryEntity>
+
+    suspend fun getStoriesByLocation(
+        mapX: Double, mapY: Double, radius: Int,
+        size: Int
+    ): List<StoryEntity>
+
+    fun getStoriesByKeywordPagingSource(keyword: String): PagingSource<Int, StoryEntity>
+    suspend fun getStoriesByKeyword(keyword: String, size: Int): List<StoryEntity>
+    suspend fun deleteStories()
 }
 
 class StoryDataSourceImpl @Inject constructor(
-    private val storyDao: StoryDao,
-    private val remoteKeyDao: StoryRemoteKeyDao,
+    private val dao: StoryDao,
 ) : StoryDataSource {
     override suspend fun insertStories(stories: List<StoryEntity>) {
-        return storyDao.insertStories(stories)
+        return dao.insertStories(stories)
     }
 
-    override fun getStories(): PagingSource<Int, StoryEntity> {
-        return storyDao.getStories()
+    override fun getStoriesPagingSource(): PagingSource<Int, StoryEntity> {
+        return dao.getStoriesPagingSource()
     }
 
-    override fun getStoriesByTheme(themeId: Int, themeLangId: Int): PagingSource<Int, StoryEntity> {
-        return storyDao.getStoriesByTheme(themeId, themeLangId)
+    override suspend fun getStories(size: Int): List<StoryEntity> {
+        return dao.getStories(size)
     }
 
-    override fun getStoriesByLocation(
-        mapX: Double,
-        mapY: Double,
-        radius: Int
+    override fun getStoriesByThemePagingSource(
+        themeId: Int, themeLangId: Int
     ): PagingSource<Int, StoryEntity> {
-        return storyDao.getStoriesByLocation(mapX, mapY, radius / METERS_PER_DEGREE)
+        return dao.getStoriesByThemePagingSource(themeId, themeLangId)
     }
 
-    override fun getStoriesByKeyword(keyword: String): PagingSource<Int, StoryEntity> {
-        return storyDao.getStoriesByKeyword(keyword)
+    override suspend fun getStoriesByTheme(
+        themeId: Int, themeLangId: Int
+    ): List<StoryEntity> {
+        return dao.getStoriesByTheme(themeId, themeLangId)
+    }
+
+    override fun getStoriesByLocationPagingSource(
+        mapX: Double, mapY: Double, radius: Int
+    ): PagingSource<Int, StoryEntity> {
+        return dao.getStoriesByLocationPagingSource(mapX, mapY, radius / METERS_PER_DEGREE)
+    }
+
+    override suspend fun getStoriesByLocation(
+        mapX: Double, mapY: Double, radius: Int,
+        size: Int
+    ): List<StoryEntity> {
+        return dao.getStoriesByLocation(mapX, mapY, radius / METERS_PER_DEGREE, size)
+    }
+
+    override fun getStoriesByKeywordPagingSource(keyword: String): PagingSource<Int, StoryEntity> {
+        return dao.getStoriesByKeywordPagingSource(keyword)
+    }
+
+    override suspend fun getStoriesByKeyword(keyword: String, size: Int): List<StoryEntity> {
+        return dao.getStoriesByKeyword(keyword, size)
     }
 
     override suspend fun deleteStories() {
-        return storyDao.deleteStories()
-    }
-
-    override suspend fun insertRemoteKeys(keys: List<StoryRemoteKey>) {
-        return remoteKeyDao.insertRemoteKeys(keys)
-    }
-
-    override suspend fun getRemoteKey(
-        id: Int,
-        queryType: String
-    ): StoryRemoteKey? {
-        return remoteKeyDao.getRemoteKey(id, queryType)
-    }
-
-    override suspend fun deleteRemoteKeysByQueryType(queryType: String) {
-        return remoteKeyDao.deleteRemoteKeysByQueryType(queryType)
-    }
-
-    override suspend fun deleteRemoteKeys() {
-        return remoteKeyDao.deleteRemoteKeys()
+        return dao.deleteStories()
     }
 
     companion object {

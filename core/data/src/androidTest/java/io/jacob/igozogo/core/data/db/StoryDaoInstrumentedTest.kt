@@ -32,10 +32,10 @@ class StoryDaoInstrumentedTest {
     }
 
     @Test
-    fun getStoriesTest() = runTest {
+    fun getStoriesPagingSourceTest() = runTest {
         dao.insertStories(entities)
 
-        val pagingSource = dao.getStories()
+        val pagingSource = dao.getStoriesPagingSource()
         val result = pagingSource.load(
             PagingSource.LoadParams.Refresh(
                 key = null,
@@ -49,10 +49,19 @@ class StoryDaoInstrumentedTest {
     }
 
     @Test
-    fun getStoriesByThemeTest() = runTest {
+    fun getStoriesTest() = runTest {
         dao.insertStories(entities)
 
-        val pagingSource1 = dao.getStoriesByTheme(2897, 4473)
+        val stories = dao.getStories(10)
+        assertEquals(10, stories.size)
+        assertEquals("무각사", stories[0].title)
+    }
+
+    @Test
+    fun getStoriesByThemePagingSourceTest() = runTest {
+        dao.insertStories(entities)
+
+        val pagingSource1 = dao.getStoriesByThemePagingSource(2897, 4473)
         val result1 = pagingSource1.load(
             PagingSource.LoadParams.Refresh(
                 key = null,
@@ -63,7 +72,7 @@ class StoryDaoInstrumentedTest {
         val data1 = (result1 as PagingSource.LoadResult.Page).data
         assertEquals(8, data1.size)
 
-        val pagingSource2 = dao.getStoriesByTheme(1, 1)
+        val pagingSource2 = dao.getStoriesByThemePagingSource(1, 1)
         val result2 = pagingSource2.load(
             PagingSource.LoadParams.Refresh(
                 key = null,
@@ -73,6 +82,59 @@ class StoryDaoInstrumentedTest {
         )
         val data2 = (result2 as PagingSource.LoadResult.Page).data
         assertEquals(0, data2.size)
+    }
+
+    @Test
+    fun getStoriesByThemeTest() = runTest {
+        dao.insertStories(entities)
+
+        val stories1 = dao.getStoriesByTheme(2897, 4473)
+        assertEquals(8, stories1.size)
+
+        val stories2 = dao.getStoriesByTheme(1, 1)
+        assertEquals(0, stories2.size)
+    }
+
+    @Test
+    fun getStoriesByLocationPagingSourceTest() = runTest {
+        dao.insertStories(entities)
+
+        val mapX = 126.852601
+        val mapY = 35.159545
+
+        fun isSortedAscByDistance(
+            entities: List<StoryEntity>
+        ): Boolean {
+            val distances = entities.map { entity ->
+                val dx = entity.mapX - mapX
+                val dy = entity.mapY - mapY
+                dx * dx + dy * dy // sqrt 없이 제곱 거리 비교 (더 빠름)
+            }
+            return distances == distances.sorted()
+        }
+
+        val pagingSource1 = dao.getStoriesByLocationPagingSource(mapX, mapY, 1000 / METERS_PER_DEGREE)
+        val result1 = pagingSource1.load(
+            PagingSource.LoadParams.Refresh(
+                key = null,
+                loadSize = 20,
+                placeholdersEnabled = false,
+            )
+        )
+        val data1 = (result1 as PagingSource.LoadResult.Page).data
+        assertEquals(10, data1.size)
+        assertTrue(isSortedAscByDistance(data1))
+
+        val pagingSource2 = dao.getStoriesByLocationPagingSource(mapX, mapY, 700 / METERS_PER_DEGREE)
+        val result2 = pagingSource2.load(
+            PagingSource.LoadParams.Refresh(
+                key = null,
+                loadSize = 20,
+                placeholdersEnabled = false,
+            )
+        )
+        val data2 = (result2 as PagingSource.LoadResult.Page).data
+        assertEquals(1, data2.size)
     }
 
     @Test
@@ -93,35 +155,19 @@ class StoryDaoInstrumentedTest {
             return distances == distances.sorted()
         }
 
-        val pagingSource1 = dao.getStoriesByLocation(mapX, mapY, 1000 / METERS_PER_DEGREE)
-        val result1 = pagingSource1.load(
-            PagingSource.LoadParams.Refresh(
-                key = null,
-                loadSize = 20,
-                placeholdersEnabled = false,
-            )
-        )
-        val data1 = (result1 as PagingSource.LoadResult.Page).data
-        assertEquals(10, data1.size)
-        assertTrue(isSortedAscByDistance(data1))
+        val stories1 = dao.getStoriesByLocation(mapX, mapY, 1000 / METERS_PER_DEGREE, 10)
+        assertEquals(10, stories1.size)
+        assertTrue(isSortedAscByDistance(stories1))
 
-        val pagingSource2 = dao.getStoriesByLocation(mapX, mapY, 700 / METERS_PER_DEGREE)
-        val result2 = pagingSource2.load(
-            PagingSource.LoadParams.Refresh(
-                key = null,
-                loadSize = 20,
-                placeholdersEnabled = false,
-            )
-        )
-        val data2 = (result2 as PagingSource.LoadResult.Page).data
-        assertEquals(1, data2.size)
+        val stories2 = dao.getStoriesByLocation(mapX, mapY, 700 / METERS_PER_DEGREE, 10)
+        assertEquals(1, stories2.size)
     }
 
     @Test
-    fun getStoriesByKeywordTest() = runTest {
+    fun getStoriesByKeywordPagingSourceTest() = runTest {
         dao.insertStories(entities)
 
-        val pagingSource1 = dao.getStoriesByKeyword("광주")
+        val pagingSource1 = dao.getStoriesByKeywordPagingSource("광주")
         val result1 = pagingSource1.load(
             PagingSource.LoadParams.Refresh(
                 key = null,
@@ -132,7 +178,7 @@ class StoryDaoInstrumentedTest {
         val data1 = (result1 as PagingSource.LoadResult.Page).data
         assertEquals(6, data1.size)
 
-        val pagingSource2 = dao.getStoriesByKeyword("경복궁")
+        val pagingSource2 = dao.getStoriesByKeywordPagingSource("경복궁")
         val result2 = pagingSource2.load(
             PagingSource.LoadParams.Refresh(
                 key = null,
@@ -142,6 +188,17 @@ class StoryDaoInstrumentedTest {
         )
         val data2 = (result2 as PagingSource.LoadResult.Page).data
         assertEquals(0, data2.size)
+    }
+
+    @Test
+    fun getStoriesByKeywordTest() = runTest {
+        dao.insertStories(entities)
+
+        val stories1 = dao.getStoriesByKeyword("광주", 10)
+        assertEquals(6, stories1.size)
+
+        val stories2 = dao.getStoriesByKeyword("경복궁", 10)
+        assertEquals(0, stories2.size)
     }
 
     companion object {

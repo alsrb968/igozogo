@@ -68,94 +68,165 @@ class PlaceRepositoryUnitTest {
         }
 
     @Test
-    fun `Given themes, When getPlaces called, Then call dataSource`() =
+    fun `Given themes, When getPlacesPaging called, Then call dataSource`() =
         testScope.runTest {
             // Given
-            coEvery { themeDataSource.getThemes() } returns TestPagingSource(themeEntities)
+            coEvery { themeDataSource.getThemesPagingSource() } returns TestPagingSource(
+                themeEntities
+            )
 
             // When
-            val flow = repository.getPlaces()
+            val flow = repository.getPlacesPaging()
 
             val job = launch { flow.collectLatest { pagingData -> } }
 
             // Then
             advanceUntilIdle()
             job.cancel()
-            coVerify { themeDataSource.getThemes() }
+            coVerify { themeDataSource.getThemesPagingSource() }
+        }
+
+    @Test
+    fun `Given themes, When getPlaces called, Then call dataSource`() =
+        testScope.runTest {
+            // Given
+            coEvery { themeDataSource.getThemes(any()) } returns themeEntities
+
+            // When
+            repository.getPlaces()
+
+            // Then
+            coVerify { themeDataSource.getThemes(any()) }
+        }
+
+    @Test
+    fun `Given themes, When getPlaceCategoriesPaging called, Then call dataSource`() =
+        testScope.runTest {
+            // Given
+            coEvery { themeDataSource.getThemeCategoriesPagingSource() } returns TestPagingSource(
+                listOf()
+            )
+
+            // When
+            val flow = repository.getPlaceCategoriesPaging()
+
+            val job = launch { flow.collectLatest { pagingData -> } }
+
+            // Then
+            advanceUntilIdle()
+            job.cancel()
+            coVerify { themeDataSource.getThemeCategoriesPagingSource() }
         }
 
     @Test
     fun `Given themes, When getPlaceCategories called, Then call dataSource`() =
         testScope.runTest {
             // Given
-            coEvery { themeDataSource.getThemeCategories() } returns TestPagingSource(listOf())
+            coEvery { themeDataSource.getThemeCategories() } returns listOf()
 
             // When
-            val flow = repository.getPlaceCategories()
-
-            val job = launch { flow.collectLatest { pagingData -> } }
+            repository.getPlaceCategories()
 
             // Then
-            advanceUntilIdle()
-            job.cancel()
             coVerify { themeDataSource.getThemeCategories() }
         }
 
     @Test
-    fun `Given themes, When getPlacesByCategory called, Then call dataSource`() =
+    fun `Given themes, When getPlacesByCategoryPaging called, Then call dataSource`() =
         testScope.runTest {
             // Given
-            coEvery { themeDataSource.getThemesByCategory(any()) } returns TestPagingSource(
+            coEvery { themeDataSource.getThemesByCategoryPagingSource(any()) } returns TestPagingSource(
                 themeEntities
             )
 
             // When
-            val flow = repository.getPlacesByCategory("백제역사여행")
+            val flow = repository.getPlacesByCategoryPaging("백제역사여행")
 
             val job = launch { flow.collectLatest { pagingData -> } }
 
             // Then
             advanceUntilIdle()
             job.cancel()
-            coVerify { themeDataSource.getThemesByCategory(any()) }
+            coVerify { themeDataSource.getThemesByCategoryPagingSource(any()) }
+        }
+
+    @Test
+    fun `Given themes, When getPlacesByCategory called with empty category, Then call dataSource`() =
+        testScope.runTest {
+            // Given
+            coEvery { themeDataSource.getThemesByCategory(any(), any()) } returns themeEntities
+
+            // When
+            repository.getPlacesByCategory("", 10)
+
+            // Then
+            coVerify { themeDataSource.getThemesByCategory(any(), any()) }
+        }
+
+    @Test
+    fun `Given themes, When getPlacesByLocationPaging called, Then call dataSource`() =
+        testScope.runTest {
+            // Given
+            every {
+                themeDataSource.getThemesByLocationPagingSource(any(), any(), any())
+            } returns TestPagingSource(themeEntities)
+
+            // When
+            val flow = repository.getPlacesByLocationPaging(126.852601, 35.159545, 20000)
+
+            val job = launch { flow.collectLatest { pagingData -> } }
+
+            // Then
+            advanceUntilIdle()
+            job.cancel()
+            coVerify { themeDataSource.getThemesByLocationPagingSource(any(), any(), any()) }
         }
 
     @Test
     fun `Given themes, When getPlacesByLocation called, Then call dataSource`() =
         testScope.runTest {
             // Given
-            every {
-                themeDataSource.getThemesByLocation(any(), any(), any())
-            } returns TestPagingSource(themeEntities)
+            coEvery {
+                themeDataSource.getThemesByLocation(any(), any(), any(), any())
+            } returns themeEntities
 
             // When
-            val flow = repository.getPlacesByLocation(126.852601, 35.159545, 20000)
+            repository.getPlacesByLocation(126.852601, 35.159545, 200, 10)
+
+            // Then
+            coVerify { themeDataSource.getThemesByLocation(any(), any(), any(), any()) }
+        }
+
+    @Test
+    fun `Given themes, When getPlacesByKeywordPaging called, Then call dataSource`() =
+        testScope.runTest {
+            // Given
+            every { themeDataSource.getThemesByKeywordPagingSource(any()) } returns TestPagingSource(
+                themeEntities
+            )
+
+            // When
+            val flow = repository.getPlacesByKeywordPaging("백제")
 
             val job = launch { flow.collectLatest { pagingData -> } }
 
             // Then
             advanceUntilIdle()
             job.cancel()
-            coVerify { themeDataSource.getThemesByLocation(any(), any(), any()) }
+            coVerify { themeDataSource.getThemesByKeywordPagingSource(any()) }
         }
 
     @Test
     fun `Given themes, When getPlacesByKeyword called, Then call dataSource`() =
         testScope.runTest {
             // Given
-            every { themeDataSource.getThemesByKeyword(any()) } returns TestPagingSource(
-                themeEntities
-            )
+            coEvery { themeDataSource.getThemesByKeyword(any(), any()) } returns themeEntities
 
             // When
-            val flow = repository.getPlacesByKeyword("백제")
-
-            val job = launch { flow.collectLatest { pagingData -> } }
+            repository.getPlacesByKeyword("백제", 10)
 
             // Then
-            advanceUntilIdle()
-            job.cancel()
-            coVerify { themeDataSource.getThemesByKeyword(any()) }
+            coVerify { themeDataSource.getThemesByKeyword(any(), any()) }
         }
 
     @Test

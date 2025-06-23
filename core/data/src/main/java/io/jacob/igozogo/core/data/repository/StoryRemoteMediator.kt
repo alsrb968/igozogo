@@ -9,6 +9,7 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import io.jacob.igozogo.core.data.datasource.local.StoryDataSource
+import io.jacob.igozogo.core.data.datasource.local.StoryRemoteKeyDataSource
 import io.jacob.igozogo.core.data.datasource.remote.OdiiDataSource
 import io.jacob.igozogo.core.data.db.VisitKoreaDatabase
 import io.jacob.igozogo.core.data.mapper.toStoryEntity
@@ -34,8 +35,9 @@ sealed interface Query {
 @OptIn(ExperimentalPagingApi::class)
 class StoryRemoteMediator @AssistedInject constructor(
     private val db: VisitKoreaDatabase,
-    private val local: StoryDataSource,
-    private val remote: OdiiDataSource,
+    private val localSource: StoryDataSource,
+    private val keySource: StoryRemoteKeyDataSource,
+    private val remoteSource: OdiiDataSource,
     @Assisted("query") private val query: Query,
 ) : RemoteMediator<Int, StoryEntity>() {
 
@@ -68,13 +70,13 @@ class StoryRemoteMediator @AssistedInject constructor(
         try {
             val size = state.config.pageSize
 
-            remote.getStoryResponses(size, page).fold(
+            remoteSource.getStoryResponses(size, page).fold(
                 onSuccess = { responses ->
                     val endOfPaginationReached = responses.isEmpty()
 
                     db.withTransaction {
                         if (loadType == LoadType.REFRESH) {
-                            local.deleteRemoteKeysByQueryType(query.toString())
+                            keySource.deleteRemoteKeysByQueryType(query.toString())
                         }
 
                         val entities = responses.toStoryEntity()
@@ -84,8 +86,8 @@ class StoryRemoteMediator @AssistedInject constructor(
                             nextPage = if (endOfPaginationReached) null else page + 1,
                         )
 
-                        local.insertStories(entities)
-                        local.insertRemoteKeys(keys)
+                        localSource.insertStories(entities)
+                        keySource.insertRemoteKeys(keys)
                     }
 
                     return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
@@ -103,7 +105,7 @@ class StoryRemoteMediator @AssistedInject constructor(
     ): StoryRemoteKey? {
         return state.anchorPosition?.let { position ->
             state.closestItemToPosition(position)?.storyLangId?.let { id ->
-                local.getRemoteKey(id, query.toString())
+                keySource.getRemoteKey(id, query.toString())
             }
         }
     }
@@ -112,7 +114,7 @@ class StoryRemoteMediator @AssistedInject constructor(
         state: PagingState<Int, StoryEntity>
     ): StoryRemoteKey? {
         return state.pages.firstOrNull { it.data.isNotEmpty() }?.data?.firstOrNull()?.let { story ->
-            local.getRemoteKey(story.storyLangId, query.toString())
+            keySource.getRemoteKey(story.storyLangId, query.toString())
         }
     }
 
@@ -120,7 +122,7 @@ class StoryRemoteMediator @AssistedInject constructor(
         state: PagingState<Int, StoryEntity>
     ): StoryRemoteKey? {
         return state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()?.let { story ->
-            local.getRemoteKey(story.storyLangId, query.toString())
+            keySource.getRemoteKey(story.storyLangId, query.toString())
         }
     }
 
