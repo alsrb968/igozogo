@@ -19,7 +19,18 @@ interface ThemeDao {
         WHERE imageUrl IS NOT NULL AND imageUrl != ''
         """
     )
-    fun getThemes(): PagingSource<Int, ThemeEntity>
+    fun getThemesPagingSource(): PagingSource<Int, ThemeEntity>
+
+    @Query(
+        """
+        
+        SELECT *
+        FROM theme_table
+        WHERE imageUrl IS NOT NULL AND imageUrl != ''
+        LIMIT :size
+        """
+    )
+    suspend fun getThemes(size: Int): List<ThemeEntity>
 
     @Query(
         """
@@ -27,7 +38,15 @@ interface ThemeDao {
         FROM theme_table
         """
     )
-    fun getThemeCategories(): PagingSource<Int, String>
+    fun getThemeCategoriesPagingSource(): PagingSource<Int, String>
+
+    @Query(
+        """
+        SELECT DISTINCT themeCategory
+        FROM theme_table
+        """
+    )
+    suspend fun getThemeCategories(): List<String>
 
     @Query(
         """
@@ -36,7 +55,17 @@ interface ThemeDao {
         WHERE themeCategory = :category
         """
     )
-    fun getThemesByCategory(category: String): PagingSource<Int, ThemeEntity>
+    fun getThemesByCategoryPagingSource(category: String): PagingSource<Int, ThemeEntity>
+
+    @Query(
+        """
+        SELECT *
+        FROM theme_table
+        WHERE themeCategory = :category
+        LIMIT :size
+        """
+    )
+    suspend fun getThemesByCategory(category: String, size: Int): List<ThemeEntity>
 
     @Query(
         """
@@ -47,11 +76,28 @@ interface ThemeDao {
         ORDER BY ((mapX - :mapX) * (mapX - :mapX) + (mapY - :mapY) * (mapY - :mapY)) ASC
         """
     )
-    fun getThemesByLocation(
+    fun getThemesByLocationPagingSource(
         mapX: Double,
         mapY: Double,
         radiusDeg: Double
     ): PagingSource<Int, ThemeEntity>
+
+    @Query(
+        """
+        SELECT *
+        FROM theme_table
+        WHERE mapX BETWEEN :mapX - :radiusDeg AND :mapX + :radiusDeg
+            AND mapY BETWEEN :mapY - :radiusDeg AND :mapY + :radiusDeg
+        ORDER BY ((mapX - :mapX) * (mapX - :mapX) + (mapY - :mapY) * (mapY - :mapY)) ASC
+        LIMIT :size
+        """
+    )
+    suspend fun getThemesByLocation(
+        mapX: Double,
+        mapY: Double,
+        radiusDeg: Double,
+        size: Int
+    ): List<ThemeEntity>
 
     @Query(
         """
@@ -63,7 +109,20 @@ interface ThemeDao {
             OR addr2 LIKE '%' || :keyword || '%'
         """
     )
-    fun getThemesByKeyword(keyword: String): PagingSource<Int, ThemeEntity>
+    fun getThemesByKeywordPagingSource(keyword: String): PagingSource<Int, ThemeEntity>
+
+    @Query(
+        """
+        SELECT *
+        FROM theme_table
+        WHERE title LIKE '%' || :keyword || '%'
+            OR themeCategory LIKE '%' || :keyword || '%'
+            OR addr1 LIKE '%' || :keyword || '%'
+            OR addr2 LIKE '%' || :keyword || '%'
+        LIMIT :size
+        """
+    )
+    suspend fun getThemesByKeyword(keyword: String, size: Int): List<ThemeEntity>
 
     @Query(
         """

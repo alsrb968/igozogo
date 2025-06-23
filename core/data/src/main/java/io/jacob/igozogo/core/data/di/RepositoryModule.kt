@@ -7,9 +7,11 @@ import dagger.hilt.components.SingletonComponent
 import io.jacob.igozogo.core.data.datasource.local.StoryDataSource
 import io.jacob.igozogo.core.data.datasource.local.ThemeDataSource
 import io.jacob.igozogo.core.data.datasource.remote.OdiiDataSource
+import io.jacob.igozogo.core.data.repository.PlaceRepositoryImpl
 import io.jacob.igozogo.core.data.repository.StoryRemoteMediator
-import io.jacob.igozogo.core.data.repository.OdiiRepositoryImpl
-import io.jacob.igozogo.core.domain.repository.OdiiRepository
+import io.jacob.igozogo.core.data.repository.StoryRepositoryImpl
+import io.jacob.igozogo.core.domain.repository.PlaceRepository
+import io.jacob.igozogo.core.domain.repository.StoryRepository
 import javax.inject.Singleton
 
 @Module
@@ -17,16 +19,24 @@ import javax.inject.Singleton
 object RepositoryModule {
     @Provides
     @Singleton
-    fun provideOdiiRepository(
+    fun providePlaceRepository(
         themeDataSource: ThemeDataSource,
-        storyDataSource: StoryDataSource,
         odiiDataSource: OdiiDataSource,
-        storyRemoteMediatorFactory: StoryRemoteMediator.Factory,
-    ): OdiiRepository {
-        return OdiiRepositoryImpl(
+    ): PlaceRepository {
+        return PlaceRepositoryImpl(
             themeDataSource = themeDataSource,
-            storyDataSource = storyDataSource,
             odiiDataSource = odiiDataSource,
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideStoryRepository(
+        storyDataSource: StoryDataSource,
+        storyRemoteMediatorFactory: StoryRemoteMediator.Factory,
+    ): StoryRepository {
+        return StoryRepositoryImpl(
+            storyDataSource = storyDataSource,
             storyRemoteMediatorFactory = storyRemoteMediatorFactory,
         )
     }

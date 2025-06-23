@@ -5,10 +5,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.jacob.igozogo.core.data.api.OdiiApi
-import io.jacob.igozogo.core.data.datasource.local.StoryDataSource
-import io.jacob.igozogo.core.data.datasource.local.StoryDataSourceImpl
-import io.jacob.igozogo.core.data.datasource.local.ThemeDataSource
-import io.jacob.igozogo.core.data.datasource.local.ThemeDataSourceImpl
+import io.jacob.igozogo.core.data.datasource.local.*
 import io.jacob.igozogo.core.data.datasource.remote.OdiiDataSource
 import io.jacob.igozogo.core.data.datasource.remote.OdiiDataSourceImpl
 import io.jacob.igozogo.core.data.db.StoryDao
@@ -32,12 +29,20 @@ object DataSourceModule {
     @Provides
     @Singleton
     fun provideStoryDataSource(
-        storyDao: StoryDao,
-        remoteKeyDao: StoryRemoteKeyDao,
+        dao: StoryDao,
     ): StoryDataSource {
         return StoryDataSourceImpl(
-            storyDao = storyDao,
-            remoteKeyDao = remoteKeyDao,
+            dao = dao
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideStoryRemoteKeyDataSource(
+        dao: StoryRemoteKeyDao
+    ): StoryRemoteKeyDataSource {
+        return StoryRemoteKeyDataSourceImpl(
+            dao = dao
         )
     }
 
