@@ -2,10 +2,9 @@ package io.jacob.igozogo.core.domain.repository
 
 import androidx.paging.PagingData
 import io.jacob.igozogo.core.domain.model.Place
-import io.jacob.igozogo.core.domain.model.Story
 import kotlinx.coroutines.flow.Flow
 
-interface OdiiRepository {
+interface PlaceRepository {
     suspend fun syncPlaces(size: Int = 100)
 
     fun getPlaces(pageSize: Int = 20): Flow<PagingData<Place>>
@@ -30,21 +29,4 @@ interface OdiiRepository {
     suspend fun getPlaceById(placeId: Int, placeLangId: Int): Place?
 
     suspend fun getPlacesCount(): Int
-
-    fun getStoriesByPlace(
-        place: Place,
-        pageSize: Int = 20,
-    ): Flow<PagingData<Story>>
-
-    fun getStoriesByLocation(
-        mapX: Double,
-        mapY: Double,
-        radius: Int,
-        pageSize: Int = 20,
-    ): Flow<PagingData<Story>>
-
-    fun getStoriesByKeyword(
-        keyword: String,
-        pageSize: Int = 20,
-    ): Flow<PagingData<Story>>
 }

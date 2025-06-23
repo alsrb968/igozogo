@@ -1,26 +1,23 @@
 package io.jacob.igozogo.core.data.repository
 
-import androidx.paging.*
-import io.jacob.igozogo.core.data.datasource.local.StoryDataSource
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.map
 import io.jacob.igozogo.core.data.datasource.local.ThemeDataSource
 import io.jacob.igozogo.core.data.datasource.remote.OdiiDataSource
 import io.jacob.igozogo.core.data.mapper.toPlace
-import io.jacob.igozogo.core.data.mapper.toStory
 import io.jacob.igozogo.core.data.mapper.toThemeEntity
 import io.jacob.igozogo.core.domain.model.Place
-import io.jacob.igozogo.core.domain.model.Story
-import io.jacob.igozogo.core.domain.repository.OdiiRepository
+import io.jacob.igozogo.core.domain.repository.PlaceRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-@OptIn(ExperimentalPagingApi::class)
-class OdiiRepositoryImpl @Inject constructor(
+class PlaceRepositoryImpl @Inject constructor(
     private val themeDataSource: ThemeDataSource,
-    private val storyDataSource: StoryDataSource,
     private val odiiDataSource: OdiiDataSource,
-    private val storyRemoteMediatorFactory: StoryRemoteMediator.Factory,
-) : OdiiRepository {
+) : PlaceRepository {
     override suspend fun syncPlaces(size: Int) {
         odiiDataSource.getThemeBasedList(
             numOfRows = size,
@@ -103,58 +100,5 @@ class OdiiRepositoryImpl @Inject constructor(
 
     override suspend fun getPlacesCount(): Int {
         return themeDataSource.getThemesCount()
-    }
-
-    override fun getStoriesByPlace(
-        place: Place,
-        pageSize: Int
-    ): Flow<PagingData<Story>> {
-        val query = Query.Place(place.placeId, place.placeLangId)
-
-        return Pager(
-            config = PagingConfig(pageSize = pageSize),
-            remoteMediator = storyRemoteMediatorFactory.create(query),
-            pagingSourceFactory = {
-                storyDataSource.getStoriesByTheme(place.placeId, place.placeLangId)
-            }
-        ).flow.map { pagingData ->
-            pagingData.map { it.toStory() }
-        }
-    }
-
-    override fun getStoriesByLocation(
-        mapX: Double,
-        mapY: Double,
-        radius: Int,
-        pageSize: Int
-    ): Flow<PagingData<Story>> {
-        val query = Query.Location(mapX, mapY, radius)
-
-        return Pager(
-            config = PagingConfig(pageSize = pageSize),
-            remoteMediator = storyRemoteMediatorFactory.create(query),
-            pagingSourceFactory = {
-                storyDataSource.getStoriesByLocation(mapX, mapY, radius)
-            }
-        ).flow.map { pagingData ->
-            pagingData.map { it.toStory() }
-        }
-    }
-
-    override fun getStoriesByKeyword(
-        keyword: String,
-        pageSize: Int
-    ): Flow<PagingData<Story>> {
-        val query = Query.Keyword(keyword)
-
-        return Pager(
-            config = PagingConfig(pageSize = pageSize),
-            remoteMediator = storyRemoteMediatorFactory.create(query),
-            pagingSourceFactory = {
-                storyDataSource.getStoriesByKeyword(keyword)
-            }
-        ).flow.map { pagingData ->
-            pagingData.map { it.toStory() }
-        }
     }
 }
