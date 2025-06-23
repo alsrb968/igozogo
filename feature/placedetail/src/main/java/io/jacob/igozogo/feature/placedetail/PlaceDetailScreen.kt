@@ -1,11 +1,19 @@
 package io.jacob.igozogo.feature.placedetail
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.outlined.FileDownload
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -14,8 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -55,7 +61,10 @@ fun PlaceDetailRoute(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalMaterial3ExpressiveApi::class
+)
 @Composable
 fun PlaceDetailScreen(
     modifier: Modifier = Modifier,
@@ -64,11 +73,16 @@ fun PlaceDetailScreen(
     onBackClick: () -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
-    val scrollBehavior = rememberTopAppBarState()
-    val appBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(scrollBehavior)
+    val listState = rememberLazyListState()
 
-    val collapsedFraction by remember {
-        derivedStateOf { appBarScrollBehavior.state.collapsedFraction }
+    val showTopBar by remember {
+        derivedStateOf {
+            // 첫 번째 아이템이 화면에 안 보일 때만 true
+            val firstVisibleItem = listState.firstVisibleItemIndex > 0
+            val offsetPastFirst = listState.firstVisibleItemIndex == 0 &&
+                    listState.firstVisibleItemScrollOffset > 700
+            firstVisibleItem || offsetPastFirst
+        }
     }
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -76,17 +90,20 @@ fun PlaceDetailScreen(
         topBar = {
             TopAppBar(
                 modifier = Modifier,
-//                    .nestedScroll(appBarScrollBehavior.nestedScrollConnection)
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent, // 배경을 투명하게
-                    scrolledContainerColor = Color.Transparent, // 스크롤 시에도 투명하게 유지
+                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = if (showTopBar) 1f else 0f)
                 ),
                 title = {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = place.title,
-                        textAlign = TextAlign.Center,
-                    )
+                    AnimatedVisibility(
+                        visible = showTopBar,
+                        enter = fadeIn(),
+                        exit = fadeOut()
+                    ) {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = place.title,
+                        )
+                    }
                 },
                 navigationIcon = {
                     IconButton(
@@ -98,27 +115,24 @@ fun PlaceDetailScreen(
                         )
                     }
                 },
-//                scrollBehavior = appBarScrollBehavior
             )
         }
     ) { paddingValues ->
 
         LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
-//                .nestedScroll(appBarScrollBehavior.nestedScrollConnection)
-            ,
+                .fillMaxSize(),
+            state = listState,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(8.dp)
         ) {
-            item {
-                Spacer(modifier = Modifier.height(paddingValues.calculateTopPadding()))
-            }
-
             item {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .padding(top = paddingValues.calculateTopPadding())
                         .padding(horizontal = 16.dp, vertical = 8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     StateImage(
                         modifier = Modifier
@@ -127,25 +141,67 @@ fun PlaceDetailScreen(
                         imageUrl = place.imageUrl,
                         contentDescription = place.title,
                     )
-                }
-            }
 
-            stickyHeader {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height((paddingValues.calculateTopPadding())),
-                    verticalArrangement = Arrangement.Bottom,
-                ) {
                     Text(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.secondary)
-                            .padding(8.dp),
+                            .padding(vertical = 16.dp),
                         text = place.title,
+                        style = MaterialTheme.typography.headlineMedium,
                     )
-                }
 
+                    Row(
+                        modifier = Modifier,
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .background(
+                                    color = MaterialTheme.colorScheme.outlineVariant,
+                                    shape = CircleShape
+                                ),
+                            onClick = { /* TODO */ }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.FileDownload,
+                                contentDescription = null
+                            )
+                        }
+
+                        IconButton(
+                            modifier = Modifier
+                                .size(70.dp)
+                                .background(
+                                    color = MaterialTheme.colorScheme.outlineVariant,
+                                    shape = CircleShape
+                                ),
+                            onClick = { /* TODO */ }
+                        ) {
+                            Icon(
+                                modifier = Modifier
+                                    .size(48.dp),
+                                imageVector = Icons.Default.PlayArrow,
+                                contentDescription = null
+                            )
+                        }
+
+                        IconButton(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .background(
+                                    color = MaterialTheme.colorScheme.outlineVariant,
+                                    shape = CircleShape
+                                ),
+                            onClick = { /* TODO */ }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Share,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                }
             }
 
             items(stories.itemCount) { index ->

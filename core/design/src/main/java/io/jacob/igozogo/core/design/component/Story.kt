@@ -59,8 +59,7 @@ fun StoryItem(
 ) {
     Card(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+            .fillMaxWidth(),
         onClick = { onClick(story) }
     ) {
         Column(
