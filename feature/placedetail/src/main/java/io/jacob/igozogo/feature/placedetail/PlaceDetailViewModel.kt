@@ -8,17 +8,14 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.jacob.igozogo.core.domain.model.Place
 import io.jacob.igozogo.core.domain.model.Story
-import io.jacob.igozogo.core.domain.usecase.GetPlaceByIdUseCase
-import io.jacob.igozogo.core.domain.usecase.GetStoriesByPlaceUseCase
+import io.jacob.igozogo.core.domain.usecase.GetPlaceAndStoriesByIdUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @HiltViewModel(assistedFactory = PlaceDetailViewModel.Factory::class)
 class PlaceDetailViewModel @AssistedInject constructor(
-    getPlaceByIdUseCase: GetPlaceByIdUseCase,
-    getStoriesByPlaceUseCase: GetStoriesByPlaceUseCase,
+    getPlaceAndStoriesByIdUseCase: GetPlaceAndStoriesByIdUseCase,
     @Assisted("placeId") val placeId: Int,
     @Assisted("placeLangId") val placeLangId: Int,
 ) : ViewModel() {
@@ -28,18 +25,14 @@ class PlaceDetailViewModel @AssistedInject constructor(
 
     init {
         viewModelScope.launch {
-            try {
-                getPlaceByIdUseCase(placeId, placeLangId)?.let { place ->
-                    Timber.i("place: ${place.title}")
-                    val stories = getStoriesByPlaceUseCase(place)
-                    Timber.i("stories: ${stories.size}")
+            getPlaceAndStoriesByIdUseCase(placeId, placeLangId).fold(
+                onSuccess = { (place, stories) ->
                     _state.value = PlaceDetailUiState.Success(place, stories)
-                } ?: run {
+                },
+                onFailure = {
                     _state.value = PlaceDetailUiState.Error
                 }
-            } catch (_: Exception) {
-                _state.value = PlaceDetailUiState.Error
-            }
+            )
         }
     }
 
