@@ -10,7 +10,6 @@ import io.jacob.igozogo.core.data.model.remote.odii.ThemeResponse
 import io.jacob.igozogo.core.domain.repository.PlaceRepository
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.*
@@ -20,7 +19,6 @@ import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class PlaceRepositoryUnitTest {
     private val testDispatcher = StandardTestDispatcher()
     private val testScope = TestScope(testDispatcher)
