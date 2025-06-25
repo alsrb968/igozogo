@@ -25,15 +25,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
 import io.jacob.igozogo.core.design.component.LoadingWheel
 import io.jacob.igozogo.core.design.component.StateImage
 import io.jacob.igozogo.core.design.component.StoryItem
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
 import io.jacob.igozogo.core.design.tooling.PreviewPlace
-import io.jacob.igozogo.core.design.tooling.previewStoriesLazyPagingItems
+import io.jacob.igozogo.core.design.tooling.PreviewStories
 import io.jacob.igozogo.core.domain.model.Place
 import io.jacob.igozogo.core.domain.model.Story
 
@@ -47,13 +45,13 @@ fun PlaceDetailRoute(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     when (val s = state) {
-        is PlaceDetailUiState.Loading -> LoadingWheel(modifier = modifier)
-        is PlaceDetailUiState.Error -> {}
-        is PlaceDetailUiState.Success -> {
+        is PlaceDetailState.Loading -> LoadingWheel(modifier = modifier)
+        is PlaceDetailState.Error -> {}
+        is PlaceDetailState.Success -> {
             PlaceDetailScreen(
                 modifier = modifier,
                 place = s.place,
-                stories = s.stories.collectAsLazyPagingItems(),
+                stories = s.stories,
                 onBackClick = onBackClick,
                 onShowSnackbar = onShowSnackbar
             )
@@ -69,7 +67,7 @@ fun PlaceDetailRoute(
 fun PlaceDetailScreen(
     modifier: Modifier = Modifier,
     place: Place,
-    stories: LazyPagingItems<Story>,
+    stories: List<Story>,
     onBackClick: () -> Unit,
     onShowSnackbar: suspend (String, String?) -> Boolean,
 ) {
@@ -204,13 +202,14 @@ fun PlaceDetailScreen(
                 }
             }
 
-            items(stories.itemCount) { index ->
-                stories[index]?.let { story ->
-                    StoryItem(
-                        story = story,
-                        onClick = { /* TODO */ }
-                    )
-                }
+            items(
+                count = stories.size,
+                key = { stories[it].storyLangId },
+            ) { index ->
+                StoryItem(
+                    story = stories[index],
+                    onClick = { /* TODO */ }
+                )
             }
         }
     }
@@ -222,7 +221,7 @@ private fun PlaceDetailScreenPreview() {
     IgozogoTheme {
         PlaceDetailScreen(
             place = PreviewPlace,
-            stories = previewStoriesLazyPagingItems(),
+            stories = PreviewStories,
             onBackClick = {},
             onShowSnackbar = { _, _ -> true }
         )

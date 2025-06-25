@@ -34,10 +34,12 @@ object RepositoryModule {
     fun provideStoryRepository(
         storyDataSource: StoryDataSource,
         storyRemoteMediatorFactory: StoryRemoteMediator.Factory,
+        odiiDataSource: OdiiDataSource,
     ): StoryRepository {
         return StoryRepositoryImpl(
             storyDataSource = storyDataSource,
             storyRemoteMediatorFactory = storyRemoteMediatorFactory,
+            odiiDataSource = odiiDataSource,
         )
     }
 }

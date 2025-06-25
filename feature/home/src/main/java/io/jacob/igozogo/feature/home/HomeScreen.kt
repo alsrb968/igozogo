@@ -14,12 +14,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.compose.collectAsLazyPagingItems
 import io.jacob.igozogo.core.design.R
 import io.jacob.igozogo.core.design.component.*
+import io.jacob.igozogo.core.design.theme.IgozogoTheme
+import io.jacob.igozogo.core.design.tooling.DevicePreviews
+import io.jacob.igozogo.core.design.tooling.PreviewCategories
+import io.jacob.igozogo.core.design.tooling.PreviewPlaces
+import io.jacob.igozogo.core.design.tooling.PreviewStories
 import io.jacob.igozogo.core.domain.model.Place
+import io.jacob.igozogo.core.domain.model.Story
+import io.jacob.igozogo.core.domain.usecase.FeedSection
 import kotlinx.coroutines.flow.collectLatest
-import timber.log.Timber
 
 @Composable
 fun HomeRoute(
@@ -34,10 +39,15 @@ fun HomeRoute(
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
-                is HomeEffect.Synced -> onShowSnackbar(context.getString(R.string.core_design_place_sync_completed), "OK")
-                is HomeEffect.NavigateToCategoryDetails -> { /* TODO */ }
-                is HomeEffect.NavigateToPlaceDetails -> { /* TODO */ }
-                is HomeEffect.NavigateToStoryDetails -> { /* TODO */ }
+                is HomeEffect.Synced ->
+                    onShowSnackbar(
+                        context.getString(R.string.core_design_place_sync_completed),
+                        "OK"
+                    )
+
+                is HomeEffect.NavigateToCategoryDetails -> {}
+                is HomeEffect.NavigateToPlaceDetails -> onPlaceClick(effect.place)
+                is HomeEffect.NavigateToStoryDetails -> {}
             }
         }
     }
@@ -49,7 +59,15 @@ fun HomeRoute(
             HomeScreen(
                 modifier = modifier,
                 feedSections = s.feedSections,
-                onPlaceClick = onPlaceClick,
+                onCategoryClick = { category ->
+                    viewModel.sendAction(HomeAction.ClickCategory(category))
+                },
+                onPlaceClick = { place ->
+                    viewModel.sendAction(HomeAction.ClickPlace(place))
+                },
+                onStoryClick = { story ->
+                    viewModel.sendAction(HomeAction.ClickStory(story))
+                }
             )
         }
     }
@@ -60,7 +78,9 @@ fun HomeRoute(
 fun HomeScreen(
     modifier: Modifier = Modifier,
     feedSections: List<FeedSection>,
+    onCategoryClick: (String) -> Unit,
     onPlaceClick: (Place) -> Unit,
+    onStoryClick: (Story) -> Unit,
 ) {
     LazyColumn(
         modifier = modifier
@@ -68,7 +88,10 @@ fun HomeScreen(
             .windowInsetsPadding(WindowInsets.statusBars),
         state = rememberLazyListState()
     ) {
-        items(feedSections.size) { index ->
+        items(
+            count = feedSections.size,
+            key = { feedSections[it].hashCode() },
+        ) { index ->
             val section = feedSections[index]
             when (section) {
                 is FeedSection.Categories -> {
@@ -78,8 +101,8 @@ fun HomeScreen(
                         text = stringResource(R.string.core_design_category)
                     ) {
                         ChipItemList(
-                            chipItems = section.categories.collectAsLazyPagingItems().itemSnapshotList.items,
-                            onItemClick = { Timber.i(it) }
+                            chipItems = section.categories,
+                            onItemClick = onCategoryClick
                         )
                     }
                 }
@@ -91,12 +114,10 @@ fun HomeScreen(
                         text = stringResource(R.string.core_design_place), onMore = { }
                     ) {
                         PlaceItemList(
-                            places = section.places.collectAsLazyPagingItems().itemSnapshotList.items,
+                            places = section.places,
                             isBookmarked = { false },
                             onBookmarkToggle = { },
-                            onItemClick = { place ->
-                                onPlaceClick(place)
-                            }
+                            onItemClick = onPlaceClick
                         )
                     }
                 }
@@ -105,13 +126,11 @@ fun HomeScreen(
                     TitleTextItem(
                         modifier = Modifier
                             .padding(bottom = 16.dp),
-                        text = "이야기", onMore = { }
+                        text = stringResource(R.string.core_design_story), onMore = { }
                     ) {
                         StoryItemList(
-                            stories = section.stories.collectAsLazyPagingItems().itemSnapshotList.items,
-                            onItemClick = { story ->
-//                                onClick(story)
-                            }
+                            stories = section.stories,
+                            onItemClick = onStoryClick
                         )
                     }
                 }
@@ -124,14 +143,19 @@ fun HomeScreen(
     }
 }
 
-//@DevicePreviews
-//@Composable
-//private fun HomeScreenPreview() {
-//    IgozogoTheme {
-//        HomeScreen(
-//            categories = previewCategoryListLazyPagingItems(),
-//            places = previewPlacesLazyPagingItems(),
-//            onPlaceClick = {}
-//        )
-//    }
-//}
+@DevicePreviews
+@Composable
+private fun HomeScreenPreview() {
+    IgozogoTheme {
+        HomeScreen(
+            feedSections = listOf(
+                FeedSection.Categories(PreviewCategories),
+                FeedSection.Places(PreviewPlaces),
+                FeedSection.Stories(PreviewStories),
+            ),
+            onCategoryClick = {},
+            onPlaceClick = {},
+            onStoryClick = {}
+        )
+    }
+}
