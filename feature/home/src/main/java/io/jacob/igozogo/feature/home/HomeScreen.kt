@@ -22,8 +22,8 @@ import io.jacob.igozogo.core.design.tooling.PreviewCategories
 import io.jacob.igozogo.core.design.tooling.PreviewPlaces
 import io.jacob.igozogo.core.design.tooling.PreviewStories
 import io.jacob.igozogo.core.domain.model.Place
+import io.jacob.igozogo.core.domain.model.Story
 import kotlinx.coroutines.flow.collectLatest
-import timber.log.Timber
 
 @Composable
 fun HomeRoute(
@@ -38,10 +38,15 @@ fun HomeRoute(
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
-                is HomeEffect.Synced -> onShowSnackbar(context.getString(R.string.core_design_place_sync_completed), "OK")
-                is HomeEffect.NavigateToCategoryDetails -> { /* TODO */ }
-                is HomeEffect.NavigateToPlaceDetails -> { /* TODO */ }
-                is HomeEffect.NavigateToStoryDetails -> { /* TODO */ }
+                is HomeEffect.Synced ->
+                    onShowSnackbar(
+                        context.getString(R.string.core_design_place_sync_completed),
+                        "OK"
+                    )
+
+                is HomeEffect.NavigateToCategoryDetails -> {}
+                is HomeEffect.NavigateToPlaceDetails -> onPlaceClick(effect.place)
+                is HomeEffect.NavigateToStoryDetails -> {}
             }
         }
     }
@@ -53,7 +58,15 @@ fun HomeRoute(
             HomeScreen(
                 modifier = modifier,
                 feedSections = s.feedSections,
-                onPlaceClick = onPlaceClick,
+                onCategoryClick = { category ->
+                    viewModel.sendAction(HomeAction.ClickCategory(category))
+                },
+                onPlaceClick = { place ->
+                    viewModel.sendAction(HomeAction.ClickPlace(place))
+                },
+                onStoryClick = { story ->
+                    viewModel.sendAction(HomeAction.ClickStory(story))
+                }
             )
         }
     }
@@ -64,7 +77,9 @@ fun HomeRoute(
 fun HomeScreen(
     modifier: Modifier = Modifier,
     feedSections: List<FeedSection>,
+    onCategoryClick: (String) -> Unit,
     onPlaceClick: (Place) -> Unit,
+    onStoryClick: (Story) -> Unit,
 ) {
     LazyColumn(
         modifier = modifier
@@ -86,7 +101,7 @@ fun HomeScreen(
                     ) {
                         ChipItemList(
                             chipItems = section.categories,
-                            onItemClick = { Timber.i(it) }
+                            onItemClick = onCategoryClick
                         )
                     }
                 }
@@ -101,9 +116,7 @@ fun HomeScreen(
                             places = section.places,
                             isBookmarked = { false },
                             onBookmarkToggle = { },
-                            onItemClick = { place ->
-                                onPlaceClick(place)
-                            }
+                            onItemClick = onPlaceClick
                         )
                     }
                 }
@@ -112,13 +125,11 @@ fun HomeScreen(
                     TitleTextItem(
                         modifier = Modifier
                             .padding(bottom = 16.dp),
-                        text = "이야기", onMore = { }
+                        text = stringResource(R.string.core_design_story), onMore = { }
                     ) {
                         StoryItemList(
                             stories = section.stories,
-                            onItemClick = { story ->
-//                                onClick(story)
-                            }
+                            onItemClick = onStoryClick
                         )
                     }
                 }
@@ -141,7 +152,9 @@ private fun HomeScreenPreview() {
                 FeedSection.Places(PreviewPlaces),
                 FeedSection.Stories(PreviewStories),
             ),
-            onPlaceClick = {}
+            onCategoryClick = {},
+            onPlaceClick = {},
+            onStoryClick = {}
         )
     }
 }

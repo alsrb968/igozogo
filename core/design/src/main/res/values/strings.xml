@@ -8,5 +8,6 @@
     <string name="core_design_place_sync_completed">Places sync completed</string>
     <string name="core_design_category">Category</string>
     <string name="core_design_place">Place</string>
+    <string name="core_design_story">Story</string>
     <string name="core_design_more">More</string>
 </resources>

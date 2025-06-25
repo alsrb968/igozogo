@@ -8,5 +8,6 @@
     <string name="core_design_place_sync_completed">장소 동기화 완료</string>
     <string name="core_design_category">카테고리</string>
     <string name="core_design_place">장소</string>
+    <string name="core_design_story">이야기</string>
     <string name="core_design_more">더보기</string>
 </resources>

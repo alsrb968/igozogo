@@ -79,14 +79,6 @@ class HomeViewModel @Inject constructor(
     private fun clickStory(story: Story) = viewModelScope.launch {
         _effect.emit(HomeEffect.NavigateToStoryDetails(story))
     }
-
-//    fun getPlaceCategories(): Flow<PagingData<String>> {
-//        return getPlaceCategoriesUseCase().cachedIn(viewModelScope)
-//    }
-//
-//    fun getPlaces(): Flow<PagingData<Place>> {
-//        return getPlacesUseCase().cachedIn(viewModelScope)
-//    }
 }
 
 sealed interface HomeState {
