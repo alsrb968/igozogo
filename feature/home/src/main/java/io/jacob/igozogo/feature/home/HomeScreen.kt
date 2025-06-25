@@ -23,6 +23,7 @@ import io.jacob.igozogo.core.design.tooling.PreviewPlaces
 import io.jacob.igozogo.core.design.tooling.PreviewStories
 import io.jacob.igozogo.core.domain.model.Place
 import io.jacob.igozogo.core.domain.model.Story
+import io.jacob.igozogo.core.domain.usecase.FeedSection
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable

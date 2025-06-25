@@ -9,9 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.jacob.igozogo.core.domain.model.Place
 import io.jacob.igozogo.core.domain.model.Story
 import io.jacob.igozogo.core.domain.usecase.GetPlaceAndStoriesByIdUseCase
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.*
 
 @HiltViewModel(assistedFactory = PlaceDetailViewModel.Factory::class)
 class PlaceDetailViewModel @AssistedInject constructor(
@@ -19,22 +17,22 @@ class PlaceDetailViewModel @AssistedInject constructor(
     @Assisted("placeId") val placeId: Int,
     @Assisted("placeLangId") val placeLangId: Int,
 ) : ViewModel() {
-
-    private val _state = MutableStateFlow<PlaceDetailUiState>(PlaceDetailUiState.Loading)
-    val state: StateFlow<PlaceDetailUiState> = _state
-
-    init {
-        viewModelScope.launch {
-            getPlaceAndStoriesByIdUseCase(placeId, placeLangId).fold(
-                onSuccess = { (place, stories) ->
-                    _state.value = PlaceDetailUiState.Success(place, stories)
-                },
-                onFailure = {
-                    _state.value = PlaceDetailUiState.Error
-                }
-            )
-        }
-    }
+    val state: StateFlow<PlaceDetailState> = flow {
+        emit(getPlaceAndStoriesByIdUseCase(placeId, placeLangId))
+    }.map { result ->
+        result.fold(
+            onSuccess = { (place, stories) ->
+                PlaceDetailState.Success(place, stories)
+            },
+            onFailure = {
+                PlaceDetailState.Error
+            }
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = PlaceDetailState.Loading
+    )
 
     @AssistedFactory
     interface Factory {
@@ -45,8 +43,8 @@ class PlaceDetailViewModel @AssistedInject constructor(
     }
 }
 
-sealed interface PlaceDetailUiState {
-    data object Loading : PlaceDetailUiState
-    data object Error : PlaceDetailUiState
-    data class Success(val place: Place, val stories: List<Story>) : PlaceDetailUiState
+sealed interface PlaceDetailState {
+    data object Loading : PlaceDetailState
+    data object Error : PlaceDetailState
+    data class Success(val place: Place, val stories: List<Story>) : PlaceDetailState
 }

@@ -45,9 +45,9 @@ fun PlaceDetailRoute(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     when (val s = state) {
-        is PlaceDetailUiState.Loading -> LoadingWheel(modifier = modifier)
-        is PlaceDetailUiState.Error -> {}
-        is PlaceDetailUiState.Success -> {
+        is PlaceDetailState.Loading -> LoadingWheel(modifier = modifier)
+        is PlaceDetailState.Error -> {}
+        is PlaceDetailState.Success -> {
             PlaceDetailScreen(
                 modifier = modifier,
                 place = s.place,
