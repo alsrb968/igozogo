@@ -17,7 +17,7 @@ class HomeViewModel @Inject constructor(
 ) : ViewModel() {
     val state: StateFlow<HomeState> = flow {
         emit(syncAndGetFeedsUseCase {
-            _effect.tryEmit(HomeEffect.Synced)
+            viewModelScope.launch { _effect.emit(HomeEffect.Synced) }
         })
     }.map { feeds ->
         HomeState.Success(feeds)
