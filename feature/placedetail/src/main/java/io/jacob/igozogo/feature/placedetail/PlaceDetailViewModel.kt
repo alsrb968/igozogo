@@ -2,8 +2,6 @@ package io.jacob.igozogo.feature.placedetail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -12,10 +10,10 @@ import io.jacob.igozogo.core.domain.model.Place
 import io.jacob.igozogo.core.domain.model.Story
 import io.jacob.igozogo.core.domain.usecase.GetPlaceByIdUseCase
 import io.jacob.igozogo.core.domain.usecase.GetStoriesByPlaceUseCase
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @HiltViewModel(assistedFactory = PlaceDetailViewModel.Factory::class)
 class PlaceDetailViewModel @AssistedInject constructor(
@@ -32,7 +30,9 @@ class PlaceDetailViewModel @AssistedInject constructor(
         viewModelScope.launch {
             try {
                 getPlaceByIdUseCase(placeId, placeLangId)?.let { place ->
-                    val stories = getStoriesByPlaceUseCase(place).cachedIn(viewModelScope)
+                    Timber.i("place: ${place.title}")
+                    val stories = getStoriesByPlaceUseCase(place)
+                    Timber.i("stories: ${stories.size}")
                     _state.value = PlaceDetailUiState.Success(place, stories)
                 } ?: run {
                     _state.value = PlaceDetailUiState.Error
@@ -55,5 +55,5 @@ class PlaceDetailViewModel @AssistedInject constructor(
 sealed interface PlaceDetailUiState {
     data object Loading : PlaceDetailUiState
     data object Error : PlaceDetailUiState
-    data class Success(val place: Place, val stories: Flow<PagingData<Story>>) : PlaceDetailUiState
+    data class Success(val place: Place, val stories: List<Story>) : PlaceDetailUiState
 }

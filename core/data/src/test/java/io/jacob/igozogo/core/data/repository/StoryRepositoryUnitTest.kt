@@ -2,16 +2,14 @@ package io.jacob.igozogo.core.data.repository
 
 import io.jacob.igozogo.core.data.TestPagingSource
 import io.jacob.igozogo.core.data.datasource.local.StoryDataSource
+import io.jacob.igozogo.core.data.datasource.remote.OdiiDataSource
 import io.jacob.igozogo.core.data.mapper.toPlace
 import io.jacob.igozogo.core.data.mapper.toStoryEntity
 import io.jacob.igozogo.core.data.mapper.toThemeEntity
 import io.jacob.igozogo.core.data.model.remote.odii.StoryResponse
 import io.jacob.igozogo.core.data.model.remote.odii.ThemeResponse
 import io.jacob.igozogo.core.domain.repository.StoryRepository
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.every
-import io.mockk.mockk
+import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
@@ -28,6 +26,7 @@ class StoryRepositoryUnitTest {
 
     private val storyDataSource = mockk<StoryDataSource>()
     private val storyRemoteMediatorFactory = mockk<StoryRemoteMediator.Factory>()
+    private val odiiDataSource = mockk<OdiiDataSource>()
 
     private lateinit var repository: StoryRepository
 
@@ -37,6 +36,7 @@ class StoryRepositoryUnitTest {
         repository = StoryRepositoryImpl(
             storyDataSource = storyDataSource,
             storyRemoteMediatorFactory = storyRemoteMediatorFactory,
+            odiiDataSource = odiiDataSource,
         )
     }
 
@@ -80,7 +80,7 @@ class StoryRepositoryUnitTest {
         }
 
     @Test
-    fun `Given Stories, When getStoriesByTheme called, Then call dataSource`() =
+    fun `Given cached Stories, When getStoriesByPlace called, Then call dataSource`() =
         testScope.runTest {
             // Given
             coEvery { storyDataSource.getStoriesByTheme(any(), any()) } returns storyEntities
@@ -90,6 +90,29 @@ class StoryRepositoryUnitTest {
 
             // Then
             coVerify { storyDataSource.getStoriesByTheme(any(), any()) }
+            coVerify(exactly = 0) {
+                odiiDataSource.getStoryBasedList(any(), any(), any(), any(), any())
+            }
+            coVerify(exactly = 0) { storyDataSource.insertStories(any()) }
+        }
+
+    @Test
+    fun `Given not cached Stories, When getStoriesByPlace called, Then call dataSource`() =
+        testScope.runTest {
+            // Given
+            coEvery { storyDataSource.getStoriesByTheme(any(), any()) } returns listOf()
+            coEvery {
+                odiiDataSource.getStoryBasedList(any(), any(), any(), any(), any())
+            } returns Result.success(storyResponses)
+            coEvery { storyDataSource.insertStories(any()) } just Runs
+
+            // When
+            repository.getStoriesByPlace(place = place)
+
+            // Then
+            coVerify { storyDataSource.getStoriesByTheme(any(), any()) }
+            coVerify { odiiDataSource.getStoryBasedList(any(), any(), any(), any(), any()) }
+            coVerify { storyDataSource.insertStories(any()) }
         }
 
     @Test
@@ -114,7 +137,7 @@ class StoryRepositoryUnitTest {
         }
 
     @Test
-    fun `Given Stories, When getStoriesByLocation called, Then call dataSource`() =
+    fun `Given cached Stories, When getStoriesByLocation called, Then call dataSource`() =
         testScope.runTest {
             // Given
             coEvery {
@@ -126,6 +149,33 @@ class StoryRepositoryUnitTest {
 
             // Then
             coVerify { storyDataSource.getStoriesByLocation(any(), any(), any(), any()) }
+            coVerify(exactly = 0) {
+                odiiDataSource.getStoryLocationBasedList(any(), any(), any(), any(), any(), any())
+            }
+            coVerify(exactly = 0) { storyDataSource.insertStories(any()) }
+        }
+
+    @Test
+    fun `Given not cached Stories, When getStoriesByLocation called, Then call dataSource`() =
+        testScope.runTest {
+            // Given
+            coEvery {
+                storyDataSource.getStoriesByLocation(any(), any(), any(), any())
+            } returns listOf()
+            coEvery {
+                odiiDataSource.getStoryLocationBasedList(any(), any(), any(), any(), any(), any())
+            } returns Result.success(storyResponses)
+            coEvery { storyDataSource.insertStories(any()) } just Runs
+
+            // When
+            repository.getStoriesByLocation(1.0, 1.0, 1, 10)
+
+            // Then
+            coVerify { storyDataSource.getStoriesByLocation(any(), any(), any(), any()) }
+            coVerify {
+                odiiDataSource.getStoryLocationBasedList(any(), any(), any(), any(), any(), any())
+            }
+            coVerify { storyDataSource.insertStories(any()) }
         }
 
     @Test
@@ -150,7 +200,7 @@ class StoryRepositoryUnitTest {
         }
 
     @Test
-    fun `Given Stories, When getStoriesByKeyword called, Then call dataSource`() =
+    fun `Given cached Stories, When getStoriesByKeyword called, Then call dataSource`() =
         testScope.runTest {
             // Given
             coEvery { storyDataSource.getStoriesByKeyword(any(), any()) } returns storyEntities
@@ -159,9 +209,28 @@ class StoryRepositoryUnitTest {
             repository.getStoriesByKeyword("test", 10)
 
             // Then
-            coVerify {
-                storyDataSource.getStoriesByKeyword(any(), any())
-            }
+            coVerify { storyDataSource.getStoriesByKeyword(any(), any()) }
+            coVerify(exactly = 0) { odiiDataSource.getStorySearchList(any(), any(), any(), any()) }
+            coVerify(exactly = 0) { storyDataSource.insertStories(any()) }
+        }
+
+    @Test
+    fun `Given not cached Stories, When getStoriesByKeyword called, Then call dataSource`() =
+        testScope.runTest {
+            // Given
+            coEvery { storyDataSource.getStoriesByKeyword(any(), any()) } returns listOf()
+            coEvery {
+                odiiDataSource.getStorySearchList(any(), any(), any(), any())
+            } returns Result.success(storyResponses)
+            coEvery { storyDataSource.insertStories(any()) } just Runs
+
+            // When
+            repository.getStoriesByKeyword("test", 10)
+
+            // Then
+            coVerify { storyDataSource.getStoriesByKeyword(any(), any()) }
+            coVerify { odiiDataSource.getStorySearchList(any(), any(), any(), any()) }
+            coVerify { storyDataSource.insertStories(any()) }
         }
 
     companion object {

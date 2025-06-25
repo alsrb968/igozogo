@@ -2,8 +2,6 @@ package io.jacob.igozogo.feature.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.jacob.igozogo.core.domain.model.Place
 import io.jacob.igozogo.core.domain.model.Story
@@ -30,14 +28,11 @@ class HomeViewModel @Inject constructor(
     private val _effect = MutableSharedFlow<HomeEffect>(extraBufferCapacity = 1)
     val effect = _effect.asSharedFlow()
 
-    private val categories = getPlaceCategoriesUseCase().cachedIn(viewModelScope)
-    private val places = getPlacesUseCase().cachedIn(viewModelScope)
-    private val stories = getStoriesByPlaceUseCase(testPlace).cachedIn(viewModelScope)
-
     init {
         handleActions()
-        syncPlaces()
-        loadFeedSections()
+        syncPlaces().invokeOnCompletion {
+            loadFeedSections()
+        }
     }
 
     private fun syncPlaces() = viewModelScope.launch {
@@ -51,9 +46,9 @@ class HomeViewModel @Inject constructor(
         _state.emit(
             HomeState.Success(
                 listOf(
-                    FeedSection.Categories(categories),
-                    FeedSection.Places(places),
-                    FeedSection.Stories(stories)
+                    FeedSection.Categories(getPlaceCategoriesUseCase()),
+                    FeedSection.Places(getPlacesUseCase()),
+                    FeedSection.Stories(getStoriesByPlaceUseCase(testPlace))
                 )
             )
         )
@@ -114,9 +109,9 @@ sealed interface HomeEffect {
 }
 
 sealed interface FeedSection {
-    data class Categories(val categories: Flow<PagingData<String>>) : FeedSection
-    data class Places(val places: Flow<PagingData<Place>>) : FeedSection
-    data class Stories(val stories: Flow<PagingData<Story>>) : FeedSection
+    data class Categories(val categories: List<String>) : FeedSection
+    data class Places(val places: List<Place>) : FeedSection
+    data class Stories(val stories: List<Story>) : FeedSection
 }
 
 private val testPlace = Place(

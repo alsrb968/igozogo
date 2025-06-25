@@ -14,7 +14,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.paging.compose.collectAsLazyPagingItems
 import io.jacob.igozogo.core.design.R
 import io.jacob.igozogo.core.design.component.*
 import io.jacob.igozogo.core.domain.model.Place
@@ -78,7 +77,7 @@ fun HomeScreen(
                         text = stringResource(R.string.core_design_category)
                     ) {
                         ChipItemList(
-                            chipItems = section.categories.collectAsLazyPagingItems().itemSnapshotList.items,
+                            chipItems = section.categories,
                             onItemClick = { Timber.i(it) }
                         )
                     }
@@ -91,7 +90,7 @@ fun HomeScreen(
                         text = stringResource(R.string.core_design_place), onMore = { }
                     ) {
                         PlaceItemList(
-                            places = section.places.collectAsLazyPagingItems().itemSnapshotList.items,
+                            places = section.places,
                             isBookmarked = { false },
                             onBookmarkToggle = { },
                             onItemClick = { place ->
@@ -108,7 +107,7 @@ fun HomeScreen(
                         text = "이야기", onMore = { }
                     ) {
                         StoryItemList(
-                            stories = section.stories.collectAsLazyPagingItems().itemSnapshotList.items,
+                            stories = section.stories,
                             onItemClick = { story ->
 //                                onClick(story)
                             }

@@ -39,14 +39,12 @@ fun StoryItemList(
             count = stories.size,
             key = { stories[it].storyLangId },
         ) { index ->
-            stories[index].let { story ->
-                StoryItem(
-                    modifier = Modifier
-                        .width(400.dp),
-                    story = story,
-                    onClick = onItemClick
-                )
-            }
+            StoryItem(
+                modifier = Modifier
+                    .width(250.dp),
+                story = stories[index],
+                onClick = onItemClick
+            )
         }
     }
 }
