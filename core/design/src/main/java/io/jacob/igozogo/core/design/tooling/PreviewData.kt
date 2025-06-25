@@ -40,18 +40,18 @@ val PreviewPlace = Place(
     modifiedTime = "20240125120100",
 )
 
-val PreviewPlaces = List(5) { PreviewPlace }
+val PreviewPlaces = List(10) { PreviewPlace.copy(placeLangId = PreviewPlace.placeLangId + it) }
 
 @Composable
 fun previewPlacesLazyPagingItems(): LazyPagingItems<Place> {
     return remember { flowOf(PagingData.from(PreviewPlaces)) }.collectAsLazyPagingItems()
 }
 
-val PreviewCategoryList = List(30) { "Category $it" }
+val PreviewCategories = List(30) { "Category $it" }
 
 @Composable
 fun previewCategoryListLazyPagingItems(): LazyPagingItems<String> {
-    return remember { flowOf(PagingData.from(PreviewCategoryList)) }.collectAsLazyPagingItems()
+    return remember { flowOf(PagingData.from(PreviewCategories)) }.collectAsLazyPagingItems()
 }
 
 val PreviewStory = Story(
@@ -72,7 +72,7 @@ val PreviewStory = Story(
     modifiedTime = "20250609093610"
 )
 
-val PreviewStories = List(10) { PreviewStory }
+val PreviewStories = List(10) { PreviewStory.copy(storyLangId = PreviewStory.storyLangId + it) }
 
 @Composable
 fun previewStoriesLazyPagingItems(): LazyPagingItems<Story> {

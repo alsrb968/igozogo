@@ -16,6 +16,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.jacob.igozogo.core.design.R
 import io.jacob.igozogo.core.design.component.*
+import io.jacob.igozogo.core.design.theme.IgozogoTheme
+import io.jacob.igozogo.core.design.tooling.DevicePreviews
+import io.jacob.igozogo.core.design.tooling.PreviewCategories
+import io.jacob.igozogo.core.design.tooling.PreviewPlaces
+import io.jacob.igozogo.core.design.tooling.PreviewStories
 import io.jacob.igozogo.core.domain.model.Place
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
@@ -67,7 +72,10 @@ fun HomeScreen(
             .windowInsetsPadding(WindowInsets.statusBars),
         state = rememberLazyListState()
     ) {
-        items(feedSections.size) { index ->
+        items(
+            count = feedSections.size,
+            key = { feedSections[it].hashCode() },
+        ) { index ->
             val section = feedSections[index]
             when (section) {
                 is FeedSection.Categories -> {
@@ -123,14 +131,17 @@ fun HomeScreen(
     }
 }
 
-//@DevicePreviews
-//@Composable
-//private fun HomeScreenPreview() {
-//    IgozogoTheme {
-//        HomeScreen(
-//            categories = previewCategoryListLazyPagingItems(),
-//            places = previewPlacesLazyPagingItems(),
-//            onPlaceClick = {}
-//        )
-//    }
-//}
+@DevicePreviews
+@Composable
+private fun HomeScreenPreview() {
+    IgozogoTheme {
+        HomeScreen(
+            feedSections = listOf(
+                FeedSection.Categories(PreviewCategories),
+                FeedSection.Places(PreviewPlaces),
+                FeedSection.Stories(PreviewStories),
+            ),
+            onPlaceClick = {}
+        )
+    }
+}
