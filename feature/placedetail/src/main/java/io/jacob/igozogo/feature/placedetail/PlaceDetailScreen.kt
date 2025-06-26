@@ -39,8 +39,9 @@ import io.jacob.igozogo.core.domain.model.Story
 fun PlaceDetailRoute(
     modifier: Modifier = Modifier,
     viewModel: PlaceDetailViewModel = hiltViewModel(),
+    onStoryClick: (Story) -> Unit,
     onBackClick: () -> Unit,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -52,6 +53,7 @@ fun PlaceDetailRoute(
                 modifier = modifier,
                 place = s.place,
                 stories = s.stories,
+                onStoryClick = onStoryClick,
                 onBackClick = onBackClick,
                 onShowSnackbar = onShowSnackbar
             )
@@ -59,17 +61,15 @@ fun PlaceDetailRoute(
     }
 }
 
-@OptIn(
-    ExperimentalMaterial3Api::class,
-    ExperimentalMaterial3ExpressiveApi::class
-)
+@OptIn(ExperimentalMaterial3Api::class,)
 @Composable
 fun PlaceDetailScreen(
     modifier: Modifier = Modifier,
     place: Place,
     stories: List<Story>,
+    onStoryClick: (Story) -> Unit,
     onBackClick: () -> Unit,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
 ) {
     val listState = rememberLazyListState()
 
@@ -208,7 +208,7 @@ fun PlaceDetailScreen(
             ) { index ->
                 StoryItem(
                     story = stories[index],
-                    onClick = { /* TODO */ }
+                    onClick = onStoryClick
                 )
             }
         }
@@ -222,6 +222,7 @@ private fun PlaceDetailScreenPreview() {
         PlaceDetailScreen(
             place = PreviewPlace,
             stories = PreviewStories,
+            onStoryClick = {},
             onBackClick = {},
             onShowSnackbar = { _, _ -> true }
         )

@@ -6,6 +6,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import io.jacob.igozogo.core.domain.model.Place
+import io.jacob.igozogo.core.domain.model.Story
 import io.jacob.igozogo.feature.home.HomeRoute
 import kotlinx.serialization.Serializable
 
@@ -18,13 +19,15 @@ fun NavController.navigateToHome(navOptions: NavOptions) =
 
 fun NavGraphBuilder.homeSection(
     onPlaceClick: (Place) -> Unit,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onStoryClick: (Story) -> Unit,
+    onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
     destination: NavGraphBuilder.() -> Unit,
 ) {
     navigation<HomeBaseRoute>(startDestination = HomeRoute) {
         composable<HomeRoute> {
             HomeRoute(
                 onPlaceClick = onPlaceClick,
+                onStoryClick = onStoryClick,
                 onShowSnackbar = onShowSnackbar
             )
         }

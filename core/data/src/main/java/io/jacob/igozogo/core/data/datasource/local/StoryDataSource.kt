@@ -28,6 +28,7 @@ interface StoryDataSource {
 
     fun getStoriesByKeywordPagingSource(keyword: String): PagingSource<Int, StoryEntity>
     suspend fun getStoriesByKeyword(keyword: String, size: Int): List<StoryEntity>
+    suspend fun getStoryById(storyId: Int, storyLangId: Int): StoryEntity?
     suspend fun deleteStories()
 }
 
@@ -77,6 +78,10 @@ class StoryDataSourceImpl @Inject constructor(
 
     override suspend fun getStoriesByKeyword(keyword: String, size: Int): List<StoryEntity> {
         return dao.getStoriesByKeyword(keyword, size)
+    }
+
+    override suspend fun getStoryById(storyId: Int, storyLangId: Int): StoryEntity? {
+        return dao.getStoryById(storyId, storyLangId)
     }
 
     override suspend fun deleteStories() {

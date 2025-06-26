@@ -10,13 +10,15 @@ import io.jacob.igozogo.feature.placedetail.navigation.navigateToPlaceDetail
 import io.jacob.igozogo.feature.placedetail.navigation.placeDetailScreen
 import io.jacob.igozogo.feature.search.navigation.searchScreen
 import io.jacob.igozogo.feature.setting.navigation.settingScreen
+import io.jacob.igozogo.feature.storydetail.navigation.navigateToStoryDetail
+import io.jacob.igozogo.feature.storydetail.navigation.storyDetailScreen
 import io.jacob.igozogo.ui.IgozogoAppState
 
 @Composable
 fun IgozogoNavHost(
     modifier: Modifier = Modifier,
     appState: IgozogoAppState,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
 ) {
     val navController = appState.navController
     NavHost(
@@ -26,9 +28,15 @@ fun IgozogoNavHost(
     ) {
         homeSection(
             onPlaceClick = navController::navigateToPlaceDetail,
+            onStoryClick = navController::navigateToStoryDetail,
             onShowSnackbar = onShowSnackbar
         ) {
             placeDetailScreen(
+                onStoryClick = navController::navigateToStoryDetail,
+                onBackClick = navController::popBackStack,
+                onShowSnackbar = onShowSnackbar
+            )
+            storyDetailScreen(
                 onBackClick = navController::popBackStack,
                 onShowSnackbar = onShowSnackbar
             )

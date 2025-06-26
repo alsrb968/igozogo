@@ -33,5 +33,6 @@ include(":feature:search")
 include(":feature:bookmark")
 include(":feature:setting")
 include(":feature:placedetail")
+include(":feature:storydetail")
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")

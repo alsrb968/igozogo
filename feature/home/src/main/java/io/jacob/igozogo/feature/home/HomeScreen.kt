@@ -31,7 +31,8 @@ fun HomeRoute(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
     onPlaceClick: (Place) -> Unit,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onStoryClick: (Story) -> Unit,
+    onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
 ) {
     val context = LocalContext.current
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -47,7 +48,7 @@ fun HomeRoute(
 
                 is HomeEffect.NavigateToCategoryDetails -> {}
                 is HomeEffect.NavigateToPlaceDetails -> onPlaceClick(effect.place)
-                is HomeEffect.NavigateToStoryDetails -> {}
+                is HomeEffect.NavigateToStoryDetails -> onStoryClick(effect.story)
             }
         }
     }

@@ -25,7 +25,7 @@ import kotlinx.coroutines.flow.debounce
 @Composable
 fun SearchRoute(
     modifier: Modifier = Modifier,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
 ) {
     SearchScreen(
         modifier = modifier,
@@ -36,7 +36,7 @@ fun SearchRoute(
 @Composable
 fun SearchScreen(
     modifier: Modifier = Modifier,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
 ) {
     Box(
         modifier = modifier

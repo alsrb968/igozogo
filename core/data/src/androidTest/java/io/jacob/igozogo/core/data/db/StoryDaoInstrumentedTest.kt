@@ -7,8 +7,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import io.jacob.igozogo.core.data.model.local.odii.StoryEntity
 import kotlinx.coroutines.test.runTest
 import org.junit.After
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -199,6 +198,16 @@ class StoryDaoInstrumentedTest {
 
         val stories2 = dao.getStoriesByKeyword("경복궁", 10)
         assertEquals(0, stories2.size)
+    }
+
+    @Test
+    fun getStoryByIdTest() = runTest {
+        dao.insertStories(entities)
+
+        val story = dao.getStoryById(storyId = 4976, storyLangId = 15332)
+        assertNotNull(story)
+        assertEquals("무각사", story?.title)
+        assertEquals("무각사", story?.audioTitle)
     }
 
     companion object {
