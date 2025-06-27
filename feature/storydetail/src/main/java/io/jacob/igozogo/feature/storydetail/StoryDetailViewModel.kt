@@ -6,21 +6,22 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.jacob.igozogo.core.domain.model.Place
 import io.jacob.igozogo.core.domain.model.Story
-import io.jacob.igozogo.core.domain.usecase.GetStoryByIdUseCase
+import io.jacob.igozogo.core.domain.usecase.GetStoryAndPlaceByIdUseCase
 import kotlinx.coroutines.flow.*
 
 @HiltViewModel(assistedFactory = StoryDetailViewModel.Factory::class)
 class StoryDetailViewModel @AssistedInject constructor(
-    getStoryByIdUseCase: GetStoryByIdUseCase,
+    getStoryAndPlaceByIdUseCase: GetStoryAndPlaceByIdUseCase,
     @Assisted("storyId") storyId: Int,
     @Assisted("storyLangId") storyLangId: Int
 ) : ViewModel() {
     val state: StateFlow<StoryDetailState> = flow {
-        emit(getStoryByIdUseCase(storyId, storyLangId))
-    }.map { story ->
-        if (story != null) {
-            StoryDetailState.Success(story)
+        emit(getStoryAndPlaceByIdUseCase(storyId, storyLangId))
+    }.map { (place, story) ->
+        if (place != null && story != null) {
+            StoryDetailState.Success(place, story)
         } else {
             StoryDetailState.Error
         }
@@ -42,5 +43,5 @@ class StoryDetailViewModel @AssistedInject constructor(
 sealed interface StoryDetailState {
     object Loading : StoryDetailState
     object Error : StoryDetailState
-    data class Success(val story: Story) : StoryDetailState
+    data class Success(val place: Place, val story: Story) : StoryDetailState
 }

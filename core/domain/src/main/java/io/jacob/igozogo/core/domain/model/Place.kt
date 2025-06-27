@@ -17,6 +17,9 @@ data class Place(
     val createdTime: String,
     val modifiedTime: String,
 ) {
+    val fullAddress: String
+        get() = "$address1 $address2"
+
     val humanReadableCreatedTime: String
         get() = createdTime.toHumanReadableDate()
 
