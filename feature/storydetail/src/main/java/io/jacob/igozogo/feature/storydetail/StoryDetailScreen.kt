@@ -1,6 +1,7 @@
 package io.jacob.igozogo.feature.storydetail
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
@@ -30,6 +31,7 @@ import io.jacob.igozogo.core.domain.model.Story
 fun StoryDetailRoute(
     modifier: Modifier = Modifier,
     viewModel: StoryDetailViewModel = hiltViewModel(),
+    onPlaceClick: (Place) -> Unit,
     onBackClick: () -> Unit,
     onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
 ) {
@@ -43,6 +45,7 @@ fun StoryDetailRoute(
                 modifier = modifier,
                 place = s.place,
                 story = s.story,
+                onPlaceClick = onPlaceClick,
                 onBackClick = onBackClick,
                 onShowSnackbar = onShowSnackbar
             )
@@ -56,6 +59,7 @@ fun StoryDetailScreen(
     modifier: Modifier = Modifier,
     place: Place,
     story: Story,
+    onPlaceClick: (Place) -> Unit,
     onBackClick: () -> Unit,
     onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
 ) {
@@ -106,6 +110,10 @@ fun StoryDetailScreen(
                             Spacer(modifier = Modifier.height(16.dp))
 
                             Text(
+                                modifier = Modifier
+                                    .clickable {
+                                        onPlaceClick(place)
+                                    },
                                 text = story.title,
                                 style = MaterialTheme.typography.titleLarge,
                             )
@@ -206,6 +214,7 @@ private fun StoryDetailScreenPreview() {
         StoryDetailScreen(
             place = PreviewPlace,
             story = PreviewStory,
+            onPlaceClick = {},
             onBackClick = {},
             onShowSnackbar = { _, _ -> true }
         )

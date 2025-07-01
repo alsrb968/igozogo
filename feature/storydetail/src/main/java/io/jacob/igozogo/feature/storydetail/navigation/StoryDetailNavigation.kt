@@ -6,6 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import io.jacob.igozogo.core.domain.model.Place
 import io.jacob.igozogo.core.domain.model.Story
 import io.jacob.igozogo.feature.storydetail.StoryDetailRoute
 import io.jacob.igozogo.feature.storydetail.StoryDetailViewModel
@@ -19,6 +20,7 @@ fun NavController.navigateToStoryDetail(
 ) = navigate(route = StoryDetailRoute(story.storyId, story.storyLangId), navOptions)
 
 fun NavGraphBuilder.storyDetailScreen(
+    onPlaceClick: (Place) -> Unit,
     onBackClick: () -> Unit,
     onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
 ) {
@@ -31,6 +33,7 @@ fun NavGraphBuilder.storyDetailScreen(
             ) { factory ->
                 factory.create(storyId, storyLangId)
             },
+            onPlaceClick = onPlaceClick,
             onBackClick = onBackClick,
             onShowSnackbar = onShowSnackbar,
         )

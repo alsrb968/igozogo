@@ -37,6 +37,7 @@ fun IgozogoNavHost(
                 onShowSnackbar = onShowSnackbar
             )
             storyDetailScreen(
+                onPlaceClick = navController::navigateToPlaceDetail,
                 onBackClick = navController::popBackStack,
                 onShowSnackbar = onShowSnackbar
             )
