@@ -55,6 +55,7 @@ fun PlaceDetailRoute(
                 stories = s.stories,
                 onStoryClick = onStoryClick,
                 onBackClick = onBackClick,
+                onPlayClick = viewModel::play,
                 onShowSnackbar = onShowSnackbar
             )
         }
@@ -69,6 +70,7 @@ fun PlaceDetailScreen(
     stories: List<Story>,
     onStoryClick: (Story) -> Unit,
     onBackClick: () -> Unit,
+    onPlayClick: (List<Story>) -> Unit,
     onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
 ) {
     val listState = rememberLazyListState()
@@ -174,7 +176,7 @@ fun PlaceDetailScreen(
                                     color = MaterialTheme.colorScheme.outlineVariant,
                                     shape = CircleShape
                                 ),
-                            onClick = { /* TODO */ }
+                            onClick = { onPlayClick(stories) }
                         ) {
                             Icon(
                                 modifier = Modifier
@@ -224,6 +226,7 @@ private fun PlaceDetailScreenPreview() {
             stories = PreviewStories,
             onStoryClick = {},
             onBackClick = {},
+            onPlayClick = {},
             onShowSnackbar = { _, _ -> true }
         )
     }

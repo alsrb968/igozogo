@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="log_tag" translatable="false">Igozogo</string>
+    <string name="log_tag" translatable="false">igozogo-tag</string>
     <string name="app_name">Igozogo</string>
 
     <!-- Disconnect Dialog -->

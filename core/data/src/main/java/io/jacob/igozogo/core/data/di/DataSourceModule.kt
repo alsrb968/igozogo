@@ -1,11 +1,14 @@
 package io.jacob.igozogo.core.data.di
 
+import androidx.media3.exoplayer.ExoPlayer
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.jacob.igozogo.core.data.api.OdiiApi
 import io.jacob.igozogo.core.data.datasource.local.*
+import io.jacob.igozogo.core.data.datasource.player.PlayerDataSource
+import io.jacob.igozogo.core.data.datasource.player.PlayerDataSourceImpl
 import io.jacob.igozogo.core.data.datasource.remote.OdiiDataSource
 import io.jacob.igozogo.core.data.datasource.remote.OdiiDataSourceImpl
 import io.jacob.igozogo.core.data.db.StoryDao
@@ -53,6 +56,16 @@ object DataSourceModule {
     ): OdiiDataSource {
         return OdiiDataSourceImpl(
             api = api
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun providePlayerDataSource(
+        player: ExoPlayer
+    ): PlayerDataSource {
+        return PlayerDataSourceImpl(
+            player = player
         )
     }
 }
