@@ -138,4 +138,11 @@ class StoryRepositoryImpl @Inject constructor(
             onFailure = { throw it }
         )
     }
+
+    override suspend fun getStoryById(
+        storyId: Int,
+        storyLangId: Int
+    ): Story? {
+        return storyDataSource.getStoryById(storyId, storyLangId)?.toStory()
+    }
 }

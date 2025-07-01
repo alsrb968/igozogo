@@ -4,6 +4,7 @@ import io.jacob.igozogo.core.data.TestPagingSource
 import io.jacob.igozogo.core.data.datasource.local.StoryDataSource
 import io.jacob.igozogo.core.data.datasource.remote.OdiiDataSource
 import io.jacob.igozogo.core.data.mapper.toPlace
+import io.jacob.igozogo.core.data.mapper.toStory
 import io.jacob.igozogo.core.data.mapper.toStoryEntity
 import io.jacob.igozogo.core.data.mapper.toThemeEntity
 import io.jacob.igozogo.core.data.model.remote.odii.StoryResponse
@@ -15,6 +16,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.*
 import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 
@@ -229,6 +232,21 @@ class StoryRepositoryUnitTest {
             coVerify { storyDataSource.getStoriesByKeyword(any(), any()) }
             coVerify { odiiDataSource.getStorySearchList(any(), any(), any(), any()) }
             coVerify { storyDataSource.insertStories(any()) }
+        }
+
+    @Test
+    fun `Given Stories, When getStoryById called, Then call dataSource`() =
+        testScope.runTest {
+            // Given
+            coEvery { storyDataSource.getStoryById(any(), any()) } returns storyEntities[0]
+
+            // When
+            val story = repository.getStoryById(1, 2)
+
+            // Then
+            assertNotNull(story)
+            assertEquals(storyEntities[0].toStory(), story)
+            coVerify { storyDataSource.getStoryById(any(), any()) }
         }
 
     companion object {

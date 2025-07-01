@@ -13,7 +13,7 @@ fun NavController.navigateToSetting(navOptions: NavOptions) =
     navigate(route = SettingRoute, navOptions)
 
 fun NavGraphBuilder.settingScreen(
-    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
 ) {
     composable<SettingRoute> {
         SettingRoute(

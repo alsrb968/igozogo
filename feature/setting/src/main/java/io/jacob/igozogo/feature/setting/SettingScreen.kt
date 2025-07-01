@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 @Composable
 fun SettingRoute(
     modifier: Modifier = Modifier,
-    onShowSnackbar: suspend (String, String?) -> Boolean
+    onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean
 ) {
     Column(
         modifier = modifier

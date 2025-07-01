@@ -136,14 +136,13 @@ fun PlaceItem(
 
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = "${place.address1} ${place.address2}",
+                        text = place.fullAddress,
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onPrimary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-
             }
         }
     }

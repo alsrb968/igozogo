@@ -13,7 +13,7 @@ fun NavController.navigateToSearch(navOptions: NavOptions) =
     navigate(route = SearchRoute, navOptions)
 
 fun NavGraphBuilder.searchScreen(
-    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
 ) {
     composable<SearchRoute> {
         SearchRoute(

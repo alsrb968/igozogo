@@ -102,6 +102,15 @@ interface StoryDao {
 
     @Query(
         """
+        SELECT *
+        FROM story_table
+        WHERE storyId = :storyId AND storyLangId = :storyLangId
+        """
+    )
+    suspend fun getStoryById(storyId: Int, storyLangId: Int): StoryEntity?
+
+    @Query(
+        """
         DELETE
         FROM story_table
         """

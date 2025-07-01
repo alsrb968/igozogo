@@ -36,6 +36,7 @@ dependencies {
     implementation(projects.feature.bookmark)
     implementation(projects.feature.setting)
     implementation(projects.feature.placedetail)
+    implementation(projects.feature.storydetail)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.kotlinx.serialization.json)

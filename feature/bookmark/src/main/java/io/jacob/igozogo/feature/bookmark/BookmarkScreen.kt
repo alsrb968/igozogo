@@ -22,7 +22,7 @@ import timber.log.Timber
 @Composable
 fun BookmarkRoute(
     modifier: Modifier = Modifier,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
 ) {
     BookmarkScreen(
         modifier = modifier,
@@ -33,7 +33,7 @@ fun BookmarkRoute(
 @Composable
 fun BookmarkScreen(
     modifier: Modifier = Modifier,
-    onShowSnackbar: suspend (String, String?) -> Boolean,
+    onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
 ) {
     val event = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
 

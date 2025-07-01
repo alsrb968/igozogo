@@ -34,4 +34,6 @@ interface StoryRepository {
         keyword: String,
         size: Int = 20,
     ): List<Story>
+
+    suspend fun getStoryById(storyId: Int, storyLangId: Int): Story?
 }
