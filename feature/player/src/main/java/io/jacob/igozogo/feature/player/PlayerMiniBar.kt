@@ -1,5 +1,9 @@
 package io.jacob.igozogo.feature.player
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,7 +27,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.jacob.igozogo.core.design.component.StateImage
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
+import io.jacob.igozogo.core.design.tooling.PreviewPlace
 import io.jacob.igozogo.core.design.tooling.PreviewStory
+import io.jacob.igozogo.core.domain.model.Place
 import io.jacob.igozogo.core.domain.model.PlayerProgress
 import io.jacob.igozogo.core.domain.model.Story
 
@@ -46,24 +52,33 @@ fun PlayerMiniBar(
 //        }
 //    }
 
-    when (val s = state) {
-        is PlayerState.Idle -> {
-
-        }
-
-        is PlayerState.Ready -> {
-
 //            val context = LocalContext.current
 //            LaunchedEffect(s.nowPlaying.imageUrl) {
 //                val color = extractDominantColorFromUrl(context, s.nowPlaying.imageUrl)
 //                viewModel.sendIntent(PlayerUiIntent.SetDominantColor(color))
 //            }
 
+    Box(modifier = Modifier.fillMaxSize()) {
+        AnimatedVisibility(
+            visible = state is PlayerState.Ready,
+            modifier = Modifier.align(Alignment.BottomCenter), // 위치 유지
+            enter = slideInVertically(
+                initialOffsetY = { it }, // 자기 키만큼 아래에서 등장
+                animationSpec = tween(300)
+            ),
+            exit = slideOutVertically(
+                targetOffsetY = { it },
+                animationSpec = tween(300)
+            )
+        ) {
+            val s = state as? PlayerState.Ready ?: return@AnimatedVisibility
+
             PlayerMiniBar(
                 modifier = modifier,
                 nowPlaying = s.nowPlaying,
                 progress = s.progress,
                 isPlaying = s.isPlaying,
+                place = s.place,
                 isFavorite = false,
                 actions = PlayerMiniBarActions(
                     onPlayOrPause = { viewModel.sendAction(PlayerAction.PlayOrPause) },
@@ -86,6 +101,7 @@ fun PlayerMiniBar(
     nowPlaying: Story,
     progress: PlayerProgress,
     isPlaying: Boolean,
+    place: Place?,
     isFavorite: Boolean,
     actions: PlayerMiniBarActions,
     onExpand: () -> Unit,
@@ -145,7 +161,7 @@ fun PlayerMiniBar(
                         modifier = Modifier
                             .fillMaxWidth()
                             .basicMarquee(),
-                        text = nowPlaying.title,
+                        text = place?.title ?: "",
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1,
@@ -244,6 +260,7 @@ private fun PlayerMiniBarPreview() {
                 duration = 100,
             ),
             isPlaying = true,
+            place = PreviewPlace,
             isFavorite = false,
             actions = PlayerMiniBarActions(
                 onPlayOrPause = {},

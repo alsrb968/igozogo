@@ -6,6 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.jacob.igozogo.core.domain.model.Place
 import io.jacob.igozogo.core.domain.model.PlayerProgress
 import io.jacob.igozogo.core.domain.model.Story
+import io.jacob.igozogo.core.domain.repository.PlaceRepository
 import io.jacob.igozogo.core.domain.repository.PlayerRepository
 import io.jacob.igozogo.core.domain.util.RepeatMode
 import io.jacob.igozogo.core.domain.util.combine
@@ -16,6 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
     private val playerRepository: PlayerRepository,
+    private val placeRepository: PlaceRepository,
 ) : ViewModel() {
     val state: StateFlow<PlayerState> = combine(
         playerRepository.nowPlaying,
@@ -29,6 +31,7 @@ class PlayerViewModel @Inject constructor(
         if (nowPlaying == null) {
             PlayerState.Idle
         } else {
+            val place = placeRepository.getPlaceById(nowPlaying.placeId, nowPlaying.placeLangId)
             PlayerState.Ready(
                 nowPlaying = nowPlaying,
                 playlist = playlist,
@@ -36,7 +39,8 @@ class PlayerViewModel @Inject constructor(
                 progress = progress,
                 isPlaying = isPlaying,
                 isShuffle = isShuffle,
-                repeatMode = repeatMode
+                repeatMode = repeatMode,
+                place = place
             )
         }
     }.stateIn(
@@ -97,7 +101,8 @@ sealed interface PlayerState {
         val progress: PlayerProgress,
         val isPlaying: Boolean,
         val isShuffle: Boolean,
-        val repeatMode: RepeatMode
+        val repeatMode: RepeatMode,
+        val place: Place?
     ) : PlayerState
 }
 

@@ -116,7 +116,7 @@ fun StoryDetailScreen(
                                     .clickable {
                                         onPlaceClick(place)
                                     },
-                                text = story.title,
+                                text = place.title,
                                 style = MaterialTheme.typography.titleLarge,
                             )
 
