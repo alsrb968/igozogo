@@ -3,6 +3,7 @@ package io.jacob.igozogo.core.data.datasource.player
 import androidx.media3.common.*
 import androidx.media3.exoplayer.ExoPlayer
 import io.jacob.igozogo.core.domain.model.PlayerProgress
+import io.jacob.igozogo.core.domain.model.Story
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,8 +12,8 @@ import timber.log.Timber
 import javax.inject.Inject
 
 interface PlayerDataSource {
-    fun play(url: String)
-    fun play(urls: List<String>, indexToPlay: Int? = null)
+    fun play(story: Story)
+    fun play(stories: List<Story>, indexToPlay: Int? = null)
     fun playIndex(index: Int)
     fun pause()
     fun resume()
@@ -22,14 +23,15 @@ interface PlayerDataSource {
     fun seekTo(position: Long)
     fun setShuffle(isShuffle: Boolean)
     fun setRepeat(repeatMode: Int)
-    fun addTrack(url: String)
-    fun addTrack(urls: List<String>)
+    fun addTrack(story: Story, index: Int? = null)
+    fun addTrack(stories: List<Story>, index: Int? = null)
     fun removeTrack(index: Int)
     fun clearPlayList()
     fun release()
 
-    val playlist: Flow<List<String>>
-    val track: Flow<String?>
+    val nowPlaying: Flow<Story?>
+    val playlist: Flow<List<Story>>
+    val indexOfList: Flow<Int>
     val playerProgress: Flow<PlayerProgress>
     val playbackState: Flow<Int>
     val isPlaying: Flow<Boolean>
@@ -40,13 +42,6 @@ interface PlayerDataSource {
 class PlayerDataSourceImpl @Inject constructor(
     val player: ExoPlayer
 ) : PlayerDataSource {
-    private val _playlist = MutableStateFlow<List<String>>(emptyList())
-    private val _track = MutableStateFlow<String?>(null)
-    private val _playbackState = MutableStateFlow(Player.STATE_IDLE)
-    private val _isPlaying = MutableStateFlow(false)
-    private val _isShuffle = MutableStateFlow(false)
-    private val _repeatMode = MutableStateFlow(Player.REPEAT_MODE_OFF)
-
     private val listener = object : Player.Listener {
         override fun onTimelineChanged(timeline: Timeline, reason: Int) {
             Timber.d(
@@ -69,7 +64,7 @@ class PlayerDataSourceImpl @Inject constructor(
                 items.add(player.getMediaItemAt(i))
             }
             _playlist.value = items.mapNotNull { item ->
-                item.localConfiguration?.uri?.path
+                item.localConfiguration?.tag as? Story
             }
         }
 
@@ -93,7 +88,8 @@ class PlayerDataSourceImpl @Inject constructor(
                 }
             }
 
-            _track.value = mediaItem?.localConfiguration?.uri?.path
+            _nowPlaying.value = mediaItem?.localConfiguration?.tag as? Story
+            _indexOfList.value = player.currentMediaItemIndex
         }
 
         override fun onMediaMetadataChanged(mediaMetadata: MediaMetadata) {
@@ -155,15 +151,27 @@ class PlayerDataSourceImpl @Inject constructor(
         player.addListener(listener)
     }
 
-    override fun play(url: String) {
+    override fun play(story: Story) {
+        val mediaItem = MediaItem.Builder()
+            .setUri(story.audioUrl)
+            .setTag(story)
+            .build()
+
         player.playWhenReady = true
-        player.setMediaItem(MediaItem.fromUri(url))
+        player.setMediaItem(mediaItem)
         player.prepare()
     }
 
-    override fun play(urls: List<String>, indexToPlay: Int?) {
+    override fun play(stories: List<Story>, indexToPlay: Int?) {
+        val mediaItems = stories.map {
+            MediaItem.Builder()
+                .setUri(it.audioUrl)
+                .setTag(it)
+                .build()
+        }
+
         player.playWhenReady = true
-        player.setMediaItems(urls.map { MediaItem.fromUri(it) })
+        player.setMediaItems(mediaItems)
         indexToPlay?.let { player.seekToDefaultPosition(it) }
         player.prepare()
     }
@@ -218,12 +226,32 @@ class PlayerDataSourceImpl @Inject constructor(
         player.repeatMode = repeatMode
     }
 
-    override fun addTrack(url: String) {
-        player.addMediaItem(MediaItem.fromUri(url))
+    override fun addTrack(story: Story, index: Int?) {
+        val mediaItem = MediaItem.Builder()
+            .setUri(story.audioUrl)
+            .setTag(story)
+            .build()
+
+        index?.let {
+            player.addMediaItem(it, mediaItem)
+        } ?: run {
+            player.addMediaItem(mediaItem)
+        }
     }
 
-    override fun addTrack(urls: List<String>) {
-        player.addMediaItems(urls.map { MediaItem.fromUri(it) })
+    override fun addTrack(stories: List<Story>, index: Int?) {
+        val mediaItems = stories.map {
+            MediaItem.Builder()
+                .setUri(it.audioUrl)
+                .setTag(it)
+                .build()
+        }
+
+        index?.let {
+            player.addMediaItems(it, mediaItems)
+        } ?: run {
+            player.addMediaItems(mediaItems)
+        }
     }
 
     override fun removeTrack(index: Int) {
@@ -239,11 +267,17 @@ class PlayerDataSourceImpl @Inject constructor(
         player.removeListener(listener)
     }
 
-    override val playlist: Flow<List<String>>
+    private val _nowPlaying = MutableStateFlow<Story?>(null)
+    override val nowPlaying: Flow<Story?>
+        get() = _nowPlaying
+
+    private val _playlist = MutableStateFlow<List<Story>>(emptyList())
+    override val playlist: Flow<List<Story>>
         get() = _playlist
 
-    override val track: Flow<String?>
-        get() = _track
+    private val _indexOfList = MutableStateFlow(0)
+    override val indexOfList: Flow<Int>
+        get() = _indexOfList
 
     override val playerProgress: Flow<PlayerProgress>
         get() = flow {
@@ -253,22 +287,25 @@ class PlayerDataSourceImpl @Inject constructor(
                         position = player.currentPosition,
                         buffered = player.bufferedPosition,
                         duration = player.duration.coerceAtLeast(1L),
-                        bufferedPercentage = player.bufferedPercentage,
                     )
                 )
                 delay(500L)
             }
         }
 
+    private val _playbackState = MutableStateFlow(Player.STATE_IDLE)
     override val playbackState: Flow<Int>
         get() = _playbackState
 
+    private val _isPlaying = MutableStateFlow(false)
     override val isPlaying: Flow<Boolean>
         get() = _isPlaying
 
+    private val _isShuffle = MutableStateFlow(false)
     override val isShuffle: Flow<Boolean>
         get() = _isShuffle
 
+    private val _repeatMode = MutableStateFlow(Player.REPEAT_MODE_OFF)
     override val repeatMode: Flow<Int>
         get() = _repeatMode
 }

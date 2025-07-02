@@ -2,6 +2,7 @@ package io.jacob.igozogo.core.data.repository
 
 import io.jacob.igozogo.core.data.datasource.player.PlayerDataSource
 import io.jacob.igozogo.core.domain.model.PlayerProgress
+import io.jacob.igozogo.core.domain.model.Story
 import io.jacob.igozogo.core.domain.repository.PlayerRepository
 import io.jacob.igozogo.core.domain.util.PlaybackState
 import io.jacob.igozogo.core.domain.util.RepeatMode
@@ -12,12 +13,12 @@ import javax.inject.Inject
 class PlayerRepositoryImpl @Inject constructor(
     private val playerDataSource: PlayerDataSource
 ) : PlayerRepository {
-    override fun play(url: String) {
-        playerDataSource.play(url)
+    override fun play(story: Story) {
+        playerDataSource.play(story)
     }
 
-    override fun play(urls: List<String>, indexToPlay: Int?) {
-        playerDataSource.play(urls, indexToPlay)
+    override fun play(stories: List<Story>, indexToPlay: Int?) {
+        playerDataSource.play(stories, indexToPlay)
     }
 
     override fun playIndex(index: Int) {
@@ -56,12 +57,12 @@ class PlayerRepositoryImpl @Inject constructor(
         playerDataSource.setRepeat(repeatMode.value)
     }
 
-    override fun addTrack(url: String) {
-        playerDataSource.addTrack(url)
+    override fun addTrack(story: Story, index: Int?) {
+        playerDataSource.addTrack(story, index)
     }
 
-    override fun addTrack(urls: List<String>) {
-        playerDataSource.addTrack(urls)
+    override fun addTrack(stories: List<Story>, index: Int?) {
+        playerDataSource.addTrack(stories, index)
     }
 
     override fun removeTrack(index: Int) {
@@ -76,11 +77,14 @@ class PlayerRepositoryImpl @Inject constructor(
         playerDataSource.release()
     }
 
-    override val playlist: Flow<List<String>>
+    override val nowPlaying: Flow<Story?>
+        get() = playerDataSource.nowPlaying
+
+    override val playlist: Flow<List<Story>>
         get() = playerDataSource.playlist
 
-    override val track: Flow<String?>
-        get() = playerDataSource.track
+    override val indexOfList: Flow<Int>
+        get() = playerDataSource.indexOfList
 
     override val playerProgress: Flow<PlayerProgress>
         get() = playerDataSource.playerProgress

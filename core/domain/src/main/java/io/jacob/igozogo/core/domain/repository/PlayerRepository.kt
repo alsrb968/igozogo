@@ -1,13 +1,14 @@
 package io.jacob.igozogo.core.domain.repository
 
 import io.jacob.igozogo.core.domain.model.PlayerProgress
+import io.jacob.igozogo.core.domain.model.Story
 import io.jacob.igozogo.core.domain.util.PlaybackState
 import io.jacob.igozogo.core.domain.util.RepeatMode
 import kotlinx.coroutines.flow.Flow
 
 interface PlayerRepository {
-    fun play(url: String)
-    fun play(urls: List<String>, indexToPlay: Int? = null)
+    fun play(story: Story)
+    fun play(stories: List<Story>, indexToPlay: Int? = null)
     fun playIndex(index: Int)
     fun pause()
     fun resume()
@@ -17,14 +18,15 @@ interface PlayerRepository {
     fun seekTo(position: Long)
     fun setShuffle(isShuffle: Boolean)
     fun setRepeat(repeatMode: RepeatMode)
-    fun addTrack(url: String)
-    fun addTrack(urls: List<String>)
+    fun addTrack(story: Story, index: Int? = null)
+    fun addTrack(stories: List<Story>, index: Int? = null)
     fun removeTrack(index: Int)
     fun clearPlayList()
     fun release()
 
-    val playlist: Flow<List<String>>
-    val track: Flow<String?>
+    val nowPlaying: Flow<Story?>
+    val playlist: Flow<List<Story>>
+    val indexOfList: Flow<Int>
     val playerProgress: Flow<PlayerProgress>
     val playbackState: Flow<PlaybackState>
     val isPlaying: Flow<Boolean>

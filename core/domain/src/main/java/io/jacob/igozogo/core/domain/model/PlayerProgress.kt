@@ -4,5 +4,10 @@ data class PlayerProgress(
     val position: Long,
     val buffered: Long,
     val duration: Long,
-    val bufferedPercentage: Int,
-)
+) {
+    val positionRatio: Float
+        get() = position.toFloat() / duration
+
+    val bufferedRatio: Float
+        get() = buffered.toFloat() / duration
+}

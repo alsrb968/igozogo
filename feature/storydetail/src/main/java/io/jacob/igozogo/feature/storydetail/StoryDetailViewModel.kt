@@ -36,7 +36,7 @@ class StoryDetailViewModel @AssistedInject constructor(
 
     fun play(story: Story) {
         Timber.i("audioUrl: ${story.audioUrl}")
-        playerRepository.play(story.audioUrl)
+        playerRepository.play(story)
     }
 
     @AssistedFactory
