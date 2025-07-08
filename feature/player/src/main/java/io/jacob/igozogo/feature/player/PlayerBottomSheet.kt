@@ -317,13 +317,14 @@ fun ControlPanelProgress(
         modifier = modifier
             .fillMaxWidth(),
     ) {
+        var position by remember { mutableFloatStateOf(playerProgress.positionRatio) }
         Slider(
-            value = playerProgress.positionRatio,
+            value = position,
             onValueChange = { value ->
-                actions.onSeekTo((value * playerProgress.duration).toLong())
+                position = value
             },
             onValueChangeFinished = {
-
+                actions.onSeekTo((position * playerProgress.duration).toLong())
             },
             colors = SliderDefaults.colors(
                 thumbColor = MaterialTheme.colorScheme.primary,
