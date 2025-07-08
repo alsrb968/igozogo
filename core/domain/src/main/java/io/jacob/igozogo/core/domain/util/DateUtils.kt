@@ -46,3 +46,21 @@ internal fun Int.toHumanReadableTime(): String {
     val formatter = MeasureFormat.getInstance(Locale.getDefault(), MeasureFormat.FormatWidth.SHORT)
     return formatter.formatMeasures(*measures.toTypedArray())
 }
+
+/**
+ * Long을 시간 형식으로 변환합니다.
+ * @receiver Long 밀리초 단위의 시간
+ * @return String 시간 형식 시간
+ */
+internal fun Long.formatMillisAdaptive(): String {
+    val totalSeconds = this / 1000
+    val hours = totalSeconds / 3600
+    val minutes = (totalSeconds % 3600) / 60
+    val seconds = totalSeconds % 60
+
+    return if (hours > 0) {
+        "%d:%02d:%02d".format(hours, minutes, seconds)
+    } else {
+        "%02d:%02d".format(minutes, seconds)
+    }
+}

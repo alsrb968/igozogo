@@ -10,14 +10,16 @@ interface PlayerRepository {
     fun play(story: Story)
     fun play(stories: List<Story>, indexToPlay: Int? = null)
     fun playIndex(index: Int)
-    fun pause()
-    fun resume()
+    suspend fun playOrPause()
     fun stop()
     fun next()
     fun previous()
     fun seekTo(position: Long)
-    fun setShuffle(isShuffle: Boolean)
-    fun setRepeat(repeatMode: RepeatMode)
+    fun seekBackward()
+    fun seekForward()
+    suspend fun shuffle()
+    suspend fun changeRepeat()
+    fun setPlaybackSpeed(speed: Float)
     fun addTrack(story: Story, index: Int? = null)
     fun addTrack(stories: List<Story>, index: Int? = null)
     fun removeTrack(index: Int)
@@ -32,4 +34,5 @@ interface PlayerRepository {
     val isPlaying: Flow<Boolean>
     val isShuffle: Flow<Boolean>
     val repeatMode: Flow<RepeatMode>
+    val playbackSpeed: Flow<Float>
 }

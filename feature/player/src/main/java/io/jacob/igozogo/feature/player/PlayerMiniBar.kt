@@ -13,8 +13,7 @@ import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.outlined.AddCircleOutline
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,6 +31,7 @@ import io.jacob.igozogo.core.design.tooling.PreviewStory
 import io.jacob.igozogo.core.domain.model.Place
 import io.jacob.igozogo.core.domain.model.PlayerProgress
 import io.jacob.igozogo.core.domain.model.Story
+import kotlinx.coroutines.flow.collectLatest
 
 
 val PLAYER_BAR_HEIGHT = 70.dp
@@ -42,15 +42,19 @@ fun PlayerMiniBar(
     viewModel: PlayerViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val isShowPlayer by viewModel.isShowPlayer.collectAsStateWithLifecycle()
 
-//    LaunchedEffect(Unit) {
-//        viewModel.effect.collectLatest { effect ->
-//            when (effect) {
-//                is PlayerUiEffect.ShowToast -> onShowSnackBar(effect.message)
-//            }
-//        }
-//    }
+    val isShowPlayer = remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.effect.collectLatest { effect ->
+            when (effect) {
+                is PlayerEffect.NavigateToPlaceDetail -> {}
+                is PlayerEffect.NavigateToStoryDetail -> {}
+                is PlayerEffect.ShowPlayerBottomSheet -> { isShowPlayer.value = true }
+                is PlayerEffect.HidePlayerBottomSheet -> { isShowPlayer.value = false }
+            }
+        }
+    }
 
 //            val context = LocalContext.current
 //            LaunchedEffect(s.nowPlaying.imageUrl) {
@@ -75,23 +79,23 @@ fun PlayerMiniBar(
 
             PlayerMiniBar(
                 modifier = modifier,
-                nowPlaying = s.nowPlaying,
-                progress = s.progress,
-                isPlaying = s.isPlaying,
+                nowPlaying = s.content.nowPlaying,
+                progress = s.content.playerProgress,
+                isPlaying = s.meta.isPlaying,
                 place = s.place,
                 isFavorite = false,
                 actions = PlayerMiniBarActions(
                     onPlayOrPause = { viewModel.sendAction(PlayerAction.PlayOrPause) },
                     onFavorite = {},
                 ),
-                onExpand = { viewModel.sendAction(PlayerAction.ClickPlayer) },
+                onExpand = { viewModel.sendAction(PlayerAction.ExpandPlayer) },
             )
         }
     }
 
-//    if (isShowPlayer) {
-//        PlayerBottomSheet()
-//    }
+    if (isShowPlayer.value) {
+        PlayerBottomSheet()
+    }
 }
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
@@ -101,7 +105,7 @@ fun PlayerMiniBar(
     nowPlaying: Story,
     progress: PlayerProgress,
     isPlaying: Boolean,
-    place: Place?,
+    place: Place,
     isFavorite: Boolean,
     actions: PlayerMiniBarActions,
     onExpand: () -> Unit,
@@ -161,7 +165,7 @@ fun PlayerMiniBar(
                         modifier = Modifier
                             .fillMaxWidth()
                             .basicMarquee(),
-                        text = place?.title ?: "",
+                        text = place.title,
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         maxLines = 1,

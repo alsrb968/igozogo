@@ -1,5 +1,7 @@
 package io.jacob.igozogo.core.domain.model
 
+import io.jacob.igozogo.core.domain.util.formatMillisAdaptive
+
 data class PlayerProgress(
     val position: Long,
     val buffered: Long,
@@ -10,4 +12,10 @@ data class PlayerProgress(
 
     val bufferedRatio: Float
         get() = buffered.toFloat() / duration
+
+    val formattedPosition: String
+        get() = position.formatMillisAdaptive()
+
+    val formattedDuration: String
+        get() = duration.formatMillisAdaptive()
 }

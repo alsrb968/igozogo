@@ -21,8 +21,11 @@ interface PlayerDataSource {
     fun next()
     fun previous()
     fun seekTo(position: Long)
+    fun seekBackward()
+    fun seekForward()
     fun setShuffle(isShuffle: Boolean)
     fun setRepeat(repeatMode: Int)
+    fun setPlaybackSpeed(speed: Float)
     fun addTrack(story: Story, index: Int? = null)
     fun addTrack(stories: List<Story>, index: Int? = null)
     fun removeTrack(index: Int)
@@ -37,6 +40,7 @@ interface PlayerDataSource {
     val isPlaying: Flow<Boolean>
     val isShuffle: Flow<Boolean>
     val repeatMode: Flow<Int>
+    val playbackSpeed: Flow<Float>
 }
 
 class PlayerDataSourceImpl @Inject constructor(
@@ -157,9 +161,9 @@ class PlayerDataSourceImpl @Inject constructor(
             .setTag(story)
             .build()
 
-        player.playWhenReady = true
         player.setMediaItem(mediaItem)
         player.prepare()
+        player.playWhenReady = true
     }
 
     override fun play(stories: List<Story>, indexToPlay: Int?) {
@@ -170,16 +174,16 @@ class PlayerDataSourceImpl @Inject constructor(
                 .build()
         }
 
-        player.playWhenReady = true
         player.setMediaItems(mediaItems)
         indexToPlay?.let { player.seekToDefaultPosition(it) }
         player.prepare()
+        player.playWhenReady = true
     }
 
     override fun playIndex(index: Int) {
         if (index in 0 until player.mediaItemCount) {
-            player.playWhenReady = true
             player.seekToDefaultPosition(index)
+            player.playWhenReady = true
         }
     }
 
@@ -202,20 +206,28 @@ class PlayerDataSourceImpl @Inject constructor(
 
     override fun next() {
         if (player.hasNextMediaItem()) {
-            player.playWhenReady = true
             player.seekToNextMediaItem()
+            player.playWhenReady = true
         }
     }
 
     override fun previous() {
         if (player.hasPreviousMediaItem()) {
+            player.seekToPrevious()
             player.playWhenReady = true
-            player.seekToPreviousMediaItem()
         }
     }
 
     override fun seekTo(position: Long) {
         player.seekTo(position)
+    }
+
+    override fun seekBackward() {
+        player.seekBack()
+    }
+
+    override fun seekForward() {
+        player.seekForward()
     }
 
     override fun setShuffle(isShuffle: Boolean) {
@@ -224,6 +236,12 @@ class PlayerDataSourceImpl @Inject constructor(
 
     override fun setRepeat(repeatMode: Int) {
         player.repeatMode = repeatMode
+    }
+
+    override fun setPlaybackSpeed(speed: Float) {
+        val safeSpeed = speed.coerceIn(0.5f, 3.5f)
+        player.setPlaybackSpeed(safeSpeed)
+        _playbackSpeed.value = safeSpeed
     }
 
     override fun addTrack(story: Story, index: Int?) {
@@ -308,4 +326,8 @@ class PlayerDataSourceImpl @Inject constructor(
     private val _repeatMode = MutableStateFlow(Player.REPEAT_MODE_OFF)
     override val repeatMode: Flow<Int>
         get() = _repeatMode
+
+    private val _playbackSpeed = MutableStateFlow(1.0f)
+    override val playbackSpeed: Flow<Float>
+        get() = _playbackSpeed
 }
