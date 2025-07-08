@@ -69,19 +69,18 @@ fun PlayerBottomSheet(
         sheetMaxWidth = Dp.Infinity,
         dragHandle = null,
         containerColor = Color.Transparent,
+        scrimColor = Color.Transparent,
         contentWindowInsets = { WindowInsets(0) },
         properties = ModalBottomSheetProperties(
             shouldDismissOnBackPress = true,
         ),
     ) {
-        Scaffold(
-            snackbarHost = {
-                SnackbarHost(snackbarHostState)
-            }
-        ) { padding ->
+        Card(
+            modifier = Modifier
+                .padding(WindowInsets.statusBars.asPaddingValues())
+        ) {
             PlayerScreen(
-                modifier = Modifier
-                    .padding(padding),
+                modifier = Modifier,
                 nowPlaying = s.content.nowPlaying,
                 playerProgress = s.content.playerProgress,
                 isPlaying = s.meta.isPlaying,
