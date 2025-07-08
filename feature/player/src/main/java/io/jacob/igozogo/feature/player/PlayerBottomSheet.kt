@@ -69,6 +69,7 @@ fun PlayerBottomSheet(
         sheetMaxWidth = Dp.Infinity,
         dragHandle = null,
         containerColor = Color.Transparent,
+        contentWindowInsets = { WindowInsets(0) },
         properties = ModalBottomSheetProperties(
             shouldDismissOnBackPress = true,
         ),
@@ -313,11 +314,16 @@ fun ControlPanelProgress(
     playerProgress: PlayerProgress,
     actions: PlayerScreenActions,
 ) {
+    var position by remember { mutableFloatStateOf(playerProgress.positionRatio) }
+
+    LaunchedEffect(playerProgress.position) {
+        position = playerProgress.positionRatio
+    }
+
     Box(
         modifier = modifier
             .fillMaxWidth(),
     ) {
-        var position by remember { mutableFloatStateOf(playerProgress.positionRatio) }
         Slider(
             value = position,
             onValueChange = { value ->
