@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -41,7 +40,6 @@ fun PlayerBottomSheet(
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -66,49 +64,43 @@ fun PlayerBottomSheet(
             viewModel.sendAction(PlayerAction.CollapsePlayer)
         },
         sheetState = sheetState,
-        sheetMaxWidth = Dp.Infinity,
         dragHandle = null,
-        containerColor = Color.Transparent,
         scrimColor = Color.Transparent,
         contentWindowInsets = { WindowInsets(0) },
         properties = ModalBottomSheetProperties(
             shouldDismissOnBackPress = true,
         ),
     ) {
-        Card(
+        PlayerScreen(
             modifier = Modifier
-                .padding(WindowInsets.statusBars.asPaddingValues())
-        ) {
-            PlayerScreen(
-                modifier = Modifier,
-                nowPlaying = s.content.nowPlaying,
-                playerProgress = s.content.playerProgress,
-                isPlaying = s.meta.isPlaying,
-                isShuffle = s.meta.isShuffle,
-                repeatMode = s.meta.repeatMode,
-                place = s.place,
-                isFavorite = false,
+                .padding(WindowInsets.statusBars.asPaddingValues()),
+            nowPlaying = s.content.nowPlaying,
+            playerProgress = s.content.playerProgress,
+            isPlaying = s.meta.isPlaying,
+            isShuffle = s.meta.isShuffle,
+            repeatMode = s.meta.repeatMode,
+            place = s.place,
+            isFavorite = false,
 //                dominantColor = s.dominantColor,
-                actions = PlayerScreenActions(
-                    isFavorite = { flowOf(false)/*viewModel::isFavoriteTrack*/ },
-                    onFavorite = {},
-                    onFavoriteIndex = {},
-                    onPlayOrPause = { viewModel.sendAction(PlayerAction.PlayOrPause) },
-                    onPlayIndex = { viewModel.sendAction(PlayerAction.PlayIndex(it)) },
-                    onPrevious = { viewModel.sendAction(PlayerAction.Previous) },
-                    onNext = { viewModel.sendAction(PlayerAction.Next) },
-                    onShuffle = { viewModel.sendAction(PlayerAction.Shuffle) },
-                    onRepeat = { viewModel.sendAction(PlayerAction.Repeat) },
-                    onSeekTo = { viewModel.sendAction(PlayerAction.SeekTo(it)) },
-                ),
-                onCollapse = {
-                    scope.launch {
-                        sheetState.hide()
-                        viewModel.sendAction(PlayerAction.CollapsePlayer)
-                    }
-                },
-            )
-        }
+            actions = PlayerScreenActions(
+                isFavorite = { flowOf(false)/*viewModel::isFavoriteTrack*/ },
+                onFavorite = {},
+                onFavoriteIndex = {},
+                onPlayOrPause = { viewModel.sendAction(PlayerAction.PlayOrPause) },
+                onPlayIndex = { viewModel.sendAction(PlayerAction.PlayIndex(it)) },
+                onPrevious = { viewModel.sendAction(PlayerAction.Previous) },
+                onNext = { viewModel.sendAction(PlayerAction.Next) },
+                onShuffle = { viewModel.sendAction(PlayerAction.Shuffle) },
+                onRepeat = { viewModel.sendAction(PlayerAction.Repeat) },
+                onSeekTo = { viewModel.sendAction(PlayerAction.SeekTo(it)) },
+            ),
+            onCollapse = {
+                scope.launch {
+                    sheetState.hide()
+                    viewModel.sendAction(PlayerAction.CollapsePlayer)
+                }
+            },
+        )
     }
 }
 
@@ -130,7 +122,7 @@ fun PlayerScreen(
 
     Box(
         modifier = modifier
-            .fillMaxSize()
+            .padding(horizontal = 16.dp)
 //            .gradientBackground(
 //                ratio = 1f,
 //                startColor = dominantColor,
@@ -139,9 +131,7 @@ fun PlayerScreen(
     ) {
 
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
+            modifier = Modifier,
             horizontalAlignment = Alignment.CenterHorizontally,
             state = listState,
         ) {
@@ -173,7 +163,7 @@ fun PlayerScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(40.dp)
+                            .height(60.dp)
                             .padding(start = 4.dp),
                     ) {
                         Text(
@@ -183,8 +173,7 @@ fun PlayerScreen(
                                 .padding(end = 50.dp)
                                 .basicMarquee(),
                             text = nowPlaying.audioTitle,
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurface,
+                            style = MaterialTheme.typography.titleLarge,
                             maxLines = 1,
                         )
 
@@ -195,8 +184,7 @@ fun PlayerScreen(
                                 .padding(end = 50.dp)
                                 .basicMarquee(),
                             text = place.title,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = MaterialTheme.typography.bodyLarge,
                             maxLines = 1
                         )
 
@@ -240,9 +228,20 @@ fun PlayerScreen(
 //                ArtistDetailsInfoCard()
 //            }
 
-//            item {
-//                TrackDetailsInfoCard()
-//            }
+            item {
+                Spacer(modifier = Modifier.height(100.dp))
+            }
+
+            item {
+                Text(
+                    text = nowPlaying.script,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(300.dp))
+            }
         }
     }
 }

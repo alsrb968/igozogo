@@ -43,15 +43,15 @@ fun PlayerMiniBar(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
-    val isShowPlayer = remember { mutableStateOf(false) }
+    var isShowPlayer by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.effect.collectLatest { effect ->
             when (effect) {
                 is PlayerEffect.NavigateToPlaceDetail -> {}
                 is PlayerEffect.NavigateToStoryDetail -> {}
-                is PlayerEffect.ShowPlayerBottomSheet -> { isShowPlayer.value = true }
-                is PlayerEffect.HidePlayerBottomSheet -> { isShowPlayer.value = false }
+                is PlayerEffect.ShowPlayerBottomSheet -> { isShowPlayer = true }
+                is PlayerEffect.HidePlayerBottomSheet -> { isShowPlayer = false }
             }
         }
     }
@@ -93,7 +93,7 @@ fun PlayerMiniBar(
         }
     }
 
-    if (isShowPlayer.value) {
+    if (isShowPlayer) {
         PlayerBottomSheet()
     }
 }
