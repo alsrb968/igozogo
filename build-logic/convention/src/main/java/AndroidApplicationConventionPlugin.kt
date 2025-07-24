@@ -21,6 +21,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
 
             dependencies {
                 "implementation"(libs.findLibrary("timber").get())
+                "implementation"(libs.findLibrary("kotlinx.coroutines.core").get())
             }
         }
     }

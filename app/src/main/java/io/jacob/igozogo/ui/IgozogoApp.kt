@@ -1,9 +1,6 @@
 package io.jacob.igozogo.ui
 
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -18,6 +15,7 @@ import io.jacob.igozogo.core.design.component.IgozogoNavigationBar
 import io.jacob.igozogo.core.design.component.IgozogoNavigationBarItem
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
+import io.jacob.igozogo.feature.player.PlayerMiniBar
 import io.jacob.igozogo.navigation.IgozogoNavHost
 import kotlin.reflect.KClass
 
@@ -83,19 +81,23 @@ fun IgozogoApp(
             )
         },
     ) { paddingValues ->
-        IgozogoNavHost(
+        Box(
             modifier = Modifier
                 .padding(bottom = paddingValues.calculateBottomPadding())
-            ,
-            appState = appState,
-            onShowSnackbar = { message, action ->
-                snackbarHostState.showSnackbar(
-                    message = message,
-                    actionLabel = action,
-                    duration = SnackbarDuration.Short,
-                ) == SnackbarResult.ActionPerformed
-            },
-        )
+        ) {
+            IgozogoNavHost(
+                appState = appState,
+                onShowSnackbar = { message, action ->
+                    snackbarHostState.showSnackbar(
+                        message = message,
+                        actionLabel = action,
+                        duration = SnackbarDuration.Short,
+                    ) == SnackbarResult.ActionPerformed
+                },
+            )
+
+            PlayerMiniBar()
+        }
     }
 }
 

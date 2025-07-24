@@ -8,12 +8,15 @@ import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.jacob.igozogo.core.domain.model.Place
 import io.jacob.igozogo.core.domain.model.Story
+import io.jacob.igozogo.core.domain.repository.PlayerRepository
 import io.jacob.igozogo.core.domain.usecase.GetStoryAndPlaceByIdUseCase
 import kotlinx.coroutines.flow.*
+import timber.log.Timber
 
 @HiltViewModel(assistedFactory = StoryDetailViewModel.Factory::class)
 class StoryDetailViewModel @AssistedInject constructor(
     getStoryAndPlaceByIdUseCase: GetStoryAndPlaceByIdUseCase,
+    private val playerRepository: PlayerRepository,
     @Assisted("storyId") storyId: Int,
     @Assisted("storyLangId") storyLangId: Int
 ) : ViewModel() {
@@ -30,6 +33,11 @@ class StoryDetailViewModel @AssistedInject constructor(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = StoryDetailState.Loading
     )
+
+    fun play(story: Story) {
+        Timber.i("audioUrl: ${story.audioUrl}")
+        playerRepository.play(story)
+    }
 
     @AssistedFactory
     interface Factory {

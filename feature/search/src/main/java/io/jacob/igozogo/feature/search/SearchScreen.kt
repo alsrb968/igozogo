@@ -4,13 +4,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
@@ -19,8 +14,6 @@ import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.debounce
 
 @Composable
 fun SearchRoute(
@@ -33,11 +26,14 @@ fun SearchRoute(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SearchScreen(
     modifier: Modifier = Modifier,
     onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
 ) {
+    var isShowBottomSheet by remember { mutableStateOf(false) }
+
     Box(
         modifier = modifier
             .fillMaxSize()
@@ -52,11 +48,33 @@ fun SearchScreen(
             onFocusChanged = {}
         )
 
-        Text(
+        Button(
             modifier = Modifier
                 .align(Alignment.Center),
-            text = "Search"
-        )
+            onClick = { isShowBottomSheet = !isShowBottomSheet }
+        ) {
+            Text(text = "Search")
+        }
+        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        if (isShowBottomSheet) {
+            ModalBottomSheet(
+                sheetState = sheetState,
+                dragHandle = null,
+//                containerColor = Color.Transparent,
+//                scrimColor = Color.Transparent,
+                onDismissRequest = { isShowBottomSheet = false },
+            ) {
+                Spacer(modifier = Modifier.height(300.dp))
+
+                Text(
+                    modifier = Modifier
+                        .padding(16.dp),
+                    text = "Bottom Sheet Content"
+                )
+
+                Spacer(modifier = Modifier.height(300.dp))
+            }
+        }
     }
 }
 
@@ -72,13 +90,13 @@ fun SearchBar(
 ) {
     val searchFlow = remember { MutableStateFlow(query) }
 
-    LaunchedEffect(Unit) {
-        searchFlow
-            .debounce(500)
-            .collectLatest { text ->
-                onSearch(text)
-            }
-    }
+//    LaunchedEffect(Unit) {
+//        searchFlow
+//            .debounce(500)
+//            .collectLatest { text ->
+//                onSearch(text)
+//            }
+//    }
 
     TextField(
         value = query,

@@ -47,7 +47,8 @@ fun StoryDetailRoute(
                 story = s.story,
                 onPlaceClick = onPlaceClick,
                 onBackClick = onBackClick,
-                onShowSnackbar = onShowSnackbar
+                onPlayClick = viewModel::play,
+                onShowSnackbar = onShowSnackbar,
             )
         }
     }
@@ -61,6 +62,7 @@ fun StoryDetailScreen(
     story: Story,
     onPlaceClick: (Place) -> Unit,
     onBackClick: () -> Unit,
+    onPlayClick: (Story) -> Unit,
     onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
 ) {
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
@@ -114,7 +116,7 @@ fun StoryDetailScreen(
                                     .clickable {
                                         onPlaceClick(place)
                                     },
-                                text = story.title,
+                                text = place.title,
                                 style = MaterialTheme.typography.titleLarge,
                             )
 
@@ -125,7 +127,7 @@ fun StoryDetailScreen(
                                 onAdd = {},
                                 onDownload = {},
                                 onShare = {},
-                                onPlay = {}
+                                onPlay = onPlayClick
                             )
 
                             Spacer(modifier = Modifier.height(8.dp))
@@ -216,7 +218,8 @@ private fun StoryDetailScreenPreview() {
             story = PreviewStory,
             onPlaceClick = {},
             onBackClick = {},
-            onShowSnackbar = { _, _ -> true }
+            onPlayClick = {},
+            onShowSnackbar = { _, _ -> true },
         )
     }
 }
