@@ -1,8 +1,8 @@
 package io.jacob.igozogo.feature.home
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,6 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.jacob.igozogo.core.design.R
 import io.jacob.igozogo.core.design.component.*
+import io.jacob.igozogo.core.design.foundation.NestedScrollLazyColumn
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
 import io.jacob.igozogo.core.design.tooling.PreviewCategories
@@ -74,7 +75,7 @@ fun HomeRoute(
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class)
+@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
@@ -83,10 +84,8 @@ fun HomeScreen(
     onPlaceClick: (Place) -> Unit,
     onStoryClick: (Story) -> Unit,
 ) {
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .windowInsetsPadding(WindowInsets.statusBars),
+    NestedScrollLazyColumn(
+        modifier = modifier,
         state = rememberLazyListState()
     ) {
         items(
