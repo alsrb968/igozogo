@@ -9,11 +9,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.outlined.FileDownload
-import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -28,6 +23,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.jacob.igozogo.core.design.component.LoadingWheel
 import io.jacob.igozogo.core.design.component.StateImage
 import io.jacob.igozogo.core.design.component.StoryItem
+import io.jacob.igozogo.core.design.icon.IgozogoIcons
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
 import io.jacob.igozogo.core.design.tooling.PreviewPlace
@@ -110,7 +106,7 @@ fun PlaceDetailScreen(
                         onClick = onBackClick
                     ) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            imageVector = IgozogoIcons.Back,
                             contentDescription = "Back",
                         )
                     }
@@ -164,7 +160,7 @@ fun PlaceDetailScreen(
                             onClick = { /* TODO */ }
                         ) {
                             Icon(
-                                imageVector = Icons.Outlined.FileDownload,
+                                imageVector = IgozogoIcons.Download,
                                 contentDescription = null
                             )
                         }
@@ -181,7 +177,7 @@ fun PlaceDetailScreen(
                             Icon(
                                 modifier = Modifier
                                     .size(48.dp),
-                                imageVector = Icons.Default.PlayArrow,
+                                imageVector = IgozogoIcons.Play,
                                 contentDescription = null
                             )
                         }
@@ -196,7 +192,7 @@ fun PlaceDetailScreen(
                             onClick = { /* TODO */ }
                         ) {
                             Icon(
-                                imageVector = Icons.Outlined.Share,
+                                imageVector = IgozogoIcons.Share,
                                 contentDescription = null
                             )
                         }

@@ -1,15 +1,11 @@
 package io.jacob.igozogo.core.design.component
 
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Bookmarks
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import io.jacob.igozogo.core.design.icon.IgozogoIcons
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
 
@@ -60,10 +56,16 @@ fun IgozogoNavigationBar(
 fun IgozogoNavigationBarPreview() {
     val items = listOf("Home", "Search", "Bookmark", "Setting")
     val icons = listOf(
-        Icons.Outlined.Home,
-        Icons.Outlined.Search,
-        Icons.Outlined.Bookmarks,
-        Icons.Outlined.Settings,
+        IgozogoIcons.HomeBorder,
+        IgozogoIcons.SearchBorder,
+        IgozogoIcons.BookmarksBorder,
+        IgozogoIcons.SettingsBorder,
+    )
+    val selectedIcons = listOf(
+        IgozogoIcons.Home,
+        IgozogoIcons.Search,
+        IgozogoIcons.Bookmarks,
+        IgozogoIcons.Settings,
     )
 
     IgozogoTheme {
@@ -73,6 +75,12 @@ fun IgozogoNavigationBarPreview() {
                     icon = {
                         Icon(
                             imageVector = icons[index],
+                            contentDescription = null
+                        )
+                    },
+                    selectedIcon = {
+                        Icon(
+                            imageVector = selectedIcons[index],
                             contentDescription = null
                         )
                     },

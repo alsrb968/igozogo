@@ -1,13 +1,12 @@
+@file:OptIn(ExperimentalMaterial3ExpressiveApi::class)
+
 package io.jacob.igozogo.feature.player
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,8 +16,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.jacob.igozogo.core.design.component.LargeIconButton
+import io.jacob.igozogo.core.design.component.MediumIconButton
 import io.jacob.igozogo.core.design.component.SquareCard
 import io.jacob.igozogo.core.design.component.StateImage
+import io.jacob.igozogo.core.design.icon.IgozogoIcons
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
 import io.jacob.igozogo.core.design.tooling.PreviewPlace
@@ -93,6 +95,8 @@ fun PlayerBottomSheet(
                 onShuffle = { viewModel.sendAction(PlayerAction.Shuffle) },
                 onRepeat = { viewModel.sendAction(PlayerAction.Repeat) },
                 onSeekTo = { viewModel.sendAction(PlayerAction.SeekTo(it)) },
+                onSeekBackward = { viewModel.sendAction(PlayerAction.SeekBackward) },
+                onSeekForward = { viewModel.sendAction(PlayerAction.SeekForward) },
             ),
             onCollapse = {
                 scope.launch {
@@ -129,120 +133,100 @@ fun PlayerScreen(
 //                endColor = MaterialTheme.colorScheme.background
 //            ),
     ) {
-
-        LazyColumn(
-            modifier = Modifier,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            state = listState,
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
         ) {
-            item {
-                Column(
+            Spacer(modifier = Modifier.height(24.dp))
+
+            ControlPanelTop(
+                modifier = Modifier,
+                onCollapse = onCollapse
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            SquareCard(
+                modifier = Modifier
+                    .padding(16.dp)
+            ) {
+                StateImage(
                     modifier = Modifier
-                        .fillMaxSize()
-                ) {
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    ControlPanelTop(
-                        modifier = Modifier,
-                        onCollapse = onCollapse
-                    )
-
-                    Spacer(modifier = Modifier.height(100.dp))
-
-                    SquareCard {
-                        StateImage(
-                            modifier = Modifier
-                                .fillMaxSize(),
-                            imageUrl = nowPlaying.imageUrl,
-                            contentDescription = nowPlaying.audioTitle
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(100.dp))
-
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(60.dp)
-                            .padding(start = 4.dp),
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                .align(Alignment.TopStart)
-                                .fillMaxWidth()
-                                .padding(end = 50.dp)
-                                .basicMarquee(),
-                            text = nowPlaying.audioTitle,
-                            style = MaterialTheme.typography.titleLarge,
-                            maxLines = 1,
-                        )
-
-                        Text(
-                            modifier = Modifier
-                                .align(Alignment.BottomStart)
-                                .fillMaxWidth()
-                                .padding(end = 50.dp)
-                                .basicMarquee(),
-                            text = place.title,
-                            style = MaterialTheme.typography.bodyLarge,
-                            maxLines = 1
-                        )
-
-                        IconButton(
-                            modifier = Modifier
-                                .align(Alignment.CenterEnd),
-                            onClick = actions.onFavorite,
-                        ) {
-                            Icon(
-                                imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                                contentDescription = "Favorite",
-                                tint = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
-                            )
-                        }
-                    }
-
-                    ControlPanelProgress(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        nowPlaying = nowPlaying,
-                        playerProgress = playerProgress,
-                        actions = actions
-                    )
-
-                    ControlPanelBottom(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        isPlaying = isPlaying,
-                        isShuffle = isShuffle,
-                        repeatMode = repeatMode,
-                        actions = actions
-                    )
-
-                    Spacer(modifier = Modifier.weight(1f))
-                }
-
-            }
-
-//            item {
-//                Spacer(modifier = Modifier.height(105.dp))
-//                ArtistDetailsInfoCard()
-//            }
-
-            item {
-                Spacer(modifier = Modifier.height(100.dp))
-            }
-
-            item {
-                Text(
-                    text = nowPlaying.script,
-                    style = MaterialTheme.typography.bodyMedium,
+                        .fillMaxSize(),
+                    imageUrl = nowPlaying.imageUrl,
+                    contentDescription = nowPlaying.audioTitle
                 )
             }
 
-            item {
-                Spacer(modifier = Modifier.height(300.dp))
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp)
+                    .padding(start = 4.dp),
+            ) {
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .fillMaxWidth()
+                        .padding(end = 50.dp)
+                        .basicMarquee(),
+                    text = nowPlaying.audioTitle,
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                )
+
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .fillMaxWidth()
+                        .padding(end = 50.dp)
+                        .basicMarquee(),
+                    text = place.title,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1
+                )
+
+                IconButton(
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd),
+                    onClick = actions.onFavorite,
+                ) {
+                    Icon(
+                        imageVector = if (isFavorite) IgozogoIcons.Bookmark else IgozogoIcons.BookmarkBorder,
+                        contentDescription = "Favorite",
+                        tint = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                    )
+                }
             }
+
+            ControlPanelProgress(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                nowPlaying = nowPlaying,
+                playerProgress = playerProgress,
+                actions = actions
+            )
+
+            ControlPanelBottom(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                isPlaying = isPlaying,
+                isShuffle = isShuffle,
+                repeatMode = repeatMode,
+                actions = actions
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
         }
+//        Text(
+//            text = nowPlaying.script,
+//            style = MaterialTheme.typography.bodyMedium,
+//        )
+
     }
 }
 
@@ -257,6 +241,8 @@ data class PlayerScreenActions(
     val onShuffle: () -> Unit,
     val onRepeat: () -> Unit,
     val onSeekTo: (Long) -> Unit,
+    val onSeekBackward: () -> Unit,
+    val onSeekForward: () -> Unit
 )
 
 @Composable
@@ -276,7 +262,7 @@ fun ControlPanelTop(
         ) {
             Icon(
                 modifier = Modifier.size(36.dp),
-                imageVector = Icons.Default.KeyboardArrowDown,
+                imageVector = IgozogoIcons.Down,
                 contentDescription = "Down",
                 tint = MaterialTheme.colorScheme.onSurface
             )
@@ -400,53 +386,37 @@ fun ControlPanelBottom(
         IconButton(
             onClick = actions.onShuffle
         ) {
-            val icon = if (isShuffle) Icons.Default.ShuffleOn else Icons.Default.Shuffle
-            val color =
-                if (isShuffle) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground
+            val icon = if (isShuffle) IgozogoIcons.ShuffleOn else IgozogoIcons.Shuffle
             Icon(
                 imageVector = icon,
                 contentDescription = "Shuffle",
-                tint = color
             )
         }
 
-        IconButton(
-            onClick = actions.onPrevious
-        ) {
-            Icon(
-                imageVector = Icons.Default.SkipPrevious,
-                contentDescription = "Previous",
-            )
-        }
+        MediumIconButton(
+            onClick = actions.onSeekBackward,
+            icon = IgozogoIcons.Replay10
+        )
 
-        IconButton(
-            modifier = Modifier.size(56.dp),
-            onClick = actions.onPlayOrPause
-        ) {
-            val icon = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow
-            Icon(
-                modifier = Modifier.size(56.dp),
-                imageVector = icon,
-                contentDescription = "Play",
-            )
-        }
+        LargeIconButton(
+            onClick = actions.onPlayOrPause,
+            isChecked = isPlaying,
+            icon = IgozogoIcons.Play,
+            checkedIcon = IgozogoIcons.Pause
+        )
 
-        IconButton(
-            onClick = actions.onNext
-        ) {
-            Icon(
-                imageVector = Icons.Default.SkipNext,
-                contentDescription = "Next",
-            )
-        }
+        MediumIconButton(
+            onClick = actions.onSeekForward,
+            icon = IgozogoIcons.Forward10
+        )
 
         IconButton(
             onClick = actions.onRepeat
         ) {
             val icon = when (repeatMode) {
-                RepeatMode.OFF -> Icons.Default.Repeat
-                RepeatMode.ONE -> Icons.Default.RepeatOneOn
-                RepeatMode.ALL -> Icons.Default.RepeatOn
+                RepeatMode.OFF -> IgozogoIcons.Repeat
+                RepeatMode.ONE -> IgozogoIcons.RepeatOne
+                RepeatMode.ALL -> IgozogoIcons.RepeatOn
             }
             Icon(
                 imageVector = icon,
@@ -479,7 +449,9 @@ private fun PlayerScreenPreview() {
                 onNext = {},
                 onShuffle = {},
                 onRepeat = {},
-                onSeekTo = {}
+                onSeekTo = {},
+                onSeekBackward = {},
+                onSeekForward = {},
             ),
             onCollapse = {}
         )

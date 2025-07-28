@@ -3,11 +3,6 @@ package io.jacob.igozogo.core.design.component
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.outlined.FileDownload
-import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,6 +11,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import io.jacob.igozogo.core.design.icon.IgozogoIcons
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
 import io.jacob.igozogo.core.design.tooling.PreviewStory
@@ -147,7 +143,7 @@ fun StoryAction(
         ) {
             Icon(
                 modifier = Modifier.size(ButtonDefaults.IconSize),
-                imageVector = Icons.AutoMirrored.Filled.PlaylistAdd,
+                imageVector = IgozogoIcons.PlaylistAdd,
                 contentDescription = "Add to playlist"
             )
         }
@@ -159,7 +155,7 @@ fun StoryAction(
         ) {
             Icon(
                 modifier = Modifier.size(ButtonDefaults.IconSize),
-                imageVector = Icons.Outlined.FileDownload,
+                imageVector = IgozogoIcons.Download,
                 contentDescription = "Download"
             )
         }
@@ -171,7 +167,7 @@ fun StoryAction(
         ) {
             Icon(
                 modifier = Modifier.size(ButtonDefaults.IconSize),
-                imageVector = Icons.Outlined.Share,
+                imageVector = IgozogoIcons.Share,
                 contentDescription = "Share"
             )
         }
@@ -186,7 +182,7 @@ fun StoryAction(
         ) {
             Icon(
                 modifier = Modifier.size(ButtonDefaults.IconSize),
-                imageVector = Icons.Default.PlayArrow,
+                imageVector = IgozogoIcons.Play,
                 contentDescription = "Play"
             )
 

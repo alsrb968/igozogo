@@ -1,15 +1,13 @@
 package io.jacob.igozogo.feature.search
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.unit.dp
+import io.jacob.igozogo.core.design.icon.IgozogoIcons
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
 import kotlinx.coroutines.FlowPreview
@@ -107,7 +105,7 @@ fun SearchBar(
         placeholder = { Text("Search...") },
         leadingIcon = {
             Icon(
-                imageVector = Icons.Default.Search,
+                imageVector = IgozogoIcons.Search,
                 contentDescription = "Search"
             )
         },
@@ -118,7 +116,7 @@ fun SearchBar(
                     searchFlow.value = ""
                 }) {
                     Icon(
-                        imageVector = Icons.Default.Close,
+                        imageVector = IgozogoIcons.Close,
                         contentDescription = "Clear"
                     )
                 }
