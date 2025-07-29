@@ -5,8 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import io.jacob.igozogo.core.design.icon.IgozogoIcons
 
 @Composable
 fun StateImage(
@@ -28,10 +27,10 @@ fun StateImage(
     modifier: Modifier = Modifier,
     contentScale: ContentScale = ContentScale.Crop,
     placeholderBrush: Brush = thumbnailPlaceholderDefaultBrush(),
-    fallbackIcon: ImageVector = Icons.Outlined.Place,
+    fallbackIcon: ImageVector = IgozogoIcons.Place,
 ) {
     if (LocalInspectionMode.current) {
-        Box(modifier = modifier.background(MaterialTheme.colorScheme.primary))
+        Box(modifier = modifier.background(MaterialTheme.colorScheme.onPrimary))
         return
     }
 

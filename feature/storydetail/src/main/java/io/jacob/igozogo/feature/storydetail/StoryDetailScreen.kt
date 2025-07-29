@@ -5,9 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,6 +17,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.jacob.igozogo.core.design.component.LoadingWheel
 import io.jacob.igozogo.core.design.component.StateImage
 import io.jacob.igozogo.core.design.component.StoryAction
+import io.jacob.igozogo.core.design.icon.IgozogoIcons
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
 import io.jacob.igozogo.core.design.tooling.PreviewPlace
@@ -162,7 +160,7 @@ fun StoryDetailScreen(
                 onClick = onBackClick
             ) {
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    imageVector = IgozogoIcons.Back,
                     contentDescription = "Back"
                 )
             }
@@ -182,7 +180,7 @@ private fun PlaceAddress(
     ) {
         Icon(
             modifier = Modifier.size(16.dp),
-            imageVector = Icons.Default.Place,
+            imageVector = IgozogoIcons.Place,
             contentDescription = "Location",
             tint = MaterialTheme.colorScheme.primary,
         )

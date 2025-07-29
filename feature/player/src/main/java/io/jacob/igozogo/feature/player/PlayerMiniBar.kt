@@ -7,11 +7,6 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Pause
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.outlined.AddCircleOutline
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.jacob.igozogo.core.design.component.StateImage
+import io.jacob.igozogo.core.design.icon.IgozogoIcons
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
 import io.jacob.igozogo.core.design.tooling.PreviewPlace
@@ -225,7 +221,7 @@ fun ControlBar(
             onClick = actions.onFavorite,
         ) {
             Icon(
-                imageVector = if (isFavorite) Icons.Filled.CheckCircle else Icons.Outlined.AddCircleOutline,
+                imageVector = if (isFavorite) IgozogoIcons.Bookmark else IgozogoIcons.BookmarkBorder,
                 contentDescription = "Favorite",
                 tint = if (isFavorite) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
             )
@@ -239,7 +235,7 @@ fun ControlBar(
             Icon(
                 modifier = Modifier
                     .size(32.dp),
-                imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                imageVector = if (isPlaying) IgozogoIcons.Pause else IgozogoIcons.Play,
                 contentDescription = "Play/Pause",
                 tint = MaterialTheme.colorScheme.onSurface
             )

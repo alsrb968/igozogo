@@ -33,7 +33,7 @@ fun TitleTextItem(
         ) {
             Text(
                 text = text,
-                style = MaterialTheme.typography.headlineMedium
+                style = MaterialTheme.typography.headlineSmall
             )
 
             onMore?.let {
