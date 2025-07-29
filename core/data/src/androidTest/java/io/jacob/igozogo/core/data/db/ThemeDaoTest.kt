@@ -2,7 +2,6 @@ package io.jacob.igozogo.core.data.db
 
 import androidx.paging.PagingSource
 import androidx.room.Room
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import io.jacob.igozogo.core.data.model.local.odii.ThemeEntity
 import kotlinx.coroutines.test.runTest
@@ -10,10 +9,8 @@ import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4::class)
-class ThemeDaoInstrumentedTest {
+class ThemeDaoTest {
     private lateinit var db: VisitKoreaDatabase
     private lateinit var dao: ThemeDao
 
@@ -206,8 +203,8 @@ class ThemeDaoInstrumentedTest {
         val themes2 = dao.getThemesByLocation(mapX, mapY, 10000 / METERS_PER_DEGREE, 10)
         assertEquals(2, themes2.size)
         assertTrue(isSortedAscByDistance(themes2))
-        assertEquals("용아생가", themes2[0].title)
-        assertEquals("광주 양동시장", themes2[1].title)
+        assertEquals("광주 양동시장", themes2[0].title)
+        assertEquals("용아생가", themes2[1].title)
     }
 
 

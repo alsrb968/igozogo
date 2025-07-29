@@ -2,7 +2,6 @@ package io.jacob.igozogo.core.data.db
 
 import androidx.paging.PagingSource
 import androidx.room.Room
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import io.jacob.igozogo.core.data.model.local.odii.StoryEntity
 import kotlinx.coroutines.test.runTest
@@ -10,10 +9,8 @@ import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
 
-@RunWith(AndroidJUnit4::class)
-class StoryDaoInstrumentedTest {
+class StoryDaoTest {
     private lateinit var db: VisitKoreaDatabase
     private lateinit var dao: StoryDao
 
