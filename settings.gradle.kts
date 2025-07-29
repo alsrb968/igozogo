@@ -27,6 +27,7 @@ include(":app")
 include(":core:data")
 include(":core:domain")
 include(":core:design")
+include(":core:testing")
 
 include(":feature:home")
 include(":feature:search")
