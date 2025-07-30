@@ -4,9 +4,9 @@ import io.jacob.igozogo.core.data.TestPagingSource
 import io.jacob.igozogo.core.data.datasource.local.StoryDataSource
 import io.jacob.igozogo.core.data.datasource.remote.OdiiDataSource
 import io.jacob.igozogo.core.data.mapper.toStory
-import io.jacob.igozogo.core.data.place
-import io.jacob.igozogo.core.data.storyEntities
-import io.jacob.igozogo.core.data.storyResponses
+import io.jacob.igozogo.core.data.testPlace
+import io.jacob.igozogo.core.data.testStoryEntities
+import io.jacob.igozogo.core.data.testStoryResponses
 import io.jacob.igozogo.core.testing.util.MainDispatcherRule
 import io.mockk.*
 import kotlinx.coroutines.flow.collectLatest
@@ -36,7 +36,7 @@ class StoryRepositoryTest {
     fun `Given Stories, When getStories called, Then call dataSource`() =
         runTest {
             // Given
-            coEvery { storyDataSource.getStories(any()) } returns storyEntities
+            coEvery { storyDataSource.getStories(any()) } returns testStoryEntities
 
             // When
             repository.getStories()
@@ -53,10 +53,10 @@ class StoryRepositoryTest {
             every { storyRemoteMediatorFactory.create(any()) } returns fakeRemoteMediator
             every {
                 storyDataSource.getStoriesByThemePagingSource(any(), any())
-            } returns TestPagingSource(storyEntities)
+            } returns TestPagingSource(testStoryEntities)
 
             // When
-            val flow = repository.getStoriesByPlacePaging(place = place, pageSize = 10)
+            val flow = repository.getStoriesByPlacePaging(place = testPlace, pageSize = 10)
 
             val job = launch { flow.collectLatest { pagingData -> } }
 
@@ -70,10 +70,10 @@ class StoryRepositoryTest {
     fun `Given cached Stories, When getStoriesByPlace called, Then call dataSource`() =
         runTest {
             // Given
-            coEvery { storyDataSource.getStoriesByTheme(any(), any()) } returns storyEntities
+            coEvery { storyDataSource.getStoriesByTheme(any(), any()) } returns testStoryEntities
 
             // When
-            repository.getStoriesByPlace(place = place)
+            repository.getStoriesByPlace(place = testPlace)
 
             // Then
             coVerify { storyDataSource.getStoriesByTheme(any(), any()) }
@@ -90,11 +90,11 @@ class StoryRepositoryTest {
             coEvery { storyDataSource.getStoriesByTheme(any(), any()) } returns listOf()
             coEvery {
                 odiiDataSource.getStoryBasedList(any(), any(), any(), any(), any())
-            } returns Result.success(storyResponses)
+            } returns Result.success(testStoryResponses)
             coEvery { storyDataSource.insertStories(any()) } just Runs
 
             // When
-            repository.getStoriesByPlace(place = place)
+            repository.getStoriesByPlace(place = testPlace)
 
             // Then
             coVerify { storyDataSource.getStoriesByTheme(any(), any()) }
@@ -110,7 +110,7 @@ class StoryRepositoryTest {
             every { storyRemoteMediatorFactory.create(any()) } returns fakeRemoteMediator
             every {
                 storyDataSource.getStoriesByLocationPagingSource(any(), any(), any())
-            } returns TestPagingSource(storyEntities)
+            } returns TestPagingSource(testStoryEntities)
 
             // When
             val flow = repository.getStoriesByLocationPaging(1.0, 1.0, 1)
@@ -129,7 +129,7 @@ class StoryRepositoryTest {
             // Given
             coEvery {
                 storyDataSource.getStoriesByLocation(any(), any(), any(), any())
-            } returns storyEntities
+            } returns testStoryEntities
 
             // When
             repository.getStoriesByLocation(1.0, 1.0, 1, 10)
@@ -151,7 +151,7 @@ class StoryRepositoryTest {
             } returns listOf()
             coEvery {
                 odiiDataSource.getStoryLocationBasedList(any(), any(), any(), any(), any(), any())
-            } returns Result.success(storyResponses)
+            } returns Result.success(testStoryResponses)
             coEvery { storyDataSource.insertStories(any()) } just Runs
 
             // When
@@ -173,7 +173,7 @@ class StoryRepositoryTest {
             every { storyRemoteMediatorFactory.create(any()) } returns fakeRemoteMediator
             every {
                 storyDataSource.getStoriesByKeywordPagingSource(any())
-            } returns TestPagingSource(storyEntities)
+            } returns TestPagingSource(testStoryEntities)
 
             // When
             val flow = repository.getStoriesByKeywordPaging("test", 1)
@@ -190,7 +190,7 @@ class StoryRepositoryTest {
     fun `Given cached Stories, When getStoriesByKeyword called, Then call dataSource`() =
         runTest {
             // Given
-            coEvery { storyDataSource.getStoriesByKeyword(any(), any()) } returns storyEntities
+            coEvery { storyDataSource.getStoriesByKeyword(any(), any()) } returns testStoryEntities
 
             // When
             repository.getStoriesByKeyword("test", 10)
@@ -208,7 +208,7 @@ class StoryRepositoryTest {
             coEvery { storyDataSource.getStoriesByKeyword(any(), any()) } returns listOf()
             coEvery {
                 odiiDataSource.getStorySearchList(any(), any(), any(), any())
-            } returns Result.success(storyResponses)
+            } returns Result.success(testStoryResponses)
             coEvery { storyDataSource.insertStories(any()) } just Runs
 
             // When
@@ -224,14 +224,14 @@ class StoryRepositoryTest {
     fun `Given Stories, When getStoryById called, Then call dataSource`() =
         runTest {
             // Given
-            coEvery { storyDataSource.getStoryById(any(), any()) } returns storyEntities[0]
+            coEvery { storyDataSource.getStoryById(any(), any()) } returns testStoryEntities[0]
 
             // When
             val story = repository.getStoryById(1, 2)
 
             // Then
             assertNotNull(story)
-            assertEquals(storyEntities[0].toStory(), story)
+            assertEquals(testStoryEntities[0].toStory(), story)
             coVerify { storyDataSource.getStoryById(any(), any()) }
         }
 }

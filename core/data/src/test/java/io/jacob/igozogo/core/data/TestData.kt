@@ -1,12 +1,13 @@
 package io.jacob.igozogo.core.data
 
 import io.jacob.igozogo.core.data.mapper.toPlace
+import io.jacob.igozogo.core.data.mapper.toStory
 import io.jacob.igozogo.core.data.mapper.toStoryEntity
 import io.jacob.igozogo.core.data.mapper.toThemeEntity
 import io.jacob.igozogo.core.data.model.remote.odii.StoryResponse
 import io.jacob.igozogo.core.data.model.remote.odii.ThemeResponse
 
-val themeResponses = listOf(
+val testThemeResponses = listOf(
     ThemeResponse(
         themeId = 1,
         themeLangId = 1,
@@ -54,25 +55,13 @@ val themeResponses = listOf(
     ),
 )
 
-val themeEntities = themeResponses.toThemeEntity()
+val testThemeEntities = testThemeResponses.toThemeEntity()
 
-val place = ThemeResponse(
-    themeId = 1,
-    themeLangId = 1,
-    themeCategory = "백제역사여행",
-    addr1 = "충청남도",
-    addr2 = "부여군",
-    title = "백제문화단지",
-    mapX = 126.905507,
-    mapY = 36.306984,
-    langCheck = "1111",
-    langCode = "ko",
-    imageUrl = "",
-    createdTime = "20190923193941",
-    modifiedTime = "20200615142618",
-).toThemeEntity().toPlace()
+val testPlaces = testThemeEntities.toPlace()
 
-val storyResponses = listOf(
+val testPlace = testPlaces.first()
+
+val testStoryResponses = listOf(
     StoryResponse(
         themeId = 2885,
         themeLangId = 4462,
@@ -126,4 +115,8 @@ val storyResponses = listOf(
     ),
 )
 
-val storyEntities = storyResponses.toStoryEntity()
+val testStoryEntities = testStoryResponses.toStoryEntity()
+
+val testStories = testStoryEntities.toStory()
+
+val testStory = testStories.first()

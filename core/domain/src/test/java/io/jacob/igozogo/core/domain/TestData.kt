@@ -1,6 +1,7 @@
 package io.jacob.igozogo.core.domain
 
 import io.jacob.igozogo.core.domain.model.Place
+import io.jacob.igozogo.core.domain.model.PlayerProgress
 import io.jacob.igozogo.core.domain.model.Story
 
 val testCategories = List(10) { "Category $it" }
@@ -42,3 +43,9 @@ val testStory = Story(
 )
 
 val testStories = List(10) { testStory }
+
+val testPlayerProgress = PlayerProgress(
+    position = 5000L,
+    buffered = 7000L,
+    duration = 10000L,
+)

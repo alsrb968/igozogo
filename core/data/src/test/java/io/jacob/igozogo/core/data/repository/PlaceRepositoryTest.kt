@@ -4,9 +4,9 @@ import io.jacob.igozogo.core.data.TestPagingSource
 import io.jacob.igozogo.core.data.datasource.local.ThemeDataSource
 import io.jacob.igozogo.core.data.datasource.remote.OdiiDataSource
 import io.jacob.igozogo.core.data.model.local.odii.ThemeEntity
-import io.jacob.igozogo.core.data.place
-import io.jacob.igozogo.core.data.themeEntities
-import io.jacob.igozogo.core.data.themeResponses
+import io.jacob.igozogo.core.data.testPlace
+import io.jacob.igozogo.core.data.testThemeEntities
+import io.jacob.igozogo.core.data.testThemeResponses
 import io.jacob.igozogo.core.testing.util.MainDispatcherRule
 import io.mockk.*
 import kotlinx.coroutines.flow.collectLatest
@@ -36,7 +36,7 @@ class PlaceRepositoryTest {
             // Given
             coEvery {
                 odiiDataSource.getThemeBasedList(any(), any())
-            } returns Result.success(themeResponses)
+            } returns Result.success(testThemeResponses)
             val slot = slot<List<ThemeEntity>>()
             coEvery { themeDataSource.insertThemes(capture(slot)) } just Runs
 
@@ -58,7 +58,7 @@ class PlaceRepositoryTest {
         runTest {
             // Given
             coEvery { themeDataSource.getThemesPagingSource() } returns TestPagingSource(
-                themeEntities
+                testThemeEntities
             )
 
             // When
@@ -76,7 +76,7 @@ class PlaceRepositoryTest {
     fun `Given themes, When getPlaces called, Then call dataSource`() =
         runTest {
             // Given
-            coEvery { themeDataSource.getThemes(any()) } returns themeEntities
+            coEvery { themeDataSource.getThemes(any()) } returns testThemeEntities
 
             // When
             repository.getPlaces()
@@ -122,7 +122,7 @@ class PlaceRepositoryTest {
         runTest {
             // Given
             coEvery { themeDataSource.getThemesByCategoryPagingSource(any()) } returns TestPagingSource(
-                themeEntities
+                testThemeEntities
             )
 
             // When
@@ -140,7 +140,7 @@ class PlaceRepositoryTest {
     fun `Given themes, When getPlacesByCategory called with empty category, Then call dataSource`() =
         runTest {
             // Given
-            coEvery { themeDataSource.getThemesByCategory(any(), any()) } returns themeEntities
+            coEvery { themeDataSource.getThemesByCategory(any(), any()) } returns testThemeEntities
 
             // When
             repository.getPlacesByCategory("", 10)
@@ -155,7 +155,7 @@ class PlaceRepositoryTest {
             // Given
             every {
                 themeDataSource.getThemesByLocationPagingSource(any(), any(), any())
-            } returns TestPagingSource(themeEntities)
+            } returns TestPagingSource(testThemeEntities)
 
             // When
             val flow = repository.getPlacesByLocationPaging(126.852601, 35.159545, 20000)
@@ -174,7 +174,7 @@ class PlaceRepositoryTest {
             // Given
             coEvery {
                 themeDataSource.getThemesByLocation(any(), any(), any(), any())
-            } returns themeEntities
+            } returns testThemeEntities
 
             // When
             repository.getPlacesByLocation(126.852601, 35.159545, 200, 10)
@@ -188,7 +188,7 @@ class PlaceRepositoryTest {
         runTest {
             // Given
             every { themeDataSource.getThemesByKeywordPagingSource(any()) } returns TestPagingSource(
-                themeEntities
+                testThemeEntities
             )
 
             // When
@@ -206,7 +206,7 @@ class PlaceRepositoryTest {
     fun `Given themes, When getPlacesByKeyword called, Then call dataSource`() =
         runTest {
             // Given
-            coEvery { themeDataSource.getThemesByKeyword(any(), any()) } returns themeEntities
+            coEvery { themeDataSource.getThemesByKeyword(any(), any()) } returns testThemeEntities
 
             // When
             repository.getPlacesByKeyword("백제", 10)
@@ -219,14 +219,14 @@ class PlaceRepositoryTest {
     fun `Given themes, When getPlaceById called, Then call dataSource`() =
         runTest {
             // Given
-            coEvery { themeDataSource.getThemeById(any(), any()) } returns themeEntities[0]
+            coEvery { themeDataSource.getThemeById(any(), any()) } returns testThemeEntities[0]
 
             // When
             val _place = repository.getPlaceById(1, 2)
 
             // Then
             assertNotNull(_place)
-            assertEquals(place, _place)
+            assertEquals(testPlace, _place)
             coVerify { themeDataSource.getThemeById(any(), any()) }
         }
 
