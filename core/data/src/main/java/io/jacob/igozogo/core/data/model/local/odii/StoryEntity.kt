@@ -2,6 +2,7 @@ package io.jacob.igozogo.core.data.model.local.odii
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.datetime.Instant
 
 @Entity(tableName = "story_table")
 data class StoryEntity(
@@ -14,10 +15,10 @@ data class StoryEntity(
     val mapY: Double,
     val audioTitle: String,
     val script: String,
-    val playTime: Int,
+    val playTime: Long,
     val audioUrl: String,
     val langCode: String,
     val imageUrl: String,
-    val createdTime: String,
-    val modifiedTime: String,
+    val createdTime: Instant,
+    val modifiedTime: Instant,
 )

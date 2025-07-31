@@ -2,10 +2,9 @@ package io.jacob.igozogo.core.data.repository
 
 import androidx.media3.common.Player
 import io.jacob.igozogo.core.data.datasource.player.PlayerDataSource
-import io.jacob.igozogo.core.data.testStories
-import io.jacob.igozogo.core.data.testStory
-import io.jacob.igozogo.core.domain.util.PlaybackState
-import io.jacob.igozogo.core.domain.util.RepeatMode
+import io.jacob.igozogo.core.model.PlaybackState
+import io.jacob.igozogo.core.model.RepeatMode
+import io.jacob.igozogo.core.testing.data.storyTestData
 import io.jacob.igozogo.core.testing.util.MainDispatcherRule
 import io.mockk.*
 import kotlinx.coroutines.flow.first
@@ -26,7 +25,7 @@ class PlayerRepositoryTest {
     @Test
     fun `Given story, When play is called, Then dataSource play is invoked`() {
         // Given
-        val story = testStory
+        val story = storyTestData.first()
 
         // When
         repository.play(story)
@@ -38,7 +37,7 @@ class PlayerRepositoryTest {
     @Test
     fun `Given story list with index, When play is called, Then dataSource play is invoked with list and index`() {
         // Given
-        val stories = testStories
+        val stories = storyTestData
 
         // When
         repository.play(stories, 0)
@@ -222,7 +221,7 @@ class PlayerRepositoryTest {
     @Test
     fun `Given story and index, When addTrack is called, Then dataSource addTrack is invoked`() {
         // Given
-        val story = testStory
+        val story = storyTestData.first()
         val index = 2
 
         // When
@@ -235,7 +234,7 @@ class PlayerRepositoryTest {
     @Test
     fun `Given stories and index, When addTrack is called, Then dataSource addTrack is invoked`() {
         // Given
-        val stories = testStories
+        val stories = storyTestData
         val index = 2
 
         // When
@@ -278,7 +277,7 @@ class PlayerRepositoryTest {
     @Test
     fun `Given nowPlaying flow, When collected, Then emits expected story`() = runTest {
         // Given
-        val story = testStory
+        val story = storyTestData.first()
         every { playerDataSource.nowPlaying } returns flowOf(story)
 
         // When

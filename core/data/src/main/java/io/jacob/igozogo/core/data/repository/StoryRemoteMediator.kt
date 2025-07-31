@@ -12,7 +12,7 @@ import io.jacob.igozogo.core.data.datasource.local.StoryDataSource
 import io.jacob.igozogo.core.data.datasource.local.StoryRemoteKeyDataSource
 import io.jacob.igozogo.core.data.datasource.remote.OdiiDataSource
 import io.jacob.igozogo.core.data.db.VisitKoreaDatabase
-import io.jacob.igozogo.core.data.mapper.toStoryEntity
+import io.jacob.igozogo.core.data.mapper.toStoryEntities
 import io.jacob.igozogo.core.data.mapper.toStoryRemoteKey
 import io.jacob.igozogo.core.data.model.local.odii.StoryEntity
 import io.jacob.igozogo.core.data.model.local.odii.StoryRemoteKey
@@ -79,7 +79,7 @@ class StoryRemoteMediator @AssistedInject constructor(
                             keySource.deleteRemoteKeysByQueryType(query.toString())
                         }
 
-                        val entities = responses.toStoryEntity()
+                        val entities = responses.toStoryEntities()
                         val keys = entities.toStoryRemoteKey(
                             query = query.toString(),
                             prevPage = if (page == 1) null else page - 1,

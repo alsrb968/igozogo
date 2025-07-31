@@ -4,10 +4,11 @@ import androidx.paging.*
 import io.jacob.igozogo.core.data.datasource.local.StoryDataSource
 import io.jacob.igozogo.core.data.datasource.remote.OdiiDataSource
 import io.jacob.igozogo.core.data.mapper.toStory
-import io.jacob.igozogo.core.data.mapper.toStoryEntity
-import io.jacob.igozogo.core.domain.model.Place
-import io.jacob.igozogo.core.domain.model.Story
+import io.jacob.igozogo.core.data.mapper.toStories
+import io.jacob.igozogo.core.data.mapper.toStoryEntities
 import io.jacob.igozogo.core.domain.repository.StoryRepository
+import io.jacob.igozogo.core.model.Place
+import io.jacob.igozogo.core.model.Story
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -19,7 +20,7 @@ class StoryRepositoryImpl @Inject constructor(
     private val odiiDataSource: OdiiDataSource,
 ) : StoryRepository {
     override suspend fun getStories(size: Int): List<Story> {
-        return storyDataSource.getStories(size).toStory()
+        return storyDataSource.getStories(size).toStories()
     }
 
     override fun getStoriesByPlacePaging(
@@ -42,7 +43,7 @@ class StoryRepositoryImpl @Inject constructor(
     override suspend fun getStoriesByPlace(place: Place): List<Story> {
         val cached = storyDataSource.getStoriesByTheme(place.placeId, place.placeLangId)
 
-        if (cached.isNotEmpty()) return cached.toStory()
+        if (cached.isNotEmpty()) return cached.toStories()
 
         odiiDataSource.getStoryBasedList(
             numOfRows = 100,
@@ -51,9 +52,9 @@ class StoryRepositoryImpl @Inject constructor(
             themeLangId = place.placeLangId
         ).fold(
             onSuccess = { responses ->
-                val entities = responses.toStoryEntity()
+                val entities = responses.toStoryEntities()
                 storyDataSource.insertStories(entities)
-                return entities.toStory()
+                return entities.toStories()
             },
             onFailure = { throw it }
         )
@@ -82,7 +83,7 @@ class StoryRepositoryImpl @Inject constructor(
     ): List<Story> {
         val cached = storyDataSource.getStoriesByLocation(mapX, mapY, radius, size)
 
-        if (cached.isNotEmpty()) return cached.toStory()
+        if (cached.isNotEmpty()) return cached.toStories()
 
         odiiDataSource.getStoryLocationBasedList(
             numOfRows = 100,
@@ -92,9 +93,9 @@ class StoryRepositoryImpl @Inject constructor(
             radius = radius
         ).fold(
             onSuccess = { responses ->
-                val entities = responses.toStoryEntity()
+                val entities = responses.toStoryEntities()
                 storyDataSource.insertStories(entities)
-                return entities.toStory()
+                return entities.toStories()
             },
             onFailure = { throw it }
         )
@@ -123,7 +124,7 @@ class StoryRepositoryImpl @Inject constructor(
     ): List<Story> {
         val cached = storyDataSource.getStoriesByKeyword(keyword, size)
 
-        if (cached.isNotEmpty()) return cached.toStory()
+        if (cached.isNotEmpty()) return cached.toStories()
 
         odiiDataSource.getStorySearchList(
             numOfRows = 100,
@@ -131,9 +132,9 @@ class StoryRepositoryImpl @Inject constructor(
             keyword = keyword
         ).fold(
             onSuccess = { responses ->
-                val entities = responses.toStoryEntity()
+                val entities = responses.toStoryEntities()
                 storyDataSource.insertStories(entities)
-                return entities.toStory()
+                return entities.toStories()
             },
             onFailure = { throw it }
         )

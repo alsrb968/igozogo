@@ -23,6 +23,7 @@ class AndroidTestConventionPlugin : Plugin<Project> {
 
             dependencies {
                 "testImplementation"(project(":core:testing"))
+                "androidTestImplementation"(project(":core:testing"))
 
                 val bom = libs.findLibrary("androidx.compose.bom").get()
                 "androidTestImplementation"(platform(bom))
@@ -35,6 +36,7 @@ class AndroidTestConventionPlugin : Plugin<Project> {
                 "androidTestImplementation"(libs.findLibrary("kotlinx.coroutines.test").get())
                 "testImplementation"(libs.findLibrary("mockk").get())
                 "androidTestImplementation"(libs.findLibrary("mockk.android").get())
+                "testImplementation"(libs.findLibrary("turbine").get())
             }
         }
     }

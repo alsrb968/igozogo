@@ -19,6 +19,8 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
             dependencies {
                 "implementation"(project(":core:domain"))
                 "implementation"(project(":core:design"))
+                "implementation"(project(":core:testing"))
+                "implementation"(project(":core:model"))
 
                 "implementation"(libs.findLibrary("androidx.activity.compose").get())
                 "implementation"(libs.findLibrary("androidx.animation.compose").get())

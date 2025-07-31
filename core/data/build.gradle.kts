@@ -30,6 +30,7 @@ android {
 
 dependencies {
     implementation(projects.core.domain)
+    implementation(projects.core.model)
 
     implementation(libs.androidx.media3.exoplayer)
 

@@ -3,10 +3,10 @@ package io.jacob.igozogo.feature.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.jacob.igozogo.core.domain.model.Place
-import io.jacob.igozogo.core.domain.model.Story
 import io.jacob.igozogo.core.domain.usecase.FeedSection
 import io.jacob.igozogo.core.domain.usecase.SyncAndGetFeedsUseCase
+import io.jacob.igozogo.core.model.Place
+import io.jacob.igozogo.core.model.Story
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject

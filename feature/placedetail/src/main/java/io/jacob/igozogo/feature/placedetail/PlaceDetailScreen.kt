@@ -26,10 +26,10 @@ import io.jacob.igozogo.core.design.component.StoryItem
 import io.jacob.igozogo.core.design.icon.IgozogoIcons
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
-import io.jacob.igozogo.core.design.tooling.PreviewPlace
-import io.jacob.igozogo.core.design.tooling.PreviewStories
-import io.jacob.igozogo.core.domain.model.Place
-import io.jacob.igozogo.core.domain.model.Story
+import io.jacob.igozogo.core.model.Place
+import io.jacob.igozogo.core.model.Story
+import io.jacob.igozogo.core.testing.data.placeTestData
+import io.jacob.igozogo.core.testing.data.storyTestData
 
 @Composable
 fun PlaceDetailRoute(
@@ -218,8 +218,8 @@ fun PlaceDetailScreen(
 private fun PlaceDetailScreenPreview() {
     IgozogoTheme {
         PlaceDetailScreen(
-            place = PreviewPlace,
-            stories = PreviewStories,
+            place = placeTestData.first(),
+            stories = storyTestData,
             onStoryClick = {},
             onBackClick = {},
             onPlayClick = {},

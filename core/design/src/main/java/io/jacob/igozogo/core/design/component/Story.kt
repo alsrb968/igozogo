@@ -14,8 +14,10 @@ import androidx.compose.ui.unit.dp
 import io.jacob.igozogo.core.design.icon.IgozogoIcons
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
-import io.jacob.igozogo.core.design.tooling.PreviewStory
-import io.jacob.igozogo.core.domain.model.Story
+import io.jacob.igozogo.core.design.util.toHumanReadableDate
+import io.jacob.igozogo.core.design.util.toHumanReadableTime
+import io.jacob.igozogo.core.model.Story
+import io.jacob.igozogo.core.testing.data.storyTestData
 
 @Composable
 fun StoryItemList(
@@ -99,7 +101,7 @@ fun StoryContent(
         modifier = modifier
     ) {
         Text(
-            text = story.humanReadableModifiedTime,
+            text = story.modifiedTime.toHumanReadableDate(),
             style = MaterialTheme.typography.labelSmall,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -189,7 +191,7 @@ fun StoryAction(
             Spacer(modifier = Modifier.width(4.dp))
 
             Text(
-                text = story.humanReadablePlayTime,
+                text = story.playTime.toHumanReadableTime(),
                 style = MaterialTheme.typography.labelSmall
             )
         }
@@ -201,7 +203,7 @@ fun StoryAction(
 private fun StoryItemPreview() {
     IgozogoTheme {
         StoryItem(
-            story = PreviewStory,
+            story = storyTestData.first(),
             onClick = {}
         )
     }

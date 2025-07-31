@@ -7,9 +7,10 @@ import androidx.paging.map
 import io.jacob.igozogo.core.data.datasource.local.ThemeDataSource
 import io.jacob.igozogo.core.data.datasource.remote.OdiiDataSource
 import io.jacob.igozogo.core.data.mapper.toPlace
-import io.jacob.igozogo.core.data.mapper.toThemeEntity
-import io.jacob.igozogo.core.domain.model.Place
+import io.jacob.igozogo.core.data.mapper.toPlaces
+import io.jacob.igozogo.core.data.mapper.toThemeEntities
 import io.jacob.igozogo.core.domain.repository.PlaceRepository
+import io.jacob.igozogo.core.model.Place
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -23,7 +24,7 @@ class PlaceRepositoryImpl @Inject constructor(
             numOfRows = size,
             pageNo = 1,
         ).onSuccess { themes ->
-            themeDataSource.insertThemes(themes.toThemeEntity())
+            themeDataSource.insertThemes(themes.toThemeEntities())
         }.onFailure { e -> throw e }
     }
 
@@ -39,7 +40,7 @@ class PlaceRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getPlaces(size: Int): List<Place> {
-        return themeDataSource.getThemes(size).toPlace()
+        return themeDataSource.getThemes(size).toPlaces()
     }
 
     override fun getPlaceCategoriesPaging(pageSize: Int): Flow<PagingData<String>> {
@@ -73,7 +74,7 @@ class PlaceRepositoryImpl @Inject constructor(
         category: String,
         size: Int
     ): List<Place> {
-        return themeDataSource.getThemesByCategory(category, size).toPlace()
+        return themeDataSource.getThemesByCategory(category, size).toPlaces()
     }
 
     override fun getPlacesByLocationPaging(
@@ -94,7 +95,7 @@ class PlaceRepositoryImpl @Inject constructor(
         mapX: Double, mapY: Double, radius: Int,
         size: Int
     ): List<Place> {
-        return themeDataSource.getThemesByLocation(mapX, mapY, radius, size).toPlace()
+        return themeDataSource.getThemesByLocation(mapX, mapY, radius, size).toPlaces()
     }
 
     override fun getPlacesByKeywordPaging(
@@ -115,7 +116,7 @@ class PlaceRepositoryImpl @Inject constructor(
         keyword: String,
         size: Int
     ): List<Place> {
-        return themeDataSource.getThemesByKeyword(keyword, size).toPlace()
+        return themeDataSource.getThemesByKeyword(keyword, size).toPlaces()
     }
 
     override suspend fun getPlaceById(

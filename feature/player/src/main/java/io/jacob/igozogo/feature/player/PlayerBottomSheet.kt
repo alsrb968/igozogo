@@ -23,12 +23,13 @@ import io.jacob.igozogo.core.design.component.StateImage
 import io.jacob.igozogo.core.design.icon.IgozogoIcons
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
-import io.jacob.igozogo.core.design.tooling.PreviewPlace
-import io.jacob.igozogo.core.design.tooling.PreviewStory
-import io.jacob.igozogo.core.domain.model.Place
-import io.jacob.igozogo.core.domain.model.PlayerProgress
-import io.jacob.igozogo.core.domain.model.Story
-import io.jacob.igozogo.core.domain.util.RepeatMode
+import io.jacob.igozogo.core.design.util.toMediaTimeFormat
+import io.jacob.igozogo.core.model.Place
+import io.jacob.igozogo.core.model.PlayerProgress
+import io.jacob.igozogo.core.model.RepeatMode
+import io.jacob.igozogo.core.model.Story
+import io.jacob.igozogo.core.testing.data.placeTestData
+import io.jacob.igozogo.core.testing.data.storyTestData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOf
@@ -352,7 +353,7 @@ fun ControlPanelProgress(
             modifier = Modifier
                 .align(Alignment.BottomStart)
                 .padding(start = 4.dp),
-            text = playerProgress.formattedPosition,
+            text = playerProgress.position.toMediaTimeFormat(),
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -361,7 +362,7 @@ fun ControlPanelProgress(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(end = 4.dp),
-            text = playerProgress.formattedDuration,
+            text = playerProgress.duration.toMediaTimeFormat(),
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -431,12 +432,12 @@ fun ControlPanelBottom(
 private fun PlayerScreenPreview() {
     IgozogoTheme {
         PlayerScreen(
-            nowPlaying = PreviewStory,
+            nowPlaying = storyTestData.first(),
             playerProgress = PlayerProgress(1000, 2000, 3000),
             isPlaying = true,
             isShuffle = false,
             repeatMode = RepeatMode.OFF,
-            place = PreviewPlace,
+            place = placeTestData.first(),
             isFavorite = false,
 //            dominantColor = Color.DarkGray,
             actions = PlayerScreenActions(

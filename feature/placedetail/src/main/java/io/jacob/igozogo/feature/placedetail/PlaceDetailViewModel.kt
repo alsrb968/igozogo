@@ -6,12 +6,13 @@ import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.jacob.igozogo.core.domain.model.Place
-import io.jacob.igozogo.core.domain.model.Story
 import io.jacob.igozogo.core.domain.repository.PlayerRepository
 import io.jacob.igozogo.core.domain.usecase.GetPlaceAndStoriesByIdUseCase
+import io.jacob.igozogo.core.model.Place
+import io.jacob.igozogo.core.model.Story
 import kotlinx.coroutines.flow.*
 import timber.log.Timber
+import kotlin.collections.forEachIndexed
 
 @HiltViewModel(assistedFactory = PlaceDetailViewModel.Factory::class)
 class PlaceDetailViewModel @AssistedInject constructor(

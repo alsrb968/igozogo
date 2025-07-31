@@ -16,8 +16,8 @@ import androidx.compose.ui.unit.dp
 import io.jacob.igozogo.core.design.icon.IgozogoIcons
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
-import io.jacob.igozogo.core.design.tooling.PreviewPlace
-import io.jacob.igozogo.core.domain.model.Place
+import io.jacob.igozogo.core.model.Place
+import io.jacob.igozogo.core.testing.data.placeTestData
 
 @Composable
 fun PlaceItemList(
@@ -152,7 +152,7 @@ fun PlaceItem(
 private fun PlaceItemPreview() {
     IgozogoTheme {
         PlaceItem(
-            place = PreviewPlace,
+            place = placeTestData.first(),
             isBookmarked = false,
             onBookmarkToggle = {},
             onClick = {}

@@ -2,11 +2,11 @@ package io.jacob.igozogo.core.data.repository
 
 import androidx.media3.common.Player
 import io.jacob.igozogo.core.data.datasource.player.PlayerDataSource
-import io.jacob.igozogo.core.domain.model.PlayerProgress
-import io.jacob.igozogo.core.domain.model.Story
 import io.jacob.igozogo.core.domain.repository.PlayerRepository
-import io.jacob.igozogo.core.domain.util.PlaybackState
-import io.jacob.igozogo.core.domain.util.RepeatMode
+import io.jacob.igozogo.core.model.PlaybackState
+import io.jacob.igozogo.core.model.PlayerProgress
+import io.jacob.igozogo.core.model.RepeatMode
+import io.jacob.igozogo.core.model.Story
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map

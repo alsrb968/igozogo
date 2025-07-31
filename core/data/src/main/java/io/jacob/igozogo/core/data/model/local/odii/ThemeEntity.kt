@@ -2,6 +2,7 @@ package io.jacob.igozogo.core.data.model.local.odii
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.datetime.Instant
 
 @Entity(tableName = "theme_table")
 data class ThemeEntity(
@@ -16,6 +17,6 @@ data class ThemeEntity(
     val langCheck: String,
     val langCode: String,
     val imageUrl: String,
-    val createdTime: String,
-    val modifiedTime: String,
+    val createdTime: Instant,
+    val modifiedTime: Instant,
 )

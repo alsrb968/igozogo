@@ -3,7 +3,9 @@ package io.jacob.igozogo.core.data.db
 import androidx.paging.PagingSource
 import androidx.room.Room
 import androidx.test.platform.app.InstrumentationRegistry
+import io.jacob.igozogo.core.data.mapper.asThemeEntities
 import io.jacob.igozogo.core.data.model.local.odii.ThemeEntity
+import io.jacob.igozogo.core.testing.data.placeTestData
 import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.*
@@ -40,12 +42,17 @@ class ThemeDaoTest {
             )
         )
         val data = (result as PagingSource.LoadResult.Page).data
-        assertEquals(5, data.size)
-        assertEquals("광주 양동시장", data[0].title)
-        assertEquals("월봉서원", data[1].title)
-        assertEquals("너브실마을", data[2].title)
-        assertEquals("칠송정", data[3].title)
-        assertEquals("용아생가", data[4].title)
+        assertEquals(10, data.size)
+        assertEquals("부산시 영도구 문화관광지", data[0].title)
+        assertEquals("부산 세븐브릿지", data[1].title)
+        assertEquals("부산 서구 천마산로", data[2].title)
+        assertEquals("부산 서구 꽃마을로", data[3].title)
+        assertEquals("부산 서구 옛 전찻길 여행", data[4].title)
+        assertEquals("부산 서구 개별 관광지", data[5].title)
+        assertEquals("전설따라 설화따라-부산", data[6].title)
+        assertEquals("부산 영도 물양장거리", data[7].title)
+        assertEquals("부산 관광 명소", data[8].title)
+        assertEquals("부산 현대모터 스튜디오", data[9].title)
     }
 
     @Test
@@ -53,12 +60,17 @@ class ThemeDaoTest {
         dao.insertThemes(entities)
 
         val themes = dao.getThemes(10)
-        assertEquals(5, themes.size)
-        assertEquals("광주 양동시장", themes[0].title)
-        assertEquals("월봉서원", themes[1].title)
-        assertEquals("너브실마을", themes[2].title)
-        assertEquals("칠송정", themes[3].title)
-        assertEquals("용아생가", themes[4].title)
+        assertEquals(10, themes.size)
+        assertEquals("부산시 영도구 문화관광지", themes[0].title)
+        assertEquals("부산 세븐브릿지", themes[1].title)
+        assertEquals("부산 서구 천마산로", themes[2].title)
+        assertEquals("부산 서구 꽃마을로", themes[3].title)
+        assertEquals("부산 서구 옛 전찻길 여행", themes[4].title)
+        assertEquals("부산 서구 개별 관광지", themes[5].title)
+        assertEquals("전설따라 설화따라-부산", themes[6].title)
+        assertEquals("부산 영도 물양장거리", themes[7].title)
+        assertEquals("부산 관광 명소", themes[8].title)
+        assertEquals("부산 현대모터 스튜디오", themes[9].title)
     }
 
     @Test
@@ -74,9 +86,8 @@ class ThemeDaoTest {
             )
         )
         val data = (result as PagingSource.LoadResult.Page).data
-        assertEquals(2, data.size)
-        assertEquals("전통시장나들이", data[0])
-        assertEquals("", data[1])
+        assertEquals(1, data.size)
+        assertEquals("", data[0])
     }
 
     @Test
@@ -84,9 +95,8 @@ class ThemeDaoTest {
         dao.insertThemes(entities)
 
         val categories = dao.getThemeCategories()
-        assertEquals(2, categories.size)
-        assertEquals("전통시장나들이", categories[0])
-        assertEquals("", categories[1])
+        assertEquals(1, categories.size)
+        assertEquals("", categories[0])
     }
 
     @Test
@@ -102,11 +112,7 @@ class ThemeDaoTest {
             )
         )
         val data = (result as PagingSource.LoadResult.Page).data
-        assertEquals(4, data.size)
-        assertEquals("월봉서원", data[0].title)
-        assertEquals("너브실마을", data[1].title)
-        assertEquals("칠송정", data[2].title)
-        assertEquals("용아생가", data[3].title)
+        assertEquals(10, data.size)
     }
 
     @Test
@@ -114,19 +120,15 @@ class ThemeDaoTest {
         dao.insertThemes(entities)
 
         val themes = dao.getThemesByCategory("", 10)
-        assertEquals(4, themes.size)
-        assertEquals("월봉서원", themes[0].title)
-        assertEquals("너브실마을", themes[1].title)
-        assertEquals("칠송정", themes[2].title)
-        assertEquals("용아생가", themes[3].title)
+        assertEquals(10, themes.size)
     }
 
     @Test
     fun getThemesByLocationPagingSourceTest() = runTest {
         dao.insertThemes(entities)
 
-        val mapX = 126.852601
-        val mapY = 35.159545
+        val mapX = 129.05
+        val mapY = 35.1
 
         fun isSortedAscByDistance(
             entities: List<ThemeEntity>
@@ -140,7 +142,7 @@ class ThemeDaoTest {
         }
 
         val pagingSource1 =
-            dao.getThemesByLocationPagingSource(mapX, mapY, 20000 / METERS_PER_DEGREE)
+            dao.getThemesByLocationPagingSource(mapX, mapY, 15000 / METERS_PER_DEGREE)
         val result1 = pagingSource1.load(
             PagingSource.LoadParams.Refresh(
                 key = null,
@@ -149,16 +151,11 @@ class ThemeDaoTest {
             )
         )
         val data1 = (result1 as PagingSource.LoadResult.Page).data
-        assertEquals(5, data1.size)
+        assertEquals(9, data1.size)
         assertTrue(isSortedAscByDistance(data1))
-        assertEquals("광주 양동시장", data1[0].title)
-        assertEquals("용아생가", data1[1].title)
-        assertEquals("월봉서원", data1[2].title)
-        assertEquals("칠송정", data1[3].title)
-        assertEquals("너브실마을", data1[4].title)
 
         val pagingSource2 =
-            dao.getThemesByLocationPagingSource(mapX, mapY, 10000 / METERS_PER_DEGREE)
+            dao.getThemesByLocationPagingSource(mapX, mapY, 3000 / METERS_PER_DEGREE)
         val result2 = pagingSource2.load(
             PagingSource.LoadParams.Refresh(
                 key = null,
@@ -167,18 +164,16 @@ class ThemeDaoTest {
             )
         )
         val data2 = (result2 as PagingSource.LoadResult.Page).data
-        assertEquals(2, data2.size)
+        assertEquals(3, data2.size)
         assertTrue(isSortedAscByDistance(data2))
-        assertEquals("광주 양동시장", data2[0].title)
-        assertEquals("용아생가", data2[1].title)
     }
 
     @Test
     fun getThemesByLocationTest() = runTest {
         dao.insertThemes(entities)
 
-        val mapX = 126.852601
-        val mapY = 35.159545
+        val mapX = 129.05
+        val mapY = 35.1
 
         fun isSortedAscByDistance(
             entities: List<ThemeEntity>
@@ -191,20 +186,13 @@ class ThemeDaoTest {
             return distances == distances.sorted()
         }
 
-        val themes1 = dao.getThemesByLocation(mapX, mapY, 20000 / METERS_PER_DEGREE, 10)
-        assertEquals(5, themes1.size)
+        val themes1 = dao.getThemesByLocation(mapX, mapY, 15000 / METERS_PER_DEGREE, 10)
+        assertEquals(9, themes1.size)
         assertTrue(isSortedAscByDistance(themes1))
-        assertEquals("광주 양동시장", themes1[0].title)
-        assertEquals("용아생가", themes1[1].title)
-        assertEquals("월봉서원", themes1[2].title)
-        assertEquals("칠송정", themes1[3].title)
-        assertEquals("너브실마을", themes1[4].title)
 
-        val themes2 = dao.getThemesByLocation(mapX, mapY, 10000 / METERS_PER_DEGREE, 10)
-        assertEquals(2, themes2.size)
+        val themes2 = dao.getThemesByLocation(mapX, mapY, 3000 / METERS_PER_DEGREE, 10)
+        assertEquals(3, themes2.size)
         assertTrue(isSortedAscByDistance(themes2))
-        assertEquals("광주 양동시장", themes2[0].title)
-        assertEquals("용아생가", themes2[1].title)
     }
 
 
@@ -212,7 +200,7 @@ class ThemeDaoTest {
     fun getThemesByKeywordPagingSourceTest() = runTest {
         dao.insertThemes(entities)
 
-        val pagingSource1 = dao.getThemesByKeywordPagingSource("전통")
+        val pagingSource1 = dao.getThemesByKeywordPagingSource("서구")
         val result1 = pagingSource1.load(
             PagingSource.LoadParams.Refresh(
                 key = null,
@@ -221,10 +209,9 @@ class ThemeDaoTest {
             )
         )
         val data1 = (result1 as PagingSource.LoadResult.Page).data
-        assertEquals(1, data1.size)
-        assertEquals("광주 양동시장", data1[0].title)
+        assertEquals(4, data1.size)
 
-        val pagingSource2 = dao.getThemesByKeywordPagingSource("광주")
+        val pagingSource2 = dao.getThemesByKeywordPagingSource("영도")
         val result2 = pagingSource2.load(
             PagingSource.LoadParams.Refresh(
                 key = null,
@@ -233,39 +220,28 @@ class ThemeDaoTest {
             )
         )
         val data2 = (result2 as PagingSource.LoadResult.Page).data
-        assertEquals(5, data2.size)
-        assertEquals("광주 양동시장", data2[0].title)
-        assertEquals("월봉서원", data2[1].title)
-        assertEquals("너브실마을", data2[2].title)
-        assertEquals("칠송정", data2[3].title)
-        assertEquals("용아생가", data2[4].title)
+        assertEquals(2, data2.size)
     }
 
     @Test
     fun getThemesByKeywordTest() = runTest {
         dao.insertThemes(entities)
 
-        val themes1 = dao.getThemesByKeyword("전통", 10)
-        assertEquals(1, themes1.size)
-        assertEquals("광주 양동시장", themes1[0].title)
+        val themes1 = dao.getThemesByKeyword("서구", 10)
+        assertEquals(4, themes1.size)
 
-        val themes2 = dao.getThemesByKeyword("광주", 10)
-        assertEquals(5, themes2.size)
-        assertEquals("광주 양동시장", themes2[0].title)
-        assertEquals("월봉서원", themes2[1].title)
-        assertEquals("너브실마을", themes2[2].title)
-        assertEquals("칠송정", themes2[3].title)
-        assertEquals("용아생가", themes2[4].title)
+        val themes2 = dao.getThemesByKeyword("영도", 10)
+        assertEquals(2, themes2.size)
     }
 
     @Test
     fun getThemeById() = runTest {
         dao.insertThemes(entities)
 
-        val theme = dao.getThemeById(themeId = 367, themeLangId = 1141)
+        val theme = dao.getThemeById(themeId = 2812, themeLangId = 3826)
         assertNotNull(theme)
-        assertEquals("전통시장나들이", theme?.themeCategory)
-        assertEquals("광주 양동시장", theme?.title)
+        assertEquals("", theme?.themeCategory)
+        assertEquals("부산시 영도구 문화관광지", theme?.title)
     }
 
     @Test
@@ -273,88 +249,12 @@ class ThemeDaoTest {
         dao.insertThemes(entities)
 
         val count = dao.getThemesCount()
-        assertEquals(5, count)
+        assertEquals(10, count)
     }
 
     companion object {
         private const val METERS_PER_DEGREE = 111000.0
 
-        private val entities = listOf(
-            ThemeEntity(
-                themeId = 367,
-                themeLangId = 1141,
-                themeCategory = "전통시장나들이",
-                addr1 = "광주",
-                addr2 = "",
-                title = "광주 양동시장",
-                mapX = 126.902957,
-                mapY = 35.154165,
-                langCheck = "1111",
-                langCode = "ko",
-                imageUrl = "https://example.com/image1.jpg",
-                createdTime = "20190923194557",
-                modifiedTime = "20191024155012"
-            ),
-            ThemeEntity(
-                themeId = 610,
-                themeLangId = 1452,
-                themeCategory = "",
-                addr1 = "광주",
-                addr2 = "광산구",
-                title = "월봉서원",
-                mapX = 126.744865,
-                mapY = 35.23571,
-                langCheck = "1111",
-                langCode = "ko",
-                imageUrl = "https://example.com/image2.jpg",
-                createdTime = "20190923194615",
-                modifiedTime = "20191025221743"
-            ),
-            ThemeEntity(
-                themeId = 611,
-                themeLangId = 1456,
-                themeCategory = "",
-                addr1 = "광주",
-                addr2 = "광산구",
-                title = "너브실마을",
-                mapX = 126.738165,
-                mapY = 35.236174,
-                langCheck = "1111",
-                langCode = "ko",
-                imageUrl = "https://example.com/image3.jpg",
-                createdTime = "20190923194616",
-                modifiedTime = "20191025221828"
-            ),
-            ThemeEntity(
-                themeId = 612,
-                themeLangId = 1460,
-                themeCategory = "",
-                addr1 = "광주",
-                addr2 = "광산구",
-                title = "칠송정",
-                mapX = 126.742135,
-                mapY = 35.236748,
-                langCheck = "1111",
-                langCode = "ko",
-                imageUrl = "https://example.com/image4.jpg",
-                createdTime = "20190923194616",
-                modifiedTime = "20191025221921"
-            ),
-            ThemeEntity(
-                themeId = 613,
-                themeLangId = 1464,
-                themeCategory = "",
-                addr1 = "광주",
-                addr2 = "광산구",
-                title = "용아생가",
-                mapX = 126.795216,
-                mapY = 35.149407,
-                langCheck = "1111",
-                langCode = "ko",
-                imageUrl = "https://example.com/image5.jpg",
-                createdTime = "20190923194616",
-                modifiedTime = "20230406161922"
-            )
-        )
+        private val entities = placeTestData.asThemeEntities()
     }
 }

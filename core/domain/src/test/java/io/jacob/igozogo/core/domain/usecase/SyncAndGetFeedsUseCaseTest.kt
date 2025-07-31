@@ -1,12 +1,10 @@
 package io.jacob.igozogo.core.domain.usecase
 
-import io.jacob.igozogo.core.domain.model.Place
-import io.jacob.igozogo.core.domain.model.Story
 import io.jacob.igozogo.core.domain.repository.PlaceRepository
 import io.jacob.igozogo.core.domain.repository.StoryRepository
-import io.jacob.igozogo.core.domain.testCategories
-import io.jacob.igozogo.core.domain.testPlaces
-import io.jacob.igozogo.core.domain.testStories
+import io.jacob.igozogo.core.testing.data.categoryTestData
+import io.jacob.igozogo.core.testing.data.placeTestData
+import io.jacob.igozogo.core.testing.data.storyTestData
 import io.jacob.igozogo.core.testing.util.MainDispatcherRule
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -36,9 +34,9 @@ class SyncAndGetFeedsUseCaseTest {
         runTest {
             // Given
             coEvery { placeRepository.getPlacesCount() } returns 2079
-            coEvery { placeRepository.getPlaceCategories() } returns testCategories
-            coEvery { placeRepository.getPlaces(any()) } returns testPlaces
-            coEvery { storyRepository.getStories(any()) } returns testStories
+            coEvery { placeRepository.getPlaceCategories() } returns categoryTestData
+            coEvery { placeRepository.getPlaces(any()) } returns placeTestData
+            coEvery { storyRepository.getStories(any()) } returns storyTestData
 
             // When
             var isSynced = false
@@ -59,9 +57,9 @@ class SyncAndGetFeedsUseCaseTest {
             // Given
             coEvery { placeRepository.getPlacesCount() } returns 2078
             coEvery { placeRepository.syncPlaces(any()) } just Runs
-            coEvery { placeRepository.getPlaceCategories() } returns testCategories
-            coEvery { placeRepository.getPlaces(any()) } returns testPlaces
-            coEvery { storyRepository.getStories(any()) } returns testStories
+            coEvery { placeRepository.getPlaceCategories() } returns categoryTestData
+            coEvery { placeRepository.getPlaces(any()) } returns placeTestData
+            coEvery { storyRepository.getStories(any()) } returns storyTestData
 
             // When
             var isSynced = false

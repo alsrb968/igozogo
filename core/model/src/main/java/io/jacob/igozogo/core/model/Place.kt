@@ -1,6 +1,6 @@
-package io.jacob.igozogo.core.domain.model
+package io.jacob.igozogo.core.model
 
-import io.jacob.igozogo.core.domain.util.toHumanReadableDate
+import kotlinx.datetime.Instant
 
 data class Place(
     val placeId: Int,
@@ -14,15 +14,9 @@ data class Place(
     val langCheck: String,
     val langCode: String,
     val imageUrl: String,
-    val createdTime: String,
-    val modifiedTime: String,
+    val createdTime: Instant,
+    val modifiedTime: Instant,
 ) {
     val fullAddress: String
         get() = "$address1 $address2"
-
-    val humanReadableCreatedTime: String
-        get() = createdTime.toHumanReadableDate()
-
-    val humanReadableModifiedTime: String
-        get() = modifiedTime.toHumanReadableDate()
 }

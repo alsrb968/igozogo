@@ -2,8 +2,8 @@ package io.jacob.igozogo.core.domain.usecase
 
 import io.jacob.igozogo.core.domain.repository.PlaceRepository
 import io.jacob.igozogo.core.domain.repository.StoryRepository
-import io.jacob.igozogo.core.domain.testPlace
-import io.jacob.igozogo.core.domain.testStory
+import io.jacob.igozogo.core.testing.data.placeTestData
+import io.jacob.igozogo.core.testing.data.storyTestData
 import io.jacob.igozogo.core.testing.util.MainDispatcherRule
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -29,6 +29,8 @@ class GetStoryAndPlaceByIdUseCaseTest {
     fun `Given story, When GetStoryAndPlaceByIdUseCase called, Then call repositories`() =
         runTest {
             // Given
+            val testStory = storyTestData.first()
+            val testPlace = placeTestData.first()
             coEvery { storyRepository.getStoryById(any(), any()) } returns testStory
             coEvery { placeRepository.getPlaceById(any(), any()) } returns testPlace
 

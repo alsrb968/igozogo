@@ -3,10 +3,10 @@ package io.jacob.igozogo.core.data.repository
 import io.jacob.igozogo.core.data.TestPagingSource
 import io.jacob.igozogo.core.data.datasource.local.ThemeDataSource
 import io.jacob.igozogo.core.data.datasource.remote.OdiiDataSource
+import io.jacob.igozogo.core.data.mapper.asThemeEntities
+import io.jacob.igozogo.core.data.mapper.toThemeResponses
 import io.jacob.igozogo.core.data.model.local.odii.ThemeEntity
-import io.jacob.igozogo.core.data.testPlace
-import io.jacob.igozogo.core.data.testThemeEntities
-import io.jacob.igozogo.core.data.testThemeResponses
+import io.jacob.igozogo.core.testing.data.placeTestData
 import io.jacob.igozogo.core.testing.util.MainDispatcherRule
 import io.mockk.*
 import kotlinx.coroutines.flow.collectLatest
@@ -36,7 +36,7 @@ class PlaceRepositoryTest {
             // Given
             coEvery {
                 odiiDataSource.getThemeBasedList(any(), any())
-            } returns Result.success(testThemeResponses)
+            } returns Result.success(placeTestData.toThemeResponses())
             val slot = slot<List<ThemeEntity>>()
             coEvery { themeDataSource.insertThemes(capture(slot)) } just Runs
 
@@ -47,10 +47,8 @@ class PlaceRepositoryTest {
             coVerify { odiiDataSource.getThemeBasedList(any(), any()) }
             coVerify { themeDataSource.insertThemes(any()) }
             val capturedThemes = slot.captured
-            assertEquals(3, capturedThemes.size)
-            assertEquals("백제문화단지", capturedThemes[0].title)
-            assertEquals("경주 불국사", capturedThemes[1].title)
-            assertEquals("괘릉", capturedThemes[2].title)
+            assertEquals(placeTestData.asThemeEntities().size, capturedThemes.size)
+            assertEquals(placeTestData.asThemeEntities(), capturedThemes)
         }
 
     @Test
@@ -58,7 +56,7 @@ class PlaceRepositoryTest {
         runTest {
             // Given
             coEvery { themeDataSource.getThemesPagingSource() } returns TestPagingSource(
-                testThemeEntities
+                placeTestData.asThemeEntities()
             )
 
             // When
@@ -76,7 +74,7 @@ class PlaceRepositoryTest {
     fun `Given themes, When getPlaces called, Then call dataSource`() =
         runTest {
             // Given
-            coEvery { themeDataSource.getThemes(any()) } returns testThemeEntities
+            coEvery { themeDataSource.getThemes(any()) } returns placeTestData.asThemeEntities()
 
             // When
             repository.getPlaces()
@@ -122,7 +120,7 @@ class PlaceRepositoryTest {
         runTest {
             // Given
             coEvery { themeDataSource.getThemesByCategoryPagingSource(any()) } returns TestPagingSource(
-                testThemeEntities
+                placeTestData.asThemeEntities()
             )
 
             // When
@@ -140,7 +138,7 @@ class PlaceRepositoryTest {
     fun `Given themes, When getPlacesByCategory called with empty category, Then call dataSource`() =
         runTest {
             // Given
-            coEvery { themeDataSource.getThemesByCategory(any(), any()) } returns testThemeEntities
+            coEvery { themeDataSource.getThemesByCategory(any(), any()) } returns placeTestData.asThemeEntities()
 
             // When
             repository.getPlacesByCategory("", 10)
@@ -155,7 +153,7 @@ class PlaceRepositoryTest {
             // Given
             every {
                 themeDataSource.getThemesByLocationPagingSource(any(), any(), any())
-            } returns TestPagingSource(testThemeEntities)
+            } returns TestPagingSource(placeTestData.asThemeEntities())
 
             // When
             val flow = repository.getPlacesByLocationPaging(126.852601, 35.159545, 20000)
@@ -174,7 +172,7 @@ class PlaceRepositoryTest {
             // Given
             coEvery {
                 themeDataSource.getThemesByLocation(any(), any(), any(), any())
-            } returns testThemeEntities
+            } returns placeTestData.asThemeEntities()
 
             // When
             repository.getPlacesByLocation(126.852601, 35.159545, 200, 10)
@@ -188,7 +186,7 @@ class PlaceRepositoryTest {
         runTest {
             // Given
             every { themeDataSource.getThemesByKeywordPagingSource(any()) } returns TestPagingSource(
-                testThemeEntities
+                placeTestData.asThemeEntities()
             )
 
             // When
@@ -206,7 +204,7 @@ class PlaceRepositoryTest {
     fun `Given themes, When getPlacesByKeyword called, Then call dataSource`() =
         runTest {
             // Given
-            coEvery { themeDataSource.getThemesByKeyword(any(), any()) } returns testThemeEntities
+            coEvery { themeDataSource.getThemesByKeyword(any(), any()) } returns placeTestData.asThemeEntities()
 
             // When
             repository.getPlacesByKeyword("백제", 10)
@@ -219,14 +217,14 @@ class PlaceRepositoryTest {
     fun `Given themes, When getPlaceById called, Then call dataSource`() =
         runTest {
             // Given
-            coEvery { themeDataSource.getThemeById(any(), any()) } returns testThemeEntities[0]
+            coEvery { themeDataSource.getThemeById(any(), any()) } returns placeTestData.asThemeEntities().first()
 
             // When
             val _place = repository.getPlaceById(1, 2)
 
             // Then
             assertNotNull(_place)
-            assertEquals(testPlace, _place)
+            assertEquals(placeTestData.first(), _place)
             coVerify { themeDataSource.getThemeById(any(), any()) }
         }
 
