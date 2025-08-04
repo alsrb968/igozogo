@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
-import io.jacob.igozogo.core.design.tooling.PreviewCategories
+import io.jacob.igozogo.core.testing.data.categoryTestData
 
 @Composable
 fun ChipItemList(
@@ -67,7 +67,7 @@ fun ChipItemList(
 private fun ChipItemListPreview() {
     IgozogoTheme {
         ChipItemList(
-            chipItems = PreviewCategories,
+            chipItems = categoryTestData,
             onItemClick = {}
         )
     }

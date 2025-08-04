@@ -2,8 +2,8 @@ package io.jacob.igozogo.core.data.datasource.player
 
 import androidx.media3.common.*
 import androidx.media3.exoplayer.ExoPlayer
-import io.jacob.igozogo.core.domain.model.PlayerProgress
-import io.jacob.igozogo.core.domain.model.Story
+import io.jacob.igozogo.core.model.PlayerProgress
+import io.jacob.igozogo.core.model.Story
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow

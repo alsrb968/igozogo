@@ -3,10 +3,10 @@ package io.jacob.igozogo.feature.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.jacob.igozogo.core.domain.model.Place
-import io.jacob.igozogo.core.domain.model.Story
 import io.jacob.igozogo.core.domain.usecase.FeedSection
 import io.jacob.igozogo.core.domain.usecase.SyncAndGetFeedsUseCase
+import io.jacob.igozogo.core.model.Place
+import io.jacob.igozogo.core.model.Story
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -15,17 +15,8 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val syncAndGetFeedsUseCase: SyncAndGetFeedsUseCase
 ) : ViewModel() {
-    val state: StateFlow<HomeState> = flow {
-        emit(syncAndGetFeedsUseCase {
-            viewModelScope.launch { _effect.emit(HomeEffect.Synced) }
-        })
-    }.map { feeds ->
-        HomeState.Success(feeds)
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = HomeState.Loading
-    )
+    private val _state = MutableStateFlow<HomeState>(HomeState.Loading)
+    val state = _state.asStateFlow()
 
     private val _action = MutableSharedFlow<HomeAction>(extraBufferCapacity = 1)
 
@@ -33,7 +24,20 @@ class HomeViewModel @Inject constructor(
     val effect = _effect.asSharedFlow()
 
     init {
+        loadFeeds()
         handleActions()
+    }
+
+    private fun loadFeeds() = viewModelScope.launch {
+        try {
+            _state.value = HomeState.Loading
+            val feeds = syncAndGetFeedsUseCase {
+                viewModelScope.launch { _effect.emit(HomeEffect.Synced) }
+            }
+            _state.value = HomeState.Success(feeds)
+        } catch (e: Exception) {
+            _state.value = HomeState.Error(e.message ?: "Unknown error")
+        }
     }
 
     private fun handleActions() = viewModelScope.launch {
@@ -65,7 +69,7 @@ class HomeViewModel @Inject constructor(
 
 sealed interface HomeState {
     data object Loading : HomeState
-    data object Error : HomeState
+    data class Error(val message: String) : HomeState
     data class Success(val feedSections: List<FeedSection>) : HomeState
 }
 

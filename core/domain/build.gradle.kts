@@ -7,6 +7,8 @@ android {
 }
 
 dependencies {
+    implementation(projects.core.model)
+
     implementation(libs.inject)
 
     implementation(libs.androidx.paging.common)
@@ -15,4 +17,6 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation(libs.mockk)
+
+    testImplementation(projects.core.testing)
 }

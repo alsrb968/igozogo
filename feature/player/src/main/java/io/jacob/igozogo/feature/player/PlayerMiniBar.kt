@@ -22,11 +22,11 @@ import io.jacob.igozogo.core.design.component.StateImage
 import io.jacob.igozogo.core.design.icon.IgozogoIcons
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
-import io.jacob.igozogo.core.design.tooling.PreviewPlace
-import io.jacob.igozogo.core.design.tooling.PreviewStory
-import io.jacob.igozogo.core.domain.model.Place
-import io.jacob.igozogo.core.domain.model.PlayerProgress
-import io.jacob.igozogo.core.domain.model.Story
+import io.jacob.igozogo.core.model.Place
+import io.jacob.igozogo.core.model.PlayerProgress
+import io.jacob.igozogo.core.model.Story
+import io.jacob.igozogo.core.testing.data.placeTestData
+import io.jacob.igozogo.core.testing.data.storyTestData
 import kotlinx.coroutines.flow.collectLatest
 
 
@@ -253,14 +253,14 @@ data class PlayerMiniBarActions(
 private fun PlayerMiniBarPreview() {
     IgozogoTheme {
         PlayerMiniBar(
-            nowPlaying = PreviewStory,
+            nowPlaying = storyTestData.first(),
             progress = PlayerProgress(
                 position = 30,
                 buffered = 60,
                 duration = 100,
             ),
             isPlaying = true,
-            place = PreviewPlace,
+            place = placeTestData.first(),
             isFavorite = false,
             actions = PlayerMiniBarActions(
                 onPlayOrPause = {},

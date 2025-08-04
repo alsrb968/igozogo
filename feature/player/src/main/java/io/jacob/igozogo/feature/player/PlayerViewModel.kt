@@ -3,12 +3,12 @@ package io.jacob.igozogo.feature.player
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.jacob.igozogo.core.domain.model.Place
-import io.jacob.igozogo.core.domain.model.PlayerProgress
-import io.jacob.igozogo.core.domain.model.Story
 import io.jacob.igozogo.core.domain.repository.PlaceRepository
 import io.jacob.igozogo.core.domain.repository.PlayerRepository
-import io.jacob.igozogo.core.domain.util.RepeatMode
+import io.jacob.igozogo.core.model.Place
+import io.jacob.igozogo.core.model.PlayerProgress
+import io.jacob.igozogo.core.model.RepeatMode
+import io.jacob.igozogo.core.model.Story
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject

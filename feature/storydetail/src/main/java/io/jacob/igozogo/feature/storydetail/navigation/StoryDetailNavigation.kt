@@ -6,8 +6,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import io.jacob.igozogo.core.domain.model.Place
-import io.jacob.igozogo.core.domain.model.Story
+import io.jacob.igozogo.core.model.Place
+import io.jacob.igozogo.core.model.Story
 import io.jacob.igozogo.feature.storydetail.StoryDetailRoute
 import io.jacob.igozogo.feature.storydetail.StoryDetailViewModel
 import kotlinx.serialization.Serializable

@@ -19,12 +19,12 @@ import io.jacob.igozogo.core.design.component.*
 import io.jacob.igozogo.core.design.foundation.NestedScrollLazyColumn
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
-import io.jacob.igozogo.core.design.tooling.PreviewCategories
-import io.jacob.igozogo.core.design.tooling.PreviewPlaces
-import io.jacob.igozogo.core.design.tooling.PreviewStories
-import io.jacob.igozogo.core.domain.model.Place
-import io.jacob.igozogo.core.domain.model.Story
 import io.jacob.igozogo.core.domain.usecase.FeedSection
+import io.jacob.igozogo.core.model.Place
+import io.jacob.igozogo.core.model.Story
+import io.jacob.igozogo.core.testing.data.categoryTestData
+import io.jacob.igozogo.core.testing.data.placeTestData
+import io.jacob.igozogo.core.testing.data.storyTestData
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -149,9 +149,9 @@ private fun HomeScreenPreview() {
     IgozogoTheme {
         HomeScreen(
             feedSections = listOf(
-                FeedSection.Categories(PreviewCategories),
-                FeedSection.Places(PreviewPlaces),
-                FeedSection.Stories(PreviewStories),
+                FeedSection.Categories(categoryTestData),
+                FeedSection.Places(placeTestData),
+                FeedSection.Stories(storyTestData),
             ),
             onCategoryClick = {},
             onPlaceClick = {},

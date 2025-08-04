@@ -25,7 +25,6 @@ interface StoryDao {
         SELECT *
         FROM story_table
         WHERE imageUrl IS NOT NULL AND imageUrl != ''
-        ORDER BY RANDOM()
         LIMIT :size
         """
     )

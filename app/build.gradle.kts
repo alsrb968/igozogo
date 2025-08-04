@@ -31,6 +31,7 @@ dependencies {
     implementation(projects.core.data)
     implementation(projects.core.domain)
     implementation(projects.core.design)
+    implementation(projects.core.model)
     implementation(projects.feature.home)
     implementation(projects.feature.search)
     implementation(projects.feature.bookmark)

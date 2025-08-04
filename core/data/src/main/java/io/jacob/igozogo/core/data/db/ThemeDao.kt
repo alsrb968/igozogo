@@ -27,7 +27,6 @@ interface ThemeDao {
         SELECT *
         FROM theme_table
         WHERE imageUrl IS NOT NULL AND imageUrl != ''
-        ORDER BY RANDOM()
         LIMIT :size
         """
     )

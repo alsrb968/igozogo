@@ -1,8 +1,8 @@
 package io.jacob.igozogo.core.domain.repository
 
 import androidx.paging.PagingData
-import io.jacob.igozogo.core.domain.model.Place
-import io.jacob.igozogo.core.domain.model.Story
+import io.jacob.igozogo.core.model.Place
+import io.jacob.igozogo.core.model.Story
 import kotlinx.coroutines.flow.Flow
 
 interface StoryRepository {

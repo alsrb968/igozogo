@@ -1,9 +1,9 @@
 package io.jacob.igozogo.core.domain.usecase
 
-import io.jacob.igozogo.core.domain.model.Place
-import io.jacob.igozogo.core.domain.model.Story
 import io.jacob.igozogo.core.domain.repository.PlaceRepository
 import io.jacob.igozogo.core.domain.repository.StoryRepository
+import io.jacob.igozogo.core.model.Place
+import io.jacob.igozogo.core.model.Story
 import javax.inject.Inject
 
 class GetStoryAndPlaceByIdUseCase @Inject constructor(

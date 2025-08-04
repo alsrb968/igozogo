@@ -10,6 +10,8 @@ android {
 
 dependencies {
     implementation(projects.core.domain)
+    implementation(projects.core.testing)
+    implementation(projects.core.model)
 
     //----- Coil
     implementation(libs.coil.compose)

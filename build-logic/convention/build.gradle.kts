@@ -65,5 +65,9 @@ gradlePlugin {
             id = libs.plugins.igozogo.android.hilt.get().pluginId
             implementationClass = "AndroidHiltConventionPlugin"
         }
+        register("jvmLibrary") {
+            id = libs.plugins.igozogo.jvm.library.get().pluginId
+            implementationClass = "JvmLibraryConventionPlugin"
+        }
     }
 }

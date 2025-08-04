@@ -1,9 +1,9 @@
 package io.jacob.igozogo.core.domain.repository
 
-import io.jacob.igozogo.core.domain.model.PlayerProgress
-import io.jacob.igozogo.core.domain.model.Story
-import io.jacob.igozogo.core.domain.util.PlaybackState
-import io.jacob.igozogo.core.domain.util.RepeatMode
+import io.jacob.igozogo.core.model.PlaybackState
+import io.jacob.igozogo.core.model.PlayerProgress
+import io.jacob.igozogo.core.model.RepeatMode
+import io.jacob.igozogo.core.model.Story
 import kotlinx.coroutines.flow.Flow
 
 interface PlayerRepository {
