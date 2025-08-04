@@ -16,7 +16,7 @@ import io.jacob.igozogo.core.data.model.local.odii.ThemeEntity
         StoryEntity::class,
         StoryRemoteKey::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = false,
 )
 @TypeConverters(Converters::class)
