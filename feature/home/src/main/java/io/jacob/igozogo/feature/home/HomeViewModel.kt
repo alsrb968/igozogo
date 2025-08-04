@@ -15,17 +15,8 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val syncAndGetFeedsUseCase: SyncAndGetFeedsUseCase
 ) : ViewModel() {
-    val state: StateFlow<HomeState> = flow {
-        emit(syncAndGetFeedsUseCase {
-            viewModelScope.launch { _effect.emit(HomeEffect.Synced) }
-        })
-    }.map { feeds ->
-        HomeState.Success(feeds)
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = HomeState.Loading
-    )
+    private val _state = MutableStateFlow<HomeState>(HomeState.Loading)
+    val state = _state.asStateFlow()
 
     private val _action = MutableSharedFlow<HomeAction>(extraBufferCapacity = 1)
 
@@ -33,7 +24,20 @@ class HomeViewModel @Inject constructor(
     val effect = _effect.asSharedFlow()
 
     init {
+        loadFeeds()
         handleActions()
+    }
+
+    private fun loadFeeds() = viewModelScope.launch {
+        try {
+            _state.value = HomeState.Loading
+            val feeds = syncAndGetFeedsUseCase {
+                viewModelScope.launch { _effect.emit(HomeEffect.Synced) }
+            }
+            _state.value = HomeState.Success(feeds)
+        } catch (e: Exception) {
+            _state.value = HomeState.Error
+        }
     }
 
     private fun handleActions() = viewModelScope.launch {
