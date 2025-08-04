@@ -36,7 +36,7 @@ class HomeViewModel @Inject constructor(
             }
             _state.value = HomeState.Success(feeds)
         } catch (e: Exception) {
-            _state.value = HomeState.Error
+            _state.value = HomeState.Error(e.message ?: "Unknown error")
         }
     }
 
@@ -69,7 +69,7 @@ class HomeViewModel @Inject constructor(
 
 sealed interface HomeState {
     data object Loading : HomeState
-    data object Error : HomeState
+    data class Error(val message: String) : HomeState
     data class Success(val feedSections: List<FeedSection>) : HomeState
 }
 

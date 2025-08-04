@@ -283,6 +283,10 @@ class HomeViewModelTest {
             viewModel.state.test {
                 val currentState = awaitItem()
                 assertTrue("State should be Error after exception", currentState is HomeState.Error)
+                assertEquals(
+                    "Error message should match",
+                    "Network error", (currentState as HomeState.Error).message
+                )
             }
         }
 }
