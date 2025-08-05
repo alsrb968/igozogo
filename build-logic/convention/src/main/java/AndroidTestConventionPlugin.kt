@@ -29,6 +29,8 @@ class AndroidTestConventionPlugin : Plugin<Project> {
                 "androidTestImplementation"(platform(bom))
                 "androidTestImplementation"(libs.findLibrary("androidx.compose.ui.test.junit4").get())
 
+                "testImplementation"(libs.findLibrary("androidx.test.core").get())
+                "testImplementation"(libs.findLibrary("robolectric").get())
                 "testImplementation"(libs.findLibrary("junit").get())
                 "androidTestImplementation"(libs.findLibrary("androidx.junit").get())
                 "androidTestImplementation"(libs.findLibrary("androidx.espresso.core").get())
