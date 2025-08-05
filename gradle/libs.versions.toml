@@ -21,6 +21,7 @@ room = "2.7.1"
 paging = "3.3.6"
 hilt = "2.51.1"
 hiltCompose = "1.2.0"
+jacoco = "0.8.12"
 gson = "2.10.1"
 retrofit = "2.11.0"
 okhttp = "4.12.0"
@@ -108,10 +109,12 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 room = { id = "androidx.room", version.ref = "room" }
 
 # Plugins defined by this project
-igozogo-android-application-compose = { id = "igozogo.android.application.compose" }
 igozogo-android-application = { id = "igozogo.android.application" }
-igozogo-android-library-compose = { id = "igozogo.android.library.compose" }
+igozogo-android-application-compose = { id = "igozogo.android.application.compose" }
+igozogo-android-application-jacoco = { id = "igozogo.android.application.jacoco" }
 igozogo-android-library = { id = "igozogo.android.library" }
+igozogo-android-library-compose = { id = "igozogo.android.library.compose" }
+igozogo-android-library-jacoco = { id = "igozogo.android.library.jacoco" }
 igozogo-android-feature = { id = "igozogo.android.feature" }
 igozogo-android-test = { id = "igozogo.android.test" }
 igozogo-android-room = { id = "igozogo.android.room" }

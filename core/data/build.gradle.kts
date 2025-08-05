@@ -8,6 +8,7 @@ if (localPropertiesFile.exists()) {
 
 plugins {
     alias(libs.plugins.igozogo.android.library)
+    alias(libs.plugins.igozogo.android.library.jacoco)
     alias(libs.plugins.igozogo.android.room)
     alias(libs.plugins.igozogo.android.hilt)
     alias(libs.plugins.igozogo.android.test)
