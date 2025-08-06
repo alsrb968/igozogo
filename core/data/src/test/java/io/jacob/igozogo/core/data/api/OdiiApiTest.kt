@@ -1,10 +1,9 @@
 package io.jacob.igozogo.core.data.api
 
 import com.google.gson.Gson
+import io.jacob.igozogo.core.data.mapper.toResponses
 import io.jacob.igozogo.core.testing.util.MainDispatcherRule
 import kotlinx.coroutines.test.runTest
-import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Rule
@@ -18,10 +17,6 @@ class OdiiApiTest {
     @get:Rule
     val mockWebServerRule = MockWebServerRule()
 
-    private val mockWebServer: MockWebServer
-        get() = mockWebServerRule.mockWebServer
-    private val gson: Gson
-        get() = mockWebServerRule.gson
     private val odiiApi: OdiiApi
         get() = mockWebServerRule.odiiApi
 
@@ -31,13 +26,6 @@ class OdiiApiTest {
     fun `Given valid parameters When getThemeBasedList Then returns theme list successfully`() =
         runTest {
             // Given
-            val mockThemeResponse = OdiiApiTestDataHelper.createSuccessfulThemeResponse()
-            mockWebServer.enqueue(
-                MockResponse()
-                    .setResponseCode(200)
-                    .setBody(gson.toJson(mockThemeResponse))
-                    .addHeader("Content-Type", "application/json")
-            )
 
             // When
             val response = odiiApi.getThemeBasedList(
@@ -49,9 +37,11 @@ class OdiiApiTest {
             assertNotNull(response)
             assertEquals("0000", response.response.header.resultCode)
             assertEquals("OK", response.response.header.resultMsg)
-            assertEquals(1, response.response.body.items.item.size)
 
-            val theme = response.response.body.items.item.first()
+            val themeResponseList = response.toResponses()
+            assertEquals(1, themeResponseList.size)
+
+            val theme = themeResponseList.first()
             assertEquals(2812, theme.themeId)
             assertEquals(3826, theme.themeLangId)
             assertEquals("부산시 영도구 문화관광지", theme.title)
@@ -61,13 +51,6 @@ class OdiiApiTest {
     fun `Given valid location parameters When getThemeLocationBasedList Then returns location-based theme list successfully`() =
         runTest {
             // Given
-            val mockThemeResponse = OdiiApiTestDataHelper.createSuccessfulThemeResponse()
-            mockWebServer.enqueue(
-                MockResponse()
-                    .setResponseCode(200)
-                    .setBody(gson.toJson(mockThemeResponse))
-                    .addHeader("Content-Type", "application/json")
-            )
 
             // When
             val response = odiiApi.getThemeLocationBasedList(
@@ -81,9 +64,11 @@ class OdiiApiTest {
             // Then
             assertNotNull(response)
             assertEquals("0000", response.response.header.resultCode)
-            assertEquals(1, response.response.body.items.item.size)
 
-            val theme = response.response.body.items.item.first()
+            val themeResponseList = response.toResponses()
+            assertEquals(1, themeResponseList.size)
+
+            val theme = themeResponseList.first()
             assertEquals(129.075323, theme.mapX, 0.0001)
             assertEquals(35.074916, theme.mapY, 0.0001)
         }
@@ -92,14 +77,6 @@ class OdiiApiTest {
     fun `Given valid keyword When getThemeSearchList Then returns search results successfully`() =
         runTest {
             // Given
-            val mockThemeResponse =
-                OdiiApiTestDataHelper.createFilteredThemeResponse(titleFilter = "부산")
-            mockWebServer.enqueue(
-                MockResponse()
-                    .setResponseCode(200)
-                    .setBody(gson.toJson(mockThemeResponse))
-                    .addHeader("Content-Type", "application/json")
-            )
 
             // When
             val response = odiiApi.getThemeSearchList(
@@ -111,10 +88,12 @@ class OdiiApiTest {
             // Then
             assertNotNull(response)
             assertEquals("0000", response.response.header.resultCode)
-            assert(response.response.body.items.item.isNotEmpty())
+
+            val themeResponseList = response.toResponses()
+            assert(themeResponseList.isNotEmpty())
 
             // 모든 결과가 '부산' 키워드를 포함하는지 확인
-            response.response.body.items.item.forEach { theme ->
+            themeResponseList.forEach { theme ->
                 assert(
                     theme.title.contains("부산", ignoreCase = true) ||
                             theme.addr1.contains("부산", ignoreCase = true)
@@ -128,13 +107,6 @@ class OdiiApiTest {
     fun `Given valid theme parameters When getStoryBasedList Then returns story list successfully`() =
         runTest {
             // Given
-            val mockStoryResponse = OdiiApiTestDataHelper.createSuccessfulStoryResponse()
-            mockWebServer.enqueue(
-                MockResponse()
-                    .setResponseCode(200)
-                    .setBody(gson.toJson(mockStoryResponse))
-                    .addHeader("Content-Type", "application/json")
-            )
 
             // When
             val response = odiiApi.getStoryBasedList(
@@ -147,9 +119,11 @@ class OdiiApiTest {
             // Then
             assertNotNull(response)
             assertEquals("0000", response.response.header.resultCode)
-            assertEquals(1, response.response.body.items.item.size)
 
-            val story = response.response.body.items.item.first()
+            val storyResponseList = response.toResponses()
+            assertEquals(1, storyResponseList.size)
+
+            val story = storyResponseList.first()
             assertEquals(2885, story.themeId)
             assertEquals(4462, story.themeLangId)
             assertEquals(4976, story.storyId)
@@ -160,13 +134,6 @@ class OdiiApiTest {
     fun `Given valid location parameters When getStoryLocationBasedList Then returns location-based story list successfully`() =
         runTest {
             // Given
-            val mockStoryResponse = OdiiApiTestDataHelper.createSuccessfulStoryResponse()
-            mockWebServer.enqueue(
-                MockResponse()
-                    .setResponseCode(200)
-                    .setBody(gson.toJson(mockStoryResponse))
-                    .addHeader("Content-Type", "application/json")
-            )
 
             // When
             val response = odiiApi.getStoryLocationBasedList(
@@ -180,9 +147,11 @@ class OdiiApiTest {
             // Then
             assertNotNull(response)
             assertEquals("0000", response.response.header.resultCode)
-            assertEquals(1, response.response.body.items.item.size)
 
-            val story = response.response.body.items.item.first()
+            val storyResponseList = response.toResponses()
+            assertEquals(1, storyResponseList.size)
+
+            val story = storyResponseList.first()
             assertEquals(126.8539117, story.mapX, 0.0001)
             assertEquals(35.1529468, story.mapY, 0.0001)
             assertEquals(257, story.playTime) // 257000L -> 257 (seconds in response)
@@ -192,14 +161,6 @@ class OdiiApiTest {
     fun `Given valid keyword When getStorySearchList Then returns search results successfully`() =
         runTest {
             // Given
-            val mockStoryResponse =
-                OdiiApiTestDataHelper.createFilteredStoryResponse(titleFilter = "무각사")
-            mockWebServer.enqueue(
-                MockResponse()
-                    .setResponseCode(200)
-                    .setBody(gson.toJson(mockStoryResponse))
-                    .addHeader("Content-Type", "application/json")
-            )
 
             // When
             val response = odiiApi.getStorySearchList(
@@ -211,9 +172,11 @@ class OdiiApiTest {
             // Then
             assertNotNull(response)
             assertEquals("0000", response.response.header.resultCode)
-            assert(response.response.body.items.item.isNotEmpty())
 
-            response.response.body.items.item.forEach { story ->
+            val storyResponseList = response.toResponses()
+            assert(storyResponseList.isNotEmpty())
+
+            storyResponseList.forEach { story ->
                 assert(
                     story.title.contains("무각사", ignoreCase = true) ||
                             story.audioTitle.contains("무각사", ignoreCase = true)
@@ -226,10 +189,9 @@ class OdiiApiTest {
     @Test
     fun `Given server error When calling any API Then throws appropriate exception`() = runTest {
         // Given
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(500)
-                .setBody("Internal Server Error")
+        mockWebServerRule.setQueueDispatcher(
+            code = 500,
+            body = "Internal Server Error"
         )
 
         // When & Then
@@ -245,11 +207,8 @@ class OdiiApiTest {
     @Test
     fun `Given malformed JSON When calling API Then throws parsing exception`() = runTest {
         // Given
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(200)
-                .setBody("{ invalid json }")
-                .addHeader("Content-Type", "application/json")
+        mockWebServerRule.setQueueDispatcher(
+            body = "{ invalid json }",
         )
 
         // When & Then
@@ -267,11 +226,8 @@ class OdiiApiTest {
         // Given
         val errorResponse =
             OdiiApiTestDataHelper.createErrorThemeResponse("1001", "Invalid Parameter")
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(200)
-                .setBody(gson.toJson(errorResponse))
-                .addHeader("Content-Type", "application/json")
+        mockWebServerRule.setQueueDispatcher(
+            body = Gson().toJson(errorResponse)
         )
 
         // When
@@ -288,11 +244,8 @@ class OdiiApiTest {
     fun `Given empty result When calling theme API Then returns empty list`() = runTest {
         // Given
         val emptyResponse = OdiiApiTestDataHelper.createEmptyThemeResponse()
-        mockWebServer.enqueue(
-            MockResponse()
-                .setResponseCode(200)
-                .setBody(gson.toJson(emptyResponse))
-                .addHeader("Content-Type", "application/json")
+        mockWebServerRule.setQueueDispatcher(
+            body = Gson().toJson(emptyResponse)
         )
 
         // When
@@ -310,11 +263,8 @@ class OdiiApiTest {
         runTest {
             // Given
             val multipleItemsResponse = OdiiApiTestDataHelper.createSuccessfulThemeListResponse()
-            mockWebServer.enqueue(
-                MockResponse()
-                    .setResponseCode(200)
-                    .setBody(gson.toJson(multipleItemsResponse))
-                    .addHeader("Content-Type", "application/json")
+            mockWebServerRule.setQueueDispatcher(
+                body = Gson().toJson(multipleItemsResponse)
             )
 
             // When
@@ -339,11 +289,8 @@ class OdiiApiTest {
             // Given
             val placeSpecificResponse =
                 OdiiApiTestDataHelper.createFilteredStoryResponse(placeIdFilter = 2897)
-            mockWebServer.enqueue(
-                MockResponse()
-                    .setResponseCode(200)
-                    .setBody(gson.toJson(placeSpecificResponse))
-                    .addHeader("Content-Type", "application/json")
+            mockWebServerRule.setQueueDispatcher(
+                body = Gson().toJson(placeSpecificResponse)
             )
 
             // When
@@ -375,11 +322,8 @@ class OdiiApiTest {
                 pageNo = 2,
                 totalCount = 100
             )
-            mockWebServer.enqueue(
-                MockResponse()
-                    .setResponseCode(200)
-                    .setBody(gson.toJson(pageResponse))
-                    .addHeader("Content-Type", "application/json")
+            mockWebServerRule.setQueueDispatcher(
+                body = Gson().toJson(pageResponse)
             )
 
             // When
