@@ -43,4 +43,7 @@ dependencies {
     implementation(libs.squareup.retrofit2.converter.gson)
     implementation(libs.squareup.okhttp3.logging.interceptor)
     implementation(libs.google.gson)
+
+    //----- Test
+    implementation(libs.squareup.okhttp3.mockwebserver)
 }
