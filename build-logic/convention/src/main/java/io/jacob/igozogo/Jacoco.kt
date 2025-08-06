@@ -25,8 +25,21 @@ private val coverageExclusions = listOf(
     "**/R\$*.class",
     "**/BuildConfig.*",
     "**/Manifest*.*",
+    // Hilt generated classes
     "**/*_Hilt*.class",
     "**/Hilt_*.class",
+    "**/hilt_aggregated_deps/**",
+    "**/*_HiltModules*.class",
+    "**/*_Provide*.class",
+    "**/*Module_Provide*.class",
+    "**/*_Factory.class",
+    "**/*_MembersInjector.class",
+    // Dagger generated classes
+    "**/*_Generated.class",
+    "**/Dagger*.class",
+    "**/*Component\$Builder.class",
+    "**/*Component\$*.class",
+    "**/*Subcomponent*.class",
 )
 
 private fun String.capitalize() = replaceFirstChar {

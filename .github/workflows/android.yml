@@ -48,3 +48,17 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build
+
+      - name: Generate coverage reports for Debug variants
+        run: ./gradlew createDebugCombinedCoverageReport
+
+      - name: Display local test coverage
+        id: jacoco
+        uses: madrapps/jacoco-report@v1.7.2
+        with:
+          title: Combined test coverage report
+          min-coverage-overall: 0
+          min-coverage-changed-files: 0
+          paths: |
+            ${{ github.workspace }}/**/build/reports/jacoco/**/*Report.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
