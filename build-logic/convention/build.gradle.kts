@@ -41,6 +41,10 @@ gradlePlugin {
             id = libs.plugins.igozogo.android.application.asProvider().get().pluginId
             implementationClass = "AndroidApplicationConventionPlugin"
         }
+        register("androidApplicationJacoco") {
+            id = libs.plugins.igozogo.android.application.jacoco.get().pluginId
+            implementationClass = "AndroidApplicationJacocoConventionPlugin"
+        }
         register("androidLibraryCompose") {
             id = libs.plugins.igozogo.android.library.compose.get().pluginId
             implementationClass = "AndroidLibraryComposeConventionPlugin"
@@ -48,6 +52,10 @@ gradlePlugin {
         register("androidLibrary") {
             id = libs.plugins.igozogo.android.library.asProvider().get().pluginId
             implementationClass = "AndroidLibraryConventionPlugin"
+        }
+        register("androidLibraryJacoco") {
+            id = libs.plugins.igozogo.android.library.jacoco.get().pluginId
+            implementationClass = "AndroidLibraryJacocoConventionPlugin"
         }
         register("androidFeature") {
             id = libs.plugins.igozogo.android.feature.get().pluginId

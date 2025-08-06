@@ -1,138 +1,123 @@
-# Igozogo
+# 🏛️ Igozogo(이고조고)
 
-Igozogo는 한국 관광 콘텐츠를 탐색하는 Android 애플리케이션으로, 장소, 스토리, 오디오 플레이어 기능을 제공합니다. 이 앱은 공유 기능을 위한 core 모듈과 특정 UI 컴포넌트를 위한 feature 모듈을 사용하는 모듈형 Clean Architecture 접근 방식을 사용합니다.
+한국의 아름다운 관광지와 그곳에 담긴 이야기를 오디오와 함께 탐험하는 Android 애플리케이션입니다.
 
-## 아키텍처
+## ✨ 주요 기능
 
-### 모듈 구조
-- **core/model**: 순수 Kotlin 데이터 모델 (Place, Story, PlayerProgress, PlaybackState, RepeatMode)
-- **core/domain**: 리포지토리와 유스케이스가 포함된 비즈니스 로직 레이어
-- **core/data**: Room 데이터베이스, Retrofit API, 리포지토리 구현, DI 모듈이 포함된 데이터 레이어
-- **core/design**: 공유 UI 컴포넌트 및 디자인 시스템
-- **core/testing**: 테스트 유틸리티 및 공통 테스트 데이터
-- **feature/***: 기능별 UI 모듈 (home, search, bookmark, setting, placedetail, storydetail, player)
-- **app**: 네비게이션과 `@HiltAndroidApp` 설정이 포함된 메인 애플리케이션 모듈
+- **🗺️ 관광지 탐색**: 한국관광공사 API를 통한 전국 관광지 정보 제공
+- **📖 스토리텔링**: 각 관광지에 담긴 역사와 문화 이야기
+- **🎵 오디오 가이드**: 장소별 오디오 콘텐츠로 몰입감 있는 경험
+- **🔍 검색 & 필터링**: 카테고리별, 키워드별 관광지 검색
+- **📍 위치 기반 서비스**: 현재 위치 주변 관광지 추천
+- **⭐ 북마크**: 관심있는 장소 저장 및 관리
 
-### 주요 의존성
-- **UI**: Material 3를 사용한 Jetpack Compose
-- **DI**: 의존성 주입을 위한 Hilt
-- **Database**: 페이징 지원이 포함된 Room
-- **Network**: API 통신을 위한 Retrofit + Gson
-- **Media**: 오디오 재생을 위한 ExoPlayer (Media3)
-- **Testing**: 코루틴 테스트를 위한 JUnit, MockK, Turbine
+## 🎯 대상 사용자
 
-## 빌드 시스템
+- 한국 문화와 역사에 관심있는 관광객
+- 새로운 여행지를 찾는 국내 여행자
+- 오디오 가이드를 선호하는 사용자
+- 깊이 있는 여행 경험을 원하는 모든 분들
 
-프로젝트는 일관된 구성을 위해 `build-logic/convention/`에 위치한 커스텀 Gradle convention 플러그인을 사용합니다:
-- `igozogo.android.application` - 메인 앱 구성
-- `igozogo.android.library` - 라이브러리 모듈 설정
-- `igozogo.android.feature` - 표준 의존성을 포함한 기능 모듈
-- `igozogo.android.library.compose` - Compose가 활성화된 라이브러리
-- `igozogo.android.hilt` - Hilt 의존성 주입
-- `igozogo.android.room` - Room 데이터베이스 구성
-- `igozogo.android.test` - 테스트 구성
+## 🏗️ 아키텍처
 
-## 주요 명령어
+이 프로젝트는 **Clean Architecture**와 **모듈화 설계**를 기반으로 구성되어
+있으며, [Now in Android](https://github.com/android/nowinandroid) 프로젝트의 아키텍처 패턴을 참고했습니다.
 
-### 빌드 및 테스트
-```bash
-# 전체 프로젝트 빌드
-./gradlew build
+### 📁 모듈 구조
 
-# 단위 테스트 실행
-./gradlew test
-
-# 특정 모듈 테스트 실행
-./gradlew :core:domain:test
-./gradlew :feature:home:testDebugUnitTest
-
-# Android 인스트루먼테이션 테스트 실행
-./gradlew connectedAndroidTest
-
-# 린트 체크
-./gradlew lint
-./gradlew lintDebug
-
-# 디바이스에 디버그 빌드 설치
-./gradlew installDebug
+```
+igozogo/
+├── app/                   # 메인 애플리케이션 모듈
+├── core/
+│   ├── model/             # 도메인 데이터 모델
+│   ├── domain/            # 비즈니스 로직 (Respotory, UseCase)
+│   ├── data/              # 데이터 레이어 (API, DB, Player)
+│   ├── design/            # 공통 UI 컴포넌트 & 디자인 시스템
+│   └── testing/           # 테스트 유틸리티 & 테스트 데이터
+├── feature/
+│   ├── home/              # 홈 화면
+│   ├── search/            # 검색 기능
+│   ├── bookmark/          # 북마크 관리
+│   ├── placedetail/       # 관광지 상세 정보
+│   ├── storydetail/       # 스토리 상세 정보
+│   ├── player/            # 오디오 플레이어
+│   └── setting/           # 설정
+└── build-logic/           # 커스텀 Gradle 컨벤션 플러그인
 ```
 
-### 개발 작업
-```bash
-# 클린 빌드
-./gradlew clean
+### 🔧 기술 스택
 
-# 의존성 확인
-./gradlew dependencies
+| 분야         | 기술                                             |
+|------------|------------------------------------------------|
+| **UI**     | Jetpack Compose, Material 3                    |
+| **아키텍처**   | Clean Architecture, MVI Pattern                |
+| **의존성 주입** | Hilt                                           |
+| **데이터베이스** | Room (with Paging 3)                           |
+| **네트워킹**   | Retrofit, Gson                                 |
+| **미디어**    | ExoPlayer (Media3)                             |
+| **비동기 처리** | Kotlin Coroutines, Flow                        |
+| **테스팅**    | JUnit, MockK, Turbine                          |
+| **빌드**     | Gradle (Kotlin DSL), Custom Convention Plugins |
 
-# 디버깅용 소스 생성
-./gradlew compileDebugSources
-```
+### 🎨 디자인 패턴
 
-## 데이터 레이어 아키텍처
+- **Repository Pattern**: 데이터 접근 추상화
+- **Use Case Pattern**: 비즈니스 로직 캡슐화
+- **MVI (Model-View-Intent)**: 단방향 데이터 흐름
+- **Dependency Injection**: 모듈 간 결합도 최소화
 
-### API 통합
-- **Tour API**: Visit Korea API를 통한 한국 관광 데이터
-- **구성**: API 키는 `local.properties`에 `tourapi.serviceKey`로 저장
-- **모델**: `core/data/model/remote/`의 원격 응답을 도메인 모델로 매핑
+## ⚙️ API 설정
 
-### 데이터베이스 스키마
-- **Room Database**: Story, Theme, 페이징 키에 대한 엔티티가 포함된 `VisitKoreaDatabase`
-- **Paging**: 원활한 로컬/원격 데이터 로딩을 위한 `RemoteMediator` 패턴 사용
-- **Converters**: `core/data/db/converter/`의 복잡한 데이터 타입을 위한 커스텀 타입 컨버터
-
-### 리포지토리 패턴
-- `core/domain/repository/`의 도메인 인터페이스
-- `core/data/repository/`의 구현체
-- 복잡한 비즈니스 로직을 위한 `core/domain/usecase/`의 유스케이스
-
-### 의존성 주입
-- **Hilt 모듈**: 모든 DI 구성이 `core/data/di/`에 위치
-  - `ApiModule`: Retrofit API 인스턴스 제공
-  - `DatabaseModule`: Room 데이터베이스 및 DAO 제공  
-  - `DataSourceModule`: 로컬/원격 데이터소스 제공
-  - `RepositoryModule`: 리포지토리 구현체를 도메인 인터페이스에 바인딩
-  - `PlayerModule`: ExoPlayer 인스턴스 제공
-- **Application**: `app` 모듈에서 `@HiltAndroidApp` 어노테이션만 설정
-
-## 테스트 전략
-
-### 테스트 데이터
-- `core/testing/data/`의 중앙화된 테스트 데이터 (PlaceTestData, StoryTestData 등)
-- `core/testing/util/`의 공통 테스트 유틸리티
-
-### 테스트 접근법
-- **단위 테스트**: 도메인 및 데이터 레이어의 비즈니스 로직
-- **UI 테스트**: 코루틴 및 StateFlow를 사용한 ViewModel 테스트
-- **통합 테스트**: Room 테스트 유틸리티를 사용한 데이터베이스 작업
-
-## 기능 모듈 규칙
-
-### 구조
-- 각 기능 모듈은 Screen + ViewModel + Navigation 패턴을 따름
-- 타입 세이프 라우트를 사용하여 `navigation/` 패키지에 네비게이션 정의
-- ViewModel은 상태 관리를 위해 StateFlow와 함께 Hilt 주입 사용
-
-### 의존성
-기능 모듈은 자동으로 다음을 포함:
-- Core domain, design, testing, model 모듈
-- Compose 의존성 (Activity, Animation, Navigation 등)
-- ViewModel 주입을 위한 Hilt navigation compose
-- 페이지네이션된 리스트를 위한 Paging Compose
-
-## 플레이어 아키텍처
-
-오디오 플레이어는 다음과 함께 ExoPlayer (Media3)를 사용:
-- **PlayerDataSource**: 미디어 세션 관리
-- **PlayerProgress**: 재생 상태 추적
-- **RepeatMode**: 재생 모드 제어
-- **UI Components**: 다양한 컨텍스트를 위한 PlayerMiniBar 및 PlayerBottomSheet
-
-## API 구성
-
-`local.properties`에 필요:
+`local.properties` 파일에 한국관광공사 API 서비스 키를 추가하세요:
 ```properties
 tourapi.serviceKey=YOUR_TOUR_API_SERVICE_KEY
 ```
 
-서비스 키는 API 요청을 위해 자동으로 BuildConfig에 주입됩니다.
+> 💡 API 키는 [한국관광공사 Tour API](https://www.data.go.kr/tcs/dss/selectApiDataDetailView.do?publicDataPk=15101578)에서 발급받을 수 있습니다.
+
+## 🏛️ 데이터 아키텍처
+
+### 📡 API 통합
+
+- **한국관광공사 Tour API**: 관광지 및 스토리 데이터
+- **Odii API**: 관광 정보 다국어 서비스
+- **지원 기능**: 목록 조회, 위치 기반 검색, 키워드 검색
+
+### 🗄️ 로컬 데이터베이스
+
+- **Room Database**: 오프라인 지원을 위한 로컬 캐싱
+- **Paging 3**: 대용량 데이터 효율적 로딩
+- **RemoteMediator**: 로컬/원격 데이터 동기화
+
+### 🎵 오디오 시스템
+
+- **ExoPlayer**: 고품질 오디오 재생
+- **백그라운드 재생**: 미디어 세션을 통한 백그라운드 지원
+- **재생 상태 관리**: 진행률, 반복 모드 등
+
+## 🧪 테스트 전략
+
+### 📊 테스트 구조
+
+- **단위 테스트**: 비즈니스 로직 검증
+- **UI 테스트**: Compose UI 및 ViewModel 테스트
+- **통합 테스트**: 데이터베이스 및 API 연동 테스트
+
+### 🎯 테스트 원칙
+
+- **Given-When-Then** 패턴 사용
+- 중앙화된 테스트 데이터 관리
+- MockK를 활용한 의존성 모킹
+
+
+## 🙏 감사의 말
+
+- [한국관광공사](https://www.visitkorea.or.kr/) - 관광 데이터 제공
+- [Now in Android](https://github.com/android/nowinandroid) - 아키텍처 참고
+- [Material Design](https://material.io/) - 디자인 시스템
+
+---
+
+<p align="center">
+  Made with ❤️ for Korean Tourism
+</p>

@@ -10,7 +10,10 @@ class AndroidFeatureConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) {
         with(target) {
             apply(plugin = "igozogo.android.library")
+            apply(plugin = "igozogo.android.library.compose")
+            apply(plugin = "igozogo.android.library.jacoco")
             apply(plugin = "igozogo.android.hilt")
+            apply(plugin = "igozogo.android.test")
 
             extensions.configure<LibraryExtension> {
                 testOptions.animationsDisabled = true

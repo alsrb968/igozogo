@@ -1,32 +1,31 @@
 package io.jacob.igozogo.core.data.db
 
 import androidx.paging.PagingSource
-import androidx.room.Room
-import androidx.test.platform.app.InstrumentationRegistry
 import io.jacob.igozogo.core.data.mapper.asStoryEntities
 import io.jacob.igozogo.core.data.model.local.odii.StoryEntity
 import io.jacob.igozogo.core.testing.data.storyTestData
+import io.jacob.igozogo.core.testing.util.MainDispatcherRule
 import kotlinx.coroutines.test.runTest
-import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 class StoryDaoTest {
-    private lateinit var db: VisitKoreaDatabase
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
+    @get:Rule
+    val dbRule = RoomDatabaseRule()
+
     private lateinit var dao: StoryDao
 
     @Before
     fun setup() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        db = Room.inMemoryDatabaseBuilder(context, VisitKoreaDatabase::class.java)
-            .build()
-        dao = db.storyDao()
-    }
-
-    @After
-    fun teardown() {
-        db.close()
+        dao = dbRule.db.storyDao()
     }
 
     @Test

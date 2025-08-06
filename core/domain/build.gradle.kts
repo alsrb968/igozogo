@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.igozogo.android.library)
+    alias(libs.plugins.igozogo.android.library.jacoco)
 }
 
 android {

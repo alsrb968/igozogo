@@ -8,6 +8,7 @@ if (localPropertiesFile.exists()) {
 
 plugins {
     alias(libs.plugins.igozogo.android.library)
+    alias(libs.plugins.igozogo.android.library.jacoco)
     alias(libs.plugins.igozogo.android.room)
     alias(libs.plugins.igozogo.android.hilt)
     alias(libs.plugins.igozogo.android.test)
@@ -42,4 +43,7 @@ dependencies {
     implementation(libs.squareup.retrofit2.converter.gson)
     implementation(libs.squareup.okhttp3.logging.interceptor)
     implementation(libs.google.gson)
+
+    //----- Test
+    testImplementation(libs.squareup.okhttp3.mockwebserver)
 }
