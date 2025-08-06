@@ -45,5 +45,5 @@ dependencies {
     implementation(libs.google.gson)
 
     //----- Test
-    implementation(libs.squareup.okhttp3.mockwebserver)
+    testImplementation(libs.squareup.okhttp3.mockwebserver)
 }
