@@ -100,8 +100,12 @@ fun HomeScreen(
                             .padding(bottom = 16.dp),
                         text = stringResource(R.string.core_design_category)
                     ) {
-                        ChipItemList(
-                            chipItems = section.categories,
+//                        ChipItemList(
+//                            chipItems = section.categories,
+//                            onItemClick = onCategoryClick
+//                        )
+                        CategoryItemList(
+                            categories = section.categories,
                             onItemClick = onCategoryClick
                         )
                     }
