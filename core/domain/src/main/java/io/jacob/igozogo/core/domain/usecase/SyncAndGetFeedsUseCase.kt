@@ -20,7 +20,7 @@ class SyncAndGetFeedsUseCase @Inject constructor(
     suspend operator fun invoke(
         isSynced: () -> Unit
     ): List<FeedSection> {
-        val size = 2079
+        val size = 2105
         if (placeRepository.getPlacesCount() < size) {
             Timber.i("Syncing places...")
             placeRepository.syncPlaces(size)
