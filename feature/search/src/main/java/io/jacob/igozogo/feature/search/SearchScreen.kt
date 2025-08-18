@@ -2,8 +2,8 @@ package io.jacob.igozogo.feature.search
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.unit.dp
@@ -30,49 +30,20 @@ fun SearchScreen(
     modifier: Modifier = Modifier,
     onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
 ) {
-    var isShowBottomSheet by remember { mutableStateOf(false) }
-
-    Box(
+    Column(
         modifier = modifier
             .fillMaxSize()
             .windowInsetsPadding(WindowInsets.statusBars),
     ) {
         SearchBar(
-            modifier = Modifier
-                .align(Alignment.TopCenter),
+            modifier = Modifier,
             query = "",
             onQueryChange = {},
             onSearch = {},
             onFocusChanged = {}
         )
 
-        Button(
-            modifier = Modifier
-                .align(Alignment.Center),
-            onClick = { isShowBottomSheet = !isShowBottomSheet }
-        ) {
-            Text(text = "Search")
-        }
-        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-        if (isShowBottomSheet) {
-            ModalBottomSheet(
-                sheetState = sheetState,
-                dragHandle = null,
-//                containerColor = Color.Transparent,
-//                scrimColor = Color.Transparent,
-                onDismissRequest = { isShowBottomSheet = false },
-            ) {
-                Spacer(modifier = Modifier.height(300.dp))
 
-                Text(
-                    modifier = Modifier
-                        .padding(16.dp),
-                    text = "Bottom Sheet Content"
-                )
-
-                Spacer(modifier = Modifier.height(300.dp))
-            }
-        }
     }
 }
 
