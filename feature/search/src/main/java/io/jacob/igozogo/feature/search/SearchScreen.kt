@@ -2,28 +2,65 @@ package io.jacob.igozogo.feature.search
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.jacob.igozogo.core.design.icon.IgozogoIcons
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
-import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun SearchRoute(
     modifier: Modifier = Modifier,
     onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
+    viewModel: SearchViewModel = hiltViewModel()
 ) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.effect.collectLatest { effect ->
+            when (effect) {
+                is SearchEffect.ShowToast -> {
+                    onShowSnackbar(
+                        effect.message,
+                        "OK"
+                    )
+                }
+
+                is SearchEffect.NavigateToPlaceDetails -> {
+                    // Handle navigation to place details
+                }
+
+                is SearchEffect.NavigateToStoryDetails -> {
+                    // Handle navigation to story details
+                }
+            }
+        }
+    }
+
     SearchScreen(
         modifier = modifier,
-        onShowSnackbar = onShowSnackbar
+        onShowSnackbar = onShowSnackbar,
+        state = state,
+        searchQuery = searchQuery,
+        onSearchQueryChanged = { viewModel.sendAction(SearchAction.Search(it)) },
+        onFocusedChanged = { viewModel.sendAction(SearchAction.UpdateFocus(it)) },
+        onClear = { viewModel.sendAction(SearchAction.Clear) }
     )
 }
 
@@ -32,6 +69,11 @@ fun SearchRoute(
 fun SearchScreen(
     modifier: Modifier = Modifier,
     onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
+    state: SearchState = SearchState.Loading,
+    searchQuery: String = "",
+    onSearchQueryChanged: (String) -> Unit = {},
+    onFocusedChanged: (Boolean) -> Unit = {},
+    onClear: () -> Unit = {},
 ) {
     Column(
         modifier = modifier
@@ -40,42 +82,48 @@ fun SearchScreen(
     ) {
         SearchBar(
             modifier = Modifier,
-            query = "",
-            onQueryChange = {},
-            onSearch = {},
-            onFocusChanged = {}
+            query = searchQuery,
+            onQueryChanged = onSearchQueryChanged,
+            onFocusChanged = onFocusedChanged,
+            onClear = onClear
         )
 
-
+        // TODO: Add content based on state
+        when (state) {
+            is SearchState.Loading -> {
+                // Show loading indicator
+            }
+            is SearchState.CategoriesDisplay -> {
+                // Show categories
+            }
+            is SearchState.RecentSearchesDisplay -> {
+                // Show recent searches
+            }
+            is SearchState.Success -> {
+                // Show search results
+            }
+            is SearchState.Error -> {
+                // Show error state
+            }
+        }
     }
 }
 
 
-@OptIn(FlowPreview::class)
 @Composable
 fun SearchBar(
     modifier: Modifier = Modifier,
     query: String,
-    onQueryChange: (String) -> Unit,
-    onSearch: (String) -> Unit,
-    onFocusChanged: (Boolean) -> Unit
+    onQueryChanged: (String) -> Unit,
+    onFocusChanged: (Boolean) -> Unit,
+    onClear: () -> Unit
 ) {
-    val searchFlow = remember { MutableStateFlow(query) }
-
-//    LaunchedEffect(Unit) {
-//        searchFlow
-//            .debounce(500)
-//            .collectLatest { text ->
-//                onSearch(text)
-//            }
-//    }
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     OutlinedTextField(
         value = query,
-        onValueChange = {
-            onQueryChange(it)
-            searchFlow.value = it
-        },
+        onValueChange = onQueryChanged,
         placeholder = {
             Text(
                 text = "장소나 이야기를 검색해보세요",
@@ -92,10 +140,7 @@ fun SearchBar(
         },
         trailingIcon = {
             if (query.isNotEmpty()) {
-                IconButton(onClick = {
-                    onQueryChange("")
-                    searchFlow.value = ""
-                }) {
+                IconButton(onClick = onClear) {
                     Icon(
                         imageVector = IgozogoIcons.Close,
                         contentDescription = "Clear",
@@ -121,7 +166,16 @@ fun SearchBar(
                 ambientColor = Color.Black.copy(alpha = 0.05f),
                 spotColor = Color.Black.copy(alpha = 0.05f)
             )
-            .onFocusChanged { onFocusChanged(it.isFocused) }
+            .onFocusChanged { onFocusChanged(it.isFocused) },
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Search
+        ),
+        keyboardActions = KeyboardActions(
+            onSearch = {
+                keyboardController?.hide()
+                focusManager.clearFocus()
+            }
+        )
     )
 }
 
@@ -131,9 +185,9 @@ private fun SearchBarPreview() {
     IgozogoTheme {
         SearchBar(
             query = "Search query",
-            onQueryChange = {},
-            onSearch = {},
-            onFocusChanged = {}
+            onQueryChanged = {},
+            onFocusChanged = {},
+            onClear = {}
         )
     }
 }
