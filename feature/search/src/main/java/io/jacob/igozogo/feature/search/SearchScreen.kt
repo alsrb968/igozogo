@@ -1,6 +1,8 @@
 package io.jacob.igozogo.feature.search
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,6 +20,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.jacob.igozogo.core.design.component.LoadingWheel
+import io.jacob.igozogo.core.design.foundation.NestedScrollLazyColumn
 import io.jacob.igozogo.core.design.icon.IgozogoIcons
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
@@ -55,7 +59,6 @@ fun SearchRoute(
 
     SearchScreen(
         modifier = modifier,
-        onShowSnackbar = onShowSnackbar,
         state = state,
         searchQuery = searchQuery,
         onSearchQueryChanged = { viewModel.sendAction(SearchAction.Search(it)) },
@@ -64,46 +67,52 @@ fun SearchRoute(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun SearchScreen(
     modifier: Modifier = Modifier,
-    onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
     state: SearchState = SearchState.Loading,
     searchQuery: String = "",
     onSearchQueryChanged: (String) -> Unit = {},
     onFocusedChanged: (Boolean) -> Unit = {},
     onClear: () -> Unit = {},
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .windowInsetsPadding(WindowInsets.statusBars),
+    NestedScrollLazyColumn(
+        modifier = modifier,
+        state = rememberLazyListState()
     ) {
-        SearchBar(
-            modifier = Modifier,
-            query = searchQuery,
-            onQueryChanged = onSearchQueryChanged,
-            onFocusChanged = onFocusedChanged,
-            onClear = onClear
-        )
+        stickyHeader {
+            SearchBar(
+                modifier = Modifier,
+                query = searchQuery,
+                onQueryChanged = onSearchQueryChanged,
+                onFocusChanged = onFocusedChanged,
+                onClear = onClear
+            )
+        }
 
-        // TODO: Add content based on state
         when (state) {
-            is SearchState.Loading -> {
-                // Show loading indicator
+            is SearchState.Loading -> item {
+                LoadingWheel(modifier = Modifier.fillMaxSize())
             }
+
             is SearchState.CategoriesDisplay -> {
-                // Show categories
+                // todo: Show categories
             }
+
             is SearchState.RecentSearchesDisplay -> {
-                // Show recent searches
+                // todo: Show recent searches
             }
+
             is SearchState.Success -> {
-                // Show search results
+                if (state.isEmpty) {
+                    // todo: Show search results empty state
+                } else {
+                    // todo: Show search results
+                }
             }
+
             is SearchState.Error -> {
-                // Show error state
+                // todo: Show error state
             }
         }
     }

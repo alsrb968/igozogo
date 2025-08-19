@@ -32,7 +32,7 @@ class SearchViewModel @Inject constructor(
     )
 
     @OptIn(FlowPreview::class)
-    private val searchResults = _searchQuery
+    private val searchResults: Flow<SearchResult> = _searchQuery
         .debounce(500)
         .distinctUntilChanged()
         .flatMapLatest { query ->
