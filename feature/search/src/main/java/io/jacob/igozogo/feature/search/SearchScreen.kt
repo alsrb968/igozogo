@@ -61,8 +61,9 @@ fun SearchRoute(
         modifier = modifier,
         state = state,
         searchQuery = searchQuery,
-        onSearchQueryChanged = { viewModel.sendAction(SearchAction.Search(it)) },
-        onFocusedChanged = { viewModel.sendAction(SearchAction.UpdateFocus(it)) },
+        onSearchQueryChanged = { viewModel.sendAction(SearchAction.SearchQueryChanged(it)) },
+        onFocusedChanged = { viewModel.sendAction(SearchAction.FocusChanged(it)) },
+        onSearch = { viewModel.sendAction(SearchAction.Search(it)) },
         onClear = { viewModel.sendAction(SearchAction.Clear) }
     )
 }
@@ -74,6 +75,7 @@ fun SearchScreen(
     searchQuery: String = "",
     onSearchQueryChanged: (String) -> Unit = {},
     onFocusedChanged: (Boolean) -> Unit = {},
+    onSearch: (String) -> Unit = {},
     onClear: () -> Unit = {},
 ) {
     NestedScrollLazyColumn(
@@ -86,6 +88,7 @@ fun SearchScreen(
                 query = searchQuery,
                 onQueryChanged = onSearchQueryChanged,
                 onFocusChanged = onFocusedChanged,
+                onSearch = onSearch,
                 onClear = onClear
             )
         }
@@ -125,6 +128,7 @@ fun SearchBar(
     query: String,
     onQueryChanged: (String) -> Unit,
     onFocusChanged: (Boolean) -> Unit,
+    onSearch: (String) -> Unit,
     onClear: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
@@ -181,6 +185,7 @@ fun SearchBar(
         ),
         keyboardActions = KeyboardActions(
             onSearch = {
+                onSearch(query)
                 keyboardController?.hide()
                 focusManager.clearFocus()
             }
@@ -190,13 +195,10 @@ fun SearchBar(
 
 @DevicePreviews
 @Composable
-private fun SearchBarPreview() {
+private fun SearchScreenPreview() {
     IgozogoTheme {
-        SearchBar(
-            query = "Search query",
-            onQueryChanged = {},
-            onFocusChanged = {},
-            onClear = {}
+        SearchScreen(
+            state = SearchState.Loading
         )
     }
 }

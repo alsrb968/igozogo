@@ -3,6 +3,7 @@ package io.jacob.igozogo.feature.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.jacob.igozogo.core.domain.repository.RecentSearchRepository
 import io.jacob.igozogo.core.domain.usecase.GetCategoriesUseCase
 import io.jacob.igozogo.core.domain.usecase.GetRecentSearchesUseCase
 import io.jacob.igozogo.core.domain.usecase.SearchKeywordUseCase
@@ -19,6 +20,7 @@ class SearchViewModel @Inject constructor(
     getCategoriesUseCase: GetCategoriesUseCase,
     getRecentSearchesUseCase: GetRecentSearchesUseCase,
     private val searchKeywordUseCase: SearchKeywordUseCase,
+    private val recentSearchRepository: RecentSearchRepository,
 ) : ViewModel() {
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
@@ -85,8 +87,9 @@ class SearchViewModel @Inject constructor(
     private fun handleActions() = viewModelScope.launch {
         _action.collectLatest { action ->
             when (action) {
+                is SearchAction.SearchQueryChanged -> changeSearchQuery(action.query)
+                is SearchAction.FocusChanged -> changeFocus(action.isFocused)
                 is SearchAction.Search -> search(action.query)
-                is SearchAction.UpdateFocus -> updateFocus(action.isFocused)
                 is SearchAction.Clear -> clear()
             }
         }
@@ -96,12 +99,19 @@ class SearchViewModel @Inject constructor(
         _action.emit(action)
     }
 
-    private fun search(query: String) = viewModelScope.launch {
+    private fun changeSearchQuery(query: String) = viewModelScope.launch {
         _searchQuery.value = query
     }
 
-    private fun updateFocus(isFocused: Boolean) = viewModelScope.launch {
+    private fun changeFocus(isFocused: Boolean) = viewModelScope.launch {
         _isFocused.value = isFocused
+    }
+
+    private fun search(query: String) = viewModelScope.launch {
+        if (query.isNotEmpty()) {
+            recentSearchRepository.insertOrReplaceRecentSearch(query)
+        }
+        _searchQuery.value = query
     }
 
     private fun clear() = viewModelScope.launch {
@@ -114,10 +124,7 @@ sealed interface SearchState {
     data object Loading : SearchState
     data class CategoriesDisplay(val categories: List<String>) : SearchState
     data class RecentSearchesDisplay(val recentSearches: List<String>) : SearchState
-    data class Success(
-        val places: List<Place>,
-        val stories: List<Story>
-    ) : SearchState {
+    data class Success(val places: List<Place>, val stories: List<Story>) : SearchState {
         val isEmpty: Boolean = places.isEmpty() && stories.isEmpty()
     }
 
@@ -125,8 +132,9 @@ sealed interface SearchState {
 }
 
 sealed interface SearchAction {
+    data class SearchQueryChanged(val query: String) : SearchAction
+    data class FocusChanged(val isFocused: Boolean) : SearchAction
     data class Search(val query: String) : SearchAction
-    data class UpdateFocus(val isFocused: Boolean) : SearchAction
     data object Clear : SearchAction
 }
 
