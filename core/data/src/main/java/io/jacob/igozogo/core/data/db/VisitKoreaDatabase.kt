@@ -1,36 +1,28 @@
 package io.jacob.igozogo.core.data.db
 
-import android.content.Context
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import io.jacob.igozogo.core.data.db.converter.Converters
 import io.jacob.igozogo.core.data.model.local.odii.StoryEntity
 import io.jacob.igozogo.core.data.model.local.odii.StoryRemoteKey
 import io.jacob.igozogo.core.data.model.local.odii.ThemeEntity
+import io.jacob.igozogo.core.data.model.local.search.RecentSearchEntity
 
 @Database(
     entities = [
         ThemeEntity::class,
         StoryEntity::class,
         StoryRemoteKey::class,
+        RecentSearchEntity::class,
     ],
-    version = 2,
-    exportSchema = false,
+    version = 1,
+    exportSchema = true,
 )
 @TypeConverters(Converters::class)
-abstract class VisitKoreaDatabase :RoomDatabase() {
+abstract class VisitKoreaDatabase : RoomDatabase() {
     abstract fun themeDao(): ThemeDao
     abstract fun storyDao(): StoryDao
     abstract fun storyRemoteKeyDao(): StoryRemoteKeyDao
-
-    companion object {
-        private const val DB_NAME = "VisitKorea.db"
-
-        fun getInstance(context: Context): VisitKoreaDatabase =
-            Room.databaseBuilder(context, VisitKoreaDatabase::class.java, DB_NAME)
-                .fallbackToDestructiveMigration(true)
-                .build()
-    }
+    abstract fun recentSearchDao(): RecentSearchDao
 }

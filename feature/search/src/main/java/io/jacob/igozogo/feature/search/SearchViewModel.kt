@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.jacob.igozogo.core.domain.usecase.GetCategoriesUseCase
+import io.jacob.igozogo.core.domain.usecase.GetRecentSearchesUseCase
 import io.jacob.igozogo.core.domain.usecase.SearchKeywordUseCase
 import io.jacob.igozogo.core.model.Place
 import io.jacob.igozogo.core.model.SearchResult
@@ -15,21 +16,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val getCategoriesUseCase: GetCategoriesUseCase,
+    getCategoriesUseCase: GetCategoriesUseCase,
+    getRecentSearchesUseCase: GetRecentSearchesUseCase,
     private val searchKeywordUseCase: SearchKeywordUseCase,
 ) : ViewModel() {
     private val _searchQuery = MutableStateFlow("")
     val searchQuery = _searchQuery.asStateFlow()
 
     private val _isFocused = MutableStateFlow(false)
-
-    private val recentSearches = listOf(
-        "서울 여행",
-        "부산 바다",
-        "제주도 맛집",
-        "경주 역사",
-        "강릉 카페"
-    )
 
     @OptIn(FlowPreview::class)
     private val searchResults: Flow<SearchResult> = _searchQuery
@@ -52,10 +46,14 @@ class SearchViewModel @Inject constructor(
             _effect.tryEmit(SearchEffect.ShowToast(e.message ?: "카테고리를 불러오는데 실패했습니다."))
             emit(emptyList())
         },
+        getRecentSearchesUseCase().catch { e ->
+            _effect.tryEmit(SearchEffect.ShowToast(e.message ?: "최근 검색어를 불러오는데 실패했습니다."))
+            emit(emptyList())
+        },
         _searchQuery,
         _isFocused,
         searchResults
-    ) { categories, query, isFocused, searchResult ->
+    ) { categories, recentSearches, query, isFocused, searchResult ->
         when {
             isFocused && query.isEmpty() ->
                 SearchState.RecentSearchesDisplay(recentSearches)
