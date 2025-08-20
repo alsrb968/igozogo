@@ -87,10 +87,12 @@ class SearchViewModel @Inject constructor(
     private fun handleActions() = viewModelScope.launch {
         _action.collectLatest { action ->
             when (action) {
-                is SearchAction.SearchQueryChanged -> changeSearchQuery(action.query)
+                is SearchAction.QueryChanged -> changeQuery(action.query)
                 is SearchAction.FocusChanged -> changeFocus(action.isFocused)
-                is SearchAction.Search -> search(action.query)
-                is SearchAction.Clear -> clear()
+                is SearchAction.ClickSearch -> search(action.query)
+                is SearchAction.ClearQuery -> clearQuery()
+                is SearchAction.RemoveRecentSearch -> removeRecentSearch(action.query)
+                is SearchAction.ClearRecentSearches -> clearRecentSearches()
             }
         }
     }
@@ -99,7 +101,7 @@ class SearchViewModel @Inject constructor(
         _action.emit(action)
     }
 
-    private fun changeSearchQuery(query: String) = viewModelScope.launch {
+    private fun changeQuery(query: String) = viewModelScope.launch {
         _searchQuery.value = query
     }
 
@@ -114,9 +116,17 @@ class SearchViewModel @Inject constructor(
         _searchQuery.value = query
     }
 
-    private fun clear() = viewModelScope.launch {
+    private fun clearQuery() = viewModelScope.launch {
         _searchQuery.value = ""
         _isFocused.value = false
+    }
+
+    private fun removeRecentSearch(query: String) = viewModelScope.launch {
+        recentSearchRepository.deleteRecentSearch(query)
+    }
+
+    private fun clearRecentSearches() = viewModelScope.launch {
+        recentSearchRepository.clearRecentSearches()
     }
 }
 
@@ -132,10 +142,12 @@ sealed interface SearchState {
 }
 
 sealed interface SearchAction {
-    data class SearchQueryChanged(val query: String) : SearchAction
+    data class QueryChanged(val query: String) : SearchAction
     data class FocusChanged(val isFocused: Boolean) : SearchAction
-    data class Search(val query: String) : SearchAction
-    data object Clear : SearchAction
+    data class ClickSearch(val query: String) : SearchAction
+    data object ClearQuery : SearchAction
+    data class RemoveRecentSearch(val query: String) : SearchAction
+    data object ClearRecentSearches : SearchAction
 }
 
 sealed interface SearchEffect {

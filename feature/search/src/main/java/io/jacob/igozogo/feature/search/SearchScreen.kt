@@ -61,10 +61,10 @@ fun SearchRoute(
         modifier = modifier,
         state = state,
         searchQuery = searchQuery,
-        onSearchQueryChanged = { viewModel.sendAction(SearchAction.SearchQueryChanged(it)) },
+        onSearchQueryChanged = { viewModel.sendAction(SearchAction.QueryChanged(it)) },
         onFocusedChanged = { viewModel.sendAction(SearchAction.FocusChanged(it)) },
-        onSearch = { viewModel.sendAction(SearchAction.Search(it)) },
-        onClear = { viewModel.sendAction(SearchAction.Clear) }
+        onSearch = { viewModel.sendAction(SearchAction.ClickSearch(it)) },
+        onClear = { viewModel.sendAction(SearchAction.ClearQuery) }
     )
 }
 
