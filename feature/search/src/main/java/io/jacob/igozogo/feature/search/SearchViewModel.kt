@@ -13,6 +13,7 @@ import io.jacob.igozogo.core.model.Story
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,6 +36,7 @@ class SearchViewModel @Inject constructor(
             if (query.isNotEmpty()) {
                 searchKeywordUseCase(query)
                     .catch { e ->
+                        Timber.e(e)
                         _effect.tryEmit(SearchEffect.ShowToast(e.message ?: "검색 중 오류가 발생했습니다."))
                         emit(SearchResult())
                     }
@@ -45,10 +47,12 @@ class SearchViewModel @Inject constructor(
 
     val state: StateFlow<SearchState> = combine(
         getCategoriesUseCase().catch { e ->
+            Timber.e(e)
             _effect.tryEmit(SearchEffect.ShowToast(e.message ?: "카테고리를 불러오는데 실패했습니다."))
             emit(emptyList())
         },
         getRecentSearchesUseCase().catch { e ->
+            Timber.e(e)
             _effect.tryEmit(SearchEffect.ShowToast(e.message ?: "최근 검색어를 불러오는데 실패했습니다."))
             emit(emptyList())
         },

@@ -2,9 +2,6 @@ package io.jacob.igozogo.feature.search
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -15,9 +12,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -111,7 +106,8 @@ private fun SearchScreen(
     ) {
         stickyHeader {
             SearchBar(
-                modifier = Modifier,
+                modifier = Modifier
+                    .padding(horizontal = 8.dp),
                 query = searchQuery,
                 onQueryChanged = onSearchQueryChanged,
                 onFocusChanged = onFocusedChanged,
@@ -135,7 +131,14 @@ private fun SearchScreen(
                 }
 
             is SearchState.RecentSearchesDisplay -> {
-                // todo: Show recent searches
+                item {
+                    RecentSearchesBody(
+                        recentSearches = state.recentSearches,
+                        onRecentSearchClicked = onRecentSearchClicked,
+                        onRemoveRecentSearch = onRemoveRecentSearch,
+                        onClearRecentSearches = onClearRecentSearches
+                    )
+                }
             }
 
             is SearchState.Success -> {
@@ -165,19 +168,17 @@ private fun CategoriesBody(
     ) {
         val padding = 8.dp
 
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
+        FlowRow(
+            modifier = Modifier.padding(padding),
             horizontalArrangement = Arrangement.spacedBy(padding),
             verticalArrangement = Arrangement.spacedBy(padding),
-            contentPadding = PaddingValues(padding)
+            maxItemsInEachRow = 2
         ) {
-            items(
-                count = categories.size,
-                key = { categories[it] }
-            ) { index ->
+            categories.forEach { category ->
                 CategoryItem(
-                    category = categories[index],
-                    onClick = { onCategoryClicked(categories[index]) }
+                    modifier = Modifier.weight(1f),
+                    category = category,
+                    onClick = { onCategoryClicked(category) }
                 )
             }
         }
@@ -196,14 +197,13 @@ private fun RecentSearchesBody(
         modifier = modifier,
         text = stringResource(designR.string.core_design_recent_search),
     ) {
-        LazyColumn {
-            items(
-                count = recentSearches.size,
-                key = { recentSearches[it] }
-            ) { index ->
+        Column(
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            recentSearches.forEach { recentSearch ->
                 RecentSearchItem(
                     modifier = Modifier.fillMaxWidth(),
-                    recentSearch = recentSearches[index],
+                    recentSearch = recentSearch,
                     onClick = onRecentSearchClicked,
                     onRemove = onRemoveRecentSearch
                 )
@@ -222,7 +222,7 @@ private fun RecentSearchItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(4.dp)
             .clickable { onClick(recentSearch) },
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -233,13 +233,16 @@ private fun RecentSearchItem(
             modifier = Modifier.padding(end = 8.dp)
         )
 
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.width(8.dp))
 
         Text(
             text = recentSearch,
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface
         )
+
+        Spacer(modifier = Modifier.weight(1f))
+
         IconButton(onClick = { onRemove(recentSearch) }) {
             Icon(
                 imageVector = IgozogoIcons.Close,
@@ -291,7 +294,7 @@ private fun SearchBar(
             }
         },
         singleLine = true,
-        shape = RoundedCornerShape(28.dp),
+        shape = RoundedCornerShape(16.dp),
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = MaterialTheme.colorScheme.primary,
             unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
@@ -301,12 +304,6 @@ private fun SearchBar(
         ),
         modifier = modifier
             .fillMaxWidth()
-            .shadow(
-                elevation = 2.dp,
-                shape = RoundedCornerShape(28.dp),
-                ambientColor = Color.Black.copy(alpha = 0.05f),
-                spotColor = Color.Black.copy(alpha = 0.05f)
-            )
             .onFocusChanged { onFocusChanged(it.isFocused) },
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Search
@@ -334,6 +331,19 @@ private fun CategoriesBodyPreview() {
 
 @DevicePreviews
 @Composable
+private fun RecentSearchesBodyPreview() {
+    IgozogoTheme {
+        RecentSearchesBody(
+            recentSearches = listOf("Recent Search 1", "Recent Search 2"),
+            onRecentSearchClicked = {},
+            onRemoveRecentSearch = {},
+            onClearRecentSearches = {}
+        )
+    }
+}
+
+@DevicePreviews
+@Composable
 private fun SearchBarPreview() {
     IgozogoTheme {
         SearchBar(
@@ -353,7 +363,7 @@ private fun SearchScreenPreview() {
         SearchScreen(
             state = SearchState.CategoriesDisplay(
                 categories = categoryTestData
-            ),
+            )
         )
     }
 }
