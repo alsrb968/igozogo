@@ -30,6 +30,7 @@ import io.jacob.igozogo.core.design.tooling.DevicePreviews
 import io.jacob.igozogo.core.model.Place
 import io.jacob.igozogo.core.model.Story
 import io.jacob.igozogo.core.testing.data.categoryTestData
+import io.jacob.igozogo.core.testing.data.recentSearchTestData
 import kotlinx.coroutines.flow.collectLatest
 import io.jacob.igozogo.core.design.R as designR
 
@@ -334,7 +335,7 @@ private fun CategoriesBodyPreview() {
 private fun RecentSearchesBodyPreview() {
     IgozogoTheme {
         RecentSearchesBody(
-            recentSearches = listOf("Recent Search 1", "Recent Search 2"),
+            recentSearches = recentSearchTestData,
             onRecentSearchClicked = {},
             onRemoveRecentSearch = {},
             onClearRecentSearches = {}
@@ -347,7 +348,7 @@ private fun RecentSearchesBodyPreview() {
 private fun SearchBarPreview() {
     IgozogoTheme {
         SearchBar(
-            query = "검색어",
+            query = "",
             onQueryChanged = {},
             onFocusChanged = {},
             onSearch = {},

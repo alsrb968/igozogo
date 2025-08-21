@@ -119,7 +119,7 @@ class SearchViewModel @Inject constructor(
 
     private fun search(query: String) = viewModelScope.launch {
         if (query.isNotEmpty()) {
-            recentSearchRepository.insertOrReplaceRecentSearch(query)
+            recentSearchRepository.upsertRecentSearch(query)
         }
         _searchQuery.value = query
     }

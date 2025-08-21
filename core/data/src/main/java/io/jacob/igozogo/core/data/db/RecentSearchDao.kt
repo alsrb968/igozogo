@@ -19,7 +19,7 @@ interface RecentSearchDao {
     fun getRecentSearches(limit: Int): Flow<List<RecentSearchEntity>>
 
     @Upsert
-    suspend fun insertOrReplaceRecentSearch(recentSearch: RecentSearchEntity)
+    suspend fun upsertRecentSearch(recentSearch: RecentSearchEntity)
 
     @Query(
         """

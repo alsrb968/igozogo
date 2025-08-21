@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 interface RecentSearchDataSource {
     fun getRecentSearches(limit: Int = 10): Flow<List<RecentSearchEntity>>
-    suspend fun insertOrReplaceRecentSearch(recentSearch: RecentSearchEntity)
+    suspend fun upsertRecentSearch(recentSearch: RecentSearchEntity)
     suspend fun deleteRecentSearch(query: String)
     suspend fun clearRecentSearches()
     suspend fun getRecentSearchesCount(): Int
@@ -20,8 +20,8 @@ class RecentSearchDataSourceImpl @Inject constructor(
         return dao.getRecentSearches(limit)
     }
 
-    override suspend fun insertOrReplaceRecentSearch(recentSearch: RecentSearchEntity) {
-        dao.insertOrReplaceRecentSearch(recentSearch)
+    override suspend fun upsertRecentSearch(recentSearch: RecentSearchEntity) {
+        dao.upsertRecentSearch(recentSearch)
     }
 
     override suspend fun deleteRecentSearch(query: String) {

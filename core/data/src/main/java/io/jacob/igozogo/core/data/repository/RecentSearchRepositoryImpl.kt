@@ -17,8 +17,8 @@ class RecentSearchRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun insertOrReplaceRecentSearch(query: String) {
-        recentSearchDataSource.insertOrReplaceRecentSearch(
+    override suspend fun upsertRecentSearch(query: String) {
+        recentSearchDataSource.upsertRecentSearch(
             RecentSearchEntity(
                 query = query,
                 queriedDate = Clock.System.now()
