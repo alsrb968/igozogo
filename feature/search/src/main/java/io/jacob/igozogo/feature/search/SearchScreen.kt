@@ -1,7 +1,10 @@
 package io.jacob.igozogo.feature.search
 
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -10,25 +13,33 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.jacob.igozogo.core.design.component.CategoryItem
 import io.jacob.igozogo.core.design.component.LoadingWheel
+import io.jacob.igozogo.core.design.component.TitleTextItem
 import io.jacob.igozogo.core.design.foundation.NestedScrollLazyColumn
 import io.jacob.igozogo.core.design.icon.IgozogoIcons
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
+import io.jacob.igozogo.core.model.Place
+import io.jacob.igozogo.core.model.Story
+import io.jacob.igozogo.core.testing.data.categoryTestData
 import kotlinx.coroutines.flow.collectLatest
+import io.jacob.igozogo.core.design.R as designR
 
 @Composable
-fun SearchRoute(
+internal fun SearchRoute(
     modifier: Modifier = Modifier,
     onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
     viewModel: SearchViewModel = hiltViewModel()
@@ -46,12 +57,16 @@ fun SearchRoute(
                     )
                 }
 
+                is SearchEffect.NavigateToCategoryDetails -> {
+                    // todo: Handle navigation to category details
+                }
+
                 is SearchEffect.NavigateToPlaceDetails -> {
-                    // Handle navigation to place details
+                    // todo: Handle navigation to place details
                 }
 
                 is SearchEffect.NavigateToStoryDetails -> {
-                    // Handle navigation to story details
+                    // todo: Handle navigation to story details
                 }
             }
         }
@@ -64,19 +79,31 @@ fun SearchRoute(
         onSearchQueryChanged = { viewModel.sendAction(SearchAction.QueryChanged(it)) },
         onFocusedChanged = { viewModel.sendAction(SearchAction.FocusChanged(it)) },
         onSearch = { viewModel.sendAction(SearchAction.ClickSearch(it)) },
-        onClear = { viewModel.sendAction(SearchAction.ClearQuery) }
+        onClearQuery = { viewModel.sendAction(SearchAction.ClearQuery) },
+        onRemoveRecentSearch = { viewModel.sendAction(SearchAction.RemoveRecentSearch(it)) },
+        onClearRecentSearches = { viewModel.sendAction(SearchAction.ClearRecentSearches) },
+        onCategoryClicked = { viewModel.sendAction(SearchAction.ClickCategory(it)) },
+        onRecentSearchClicked = { viewModel.sendAction(SearchAction.ClickRecentSearch(it)) },
+        onPlaceClicked = { viewModel.sendAction(SearchAction.ClickPlace(it)) },
+        onStoryClicked = { viewModel.sendAction(SearchAction.ClickStory(it)) },
     )
 }
 
 @Composable
-fun SearchScreen(
+private fun SearchScreen(
     modifier: Modifier = Modifier,
     state: SearchState = SearchState.Loading,
     searchQuery: String = "",
     onSearchQueryChanged: (String) -> Unit = {},
     onFocusedChanged: (Boolean) -> Unit = {},
     onSearch: (String) -> Unit = {},
-    onClear: () -> Unit = {},
+    onClearQuery: () -> Unit = {},
+    onRemoveRecentSearch: (String) -> Unit = {},
+    onClearRecentSearches: () -> Unit = {},
+    onCategoryClicked: (String) -> Unit = {},
+    onRecentSearchClicked: (String) -> Unit = {},
+    onPlaceClicked: (Place) -> Unit = {},
+    onStoryClicked: (Story) -> Unit = {},
 ) {
     NestedScrollLazyColumn(
         modifier = modifier,
@@ -89,18 +116,23 @@ fun SearchScreen(
                 onQueryChanged = onSearchQueryChanged,
                 onFocusChanged = onFocusedChanged,
                 onSearch = onSearch,
-                onClear = onClear
+                onClear = onClearQuery
             )
         }
 
         when (state) {
-            is SearchState.Loading -> item {
-                LoadingWheel(modifier = Modifier.fillMaxSize())
-            }
+            is SearchState.Loading ->
+                item {
+                    LoadingWheel(modifier = Modifier.fillMaxSize())
+                }
 
-            is SearchState.CategoriesDisplay -> {
-                // todo: Show categories
-            }
+            is SearchState.CategoriesDisplay ->
+                item {
+                    CategoriesBody(
+                        categories = state.categories,
+                        onCategoryClicked = onCategoryClicked
+                    )
+                }
 
             is SearchState.RecentSearchesDisplay -> {
                 // todo: Show recent searches
@@ -121,9 +153,105 @@ fun SearchScreen(
     }
 }
 
+@Composable
+private fun CategoriesBody(
+    modifier: Modifier = Modifier,
+    categories: List<String>,
+    onCategoryClicked: (String) -> Unit
+) {
+    TitleTextItem(
+        modifier = modifier,
+        text = stringResource(designR.string.core_design_category)
+    ) {
+        val padding = 8.dp
+
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            horizontalArrangement = Arrangement.spacedBy(padding),
+            verticalArrangement = Arrangement.spacedBy(padding),
+            contentPadding = PaddingValues(padding)
+        ) {
+            items(
+                count = categories.size,
+                key = { categories[it] }
+            ) { index ->
+                CategoryItem(
+                    category = categories[index],
+                    onClick = { onCategoryClicked(categories[index]) }
+                )
+            }
+        }
+    }
+}
 
 @Composable
-fun SearchBar(
+private fun RecentSearchesBody(
+    modifier: Modifier = Modifier,
+    recentSearches: List<String>,
+    onRecentSearchClicked: (String) -> Unit,
+    onRemoveRecentSearch: (String) -> Unit,
+    onClearRecentSearches: () -> Unit
+) {
+    TitleTextItem(
+        modifier = modifier,
+        text = stringResource(designR.string.core_design_recent_search),
+    ) {
+        LazyColumn {
+            items(
+                count = recentSearches.size,
+                key = { recentSearches[it] }
+            ) { index ->
+                RecentSearchItem(
+                    modifier = Modifier.fillMaxWidth(),
+                    recentSearch = recentSearches[index],
+                    onClick = onRecentSearchClicked,
+                    onRemove = onRemoveRecentSearch
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun RecentSearchItem(
+    modifier: Modifier = Modifier,
+    recentSearch: String,
+    onClick: (String) -> Unit,
+    onRemove: (String) -> Unit
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clickable { onClick(recentSearch) },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = IgozogoIcons.History,
+            contentDescription = "Recent Search Icon",
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(end = 8.dp)
+        )
+
+        Spacer(modifier = Modifier.weight(1f))
+
+        Text(
+            text = recentSearch,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+        IconButton(onClick = { onRemove(recentSearch) }) {
+            Icon(
+                imageVector = IgozogoIcons.Close,
+                contentDescription = "Remove Recent Search",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
+private fun SearchBar(
     modifier: Modifier = Modifier,
     query: String,
     onQueryChanged: (String) -> Unit,
@@ -195,10 +323,37 @@ fun SearchBar(
 
 @DevicePreviews
 @Composable
+private fun CategoriesBodyPreview() {
+    IgozogoTheme {
+        CategoriesBody(
+            categories = categoryTestData,
+            onCategoryClicked = {}
+        )
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun SearchBarPreview() {
+    IgozogoTheme {
+        SearchBar(
+            query = "검색어",
+            onQueryChanged = {},
+            onFocusChanged = {},
+            onSearch = {},
+            onClear = {}
+        )
+    }
+}
+
+@DevicePreviews
+@Composable
 private fun SearchScreenPreview() {
     IgozogoTheme {
         SearchScreen(
-            state = SearchState.Loading
+            state = SearchState.CategoriesDisplay(
+                categories = categoryTestData
+            ),
         )
     }
 }

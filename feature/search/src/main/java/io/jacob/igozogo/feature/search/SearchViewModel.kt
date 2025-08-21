@@ -93,6 +93,10 @@ class SearchViewModel @Inject constructor(
                 is SearchAction.ClearQuery -> clearQuery()
                 is SearchAction.RemoveRecentSearch -> removeRecentSearch(action.query)
                 is SearchAction.ClearRecentSearches -> clearRecentSearches()
+                is SearchAction.ClickCategory -> clickCategory(action.category)
+                is SearchAction.ClickRecentSearch -> search(action.query)
+                is SearchAction.ClickPlace -> clickPlace(action.place)
+                is SearchAction.ClickStory -> clickStory(action.story)
             }
         }
     }
@@ -128,6 +132,18 @@ class SearchViewModel @Inject constructor(
     private fun clearRecentSearches() = viewModelScope.launch {
         recentSearchRepository.clearRecentSearches()
     }
+
+    private fun clickCategory(category: String) = viewModelScope.launch {
+        _effect.emit(SearchEffect.NavigateToCategoryDetails(category))
+    }
+
+    private fun clickPlace(place: Place) = viewModelScope.launch {
+        _effect.emit(SearchEffect.NavigateToPlaceDetails(place))
+    }
+
+    private fun clickStory(story: Story) = viewModelScope.launch {
+        _effect.emit(SearchEffect.NavigateToStoryDetails(story))
+    }
 }
 
 sealed interface SearchState {
@@ -148,10 +164,15 @@ sealed interface SearchAction {
     data object ClearQuery : SearchAction
     data class RemoveRecentSearch(val query: String) : SearchAction
     data object ClearRecentSearches : SearchAction
+    data class ClickCategory(val category: String): SearchAction
+    data class ClickRecentSearch(val query: String) : SearchAction
+    data class ClickPlace(val place: Place) : SearchAction
+    data class ClickStory(val story: Story) : SearchAction
 }
 
 sealed interface SearchEffect {
     data class ShowToast(val message: String) : SearchEffect
-    data class NavigateToPlaceDetails(val placeId: String) : SearchEffect
-    data class NavigateToStoryDetails(val storyId: String) : SearchEffect
+    data class NavigateToCategoryDetails(val category: String) : SearchEffect
+    data class NavigateToPlaceDetails(val place: Place) : SearchEffect
+    data class NavigateToStoryDetails(val story: Story) : SearchEffect
 }
