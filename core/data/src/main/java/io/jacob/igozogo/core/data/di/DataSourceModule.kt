@@ -11,6 +11,7 @@ import io.jacob.igozogo.core.data.datasource.player.PlayerDataSource
 import io.jacob.igozogo.core.data.datasource.player.PlayerDataSourceImpl
 import io.jacob.igozogo.core.data.datasource.remote.OdiiDataSource
 import io.jacob.igozogo.core.data.datasource.remote.OdiiDataSourceImpl
+import io.jacob.igozogo.core.data.db.RecentSearchDao
 import io.jacob.igozogo.core.data.db.StoryDao
 import io.jacob.igozogo.core.data.db.StoryRemoteKeyDao
 import io.jacob.igozogo.core.data.db.ThemeDao
@@ -45,6 +46,16 @@ object DataSourceModule {
         dao: StoryRemoteKeyDao
     ): StoryRemoteKeyDataSource {
         return StoryRemoteKeyDataSourceImpl(
+            dao = dao
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideRecentSearchDataSource(
+        dao: RecentSearchDao
+    ): RecentSearchDataSource {
+        return RecentSearchDataSourceImpl(
             dao = dao
         )
     }

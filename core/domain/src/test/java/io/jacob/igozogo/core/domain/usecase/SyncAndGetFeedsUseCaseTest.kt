@@ -33,10 +33,10 @@ class SyncAndGetFeedsUseCaseTest {
     fun `Given synced db, When SyncAndGetFeedsUseCase called, Then call repositories`() =
         runTest {
             // Given
-            coEvery { placeRepository.getPlacesCount() } returns 2079
+            coEvery { placeRepository.getPlacesCount() } returns 2105
             coEvery { placeRepository.getPlaceCategories() } returns categoryTestData
-            coEvery { placeRepository.getPlaces(any()) } returns placeTestData
-            coEvery { storyRepository.getStories(any()) } returns storyTestData
+            coEvery { placeRepository.getPlaces() } returns placeTestData
+            coEvery { storyRepository.getStories() } returns storyTestData
 
             // When
             var isSynced = false
@@ -47,19 +47,19 @@ class SyncAndGetFeedsUseCaseTest {
             coVerify { placeRepository.getPlacesCount() }
             coVerify(exactly = 0) { placeRepository.syncPlaces(any()) }
             coVerify { placeRepository.getPlaceCategories() }
-            coVerify { placeRepository.getPlaces(any()) }
-            coVerify { storyRepository.getStories(any()) }
+            coVerify { placeRepository.getPlaces() }
+            coVerify { storyRepository.getStories() }
         }
 
     @Test
     fun `Given not synced db, When SyncAndGetFeedsUseCase called, Then call repositories`() =
         runTest {
             // Given
-            coEvery { placeRepository.getPlacesCount() } returns 2078
+            coEvery { placeRepository.getPlacesCount() } returns 2104
             coEvery { placeRepository.syncPlaces(any()) } just Runs
             coEvery { placeRepository.getPlaceCategories() } returns categoryTestData
-            coEvery { placeRepository.getPlaces(any()) } returns placeTestData
-            coEvery { storyRepository.getStories(any()) } returns storyTestData
+            coEvery { placeRepository.getPlaces() } returns placeTestData
+            coEvery { storyRepository.getStories() } returns storyTestData
 
             // When
             var isSynced = false
@@ -70,7 +70,7 @@ class SyncAndGetFeedsUseCaseTest {
             coVerify { placeRepository.getPlacesCount() }
             coVerify { placeRepository.syncPlaces(any()) }
             coVerify { placeRepository.getPlaceCategories() }
-            coVerify { placeRepository.getPlaces(any()) }
-            coVerify { storyRepository.getStories(any()) }
+            coVerify { placeRepository.getPlaces() }
+            coVerify { storyRepository.getStories() }
         }
 }

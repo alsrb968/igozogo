@@ -1,15 +1,13 @@
 package io.jacob.igozogo.core.data.di
 
 import android.content.Context
+import androidx.room.Room
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import io.jacob.igozogo.core.data.db.StoryDao
-import io.jacob.igozogo.core.data.db.StoryRemoteKeyDao
-import io.jacob.igozogo.core.data.db.ThemeDao
-import io.jacob.igozogo.core.data.db.VisitKoreaDatabase
+import io.jacob.igozogo.core.data.db.*
 import javax.inject.Singleton
 
 @Module
@@ -20,7 +18,11 @@ object DatabaseModule {
     fun provideDatabase(
         @ApplicationContext context: Context
     ): VisitKoreaDatabase {
-        return VisitKoreaDatabase.getInstance(context)
+        return Room.databaseBuilder(
+            context,
+            VisitKoreaDatabase::class.java,
+            "VisitKorea.db"
+        ).build()
     }
 
     @Provides
@@ -45,5 +47,13 @@ object DatabaseModule {
         database: VisitKoreaDatabase
     ): StoryRemoteKeyDao {
         return database.storyRemoteKeyDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRecentSearchDao(
+        database: VisitKoreaDatabase
+    ): RecentSearchDao {
+        return database.recentSearchDao()
     }
 }

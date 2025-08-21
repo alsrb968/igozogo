@@ -3,7 +3,10 @@ package io.jacob.igozogo.core.design.icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.PlaylistAdd
-import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.outlined.Bookmarks
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.ui.unit.dp
 
@@ -38,6 +41,7 @@ object IgozogoIcons {
     val Close = Icons.Rounded.Close
     val Replay10 = Icons.Rounded.Replay10
     val Forward10 = Icons.Rounded.Forward10
+    val History = Icons.Rounded.History
 }
 
 object IgozogoIconSizes {
