@@ -77,7 +77,7 @@ jobs:
       - name: Generate coverage badge
         uses: schneegans/dynamic-badges-action@v1.7.0
         with:
-          auth: ${{ secrets.GITHUB_TOKEN }}
+          auth: ${{ secrets.GIST_TOKEN }}
           gistID: c9a0adeca134526611f8990962be022b
           filename: coverage.json
           label: Coverage
@@ -89,7 +89,7 @@ jobs:
       - name: Generate branches badge
         uses: schneegans/dynamic-badges-action@v1.7.0
         with:
-          auth: ${{ secrets.GITHUB_TOKEN }}
+          auth: ${{ secrets.GIST_TOKEN }}
           gistID: c9a0adeca134526611f8990962be022b
           filename: branches.json
           label: Branches
