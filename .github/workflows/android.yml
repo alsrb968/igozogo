@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   check-for-changes:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     # skip ci 커밋 필터링
     if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, 'update coverage badges')"
@@ -37,7 +37,7 @@ jobs:
   build:
     needs: check-for-changes
     if: needs.check-for-changes.outputs.source_changes == 'true'
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: Checkout repository
@@ -96,18 +96,8 @@ jobs:
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          
-          # 최신 변경사항 가져오기
-          git fetch origin ${{ github.head_ref }}
-          git rebase origin/${{ github.head_ref }}
-          
-          # 뱃지 파일 다시 추가 (rebase로 인해 unstage될 수 있음)
-          git add .github/badges/
-          
-          # 변경사항이 있는지 다시 확인
-          if ! git diff --staged --quiet; then
-            git commit -m "chore: update coverage badges [skip ci]"
-            git push origin HEAD:${{ github.head_ref }}
-          else
-            echo "No changes to commit after rebase"
-          fi
+          git commit -m "chore: update coverage badges [skip ci]"
+          git push origin HEAD:${{ github.head_ref }} || {
+            echo "Push failed, trying with force..."
+            git push --force-with-lease origin HEAD:${{ github.head_ref }}
+          }
