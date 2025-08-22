@@ -80,7 +80,7 @@ jobs:
           badges-directory: .github/badges
           generate-branches-badge: true
           generate-summary: true
-          jacoco-csv-file: "${{ github.workspace }}/**/build/reports/jacoco/**/*.csv"
+          jacoco-csv-file: "${{ github.workspace }}/**/*jacoco*.csv"
 
       - name: Check if badges were updated
         id: badge-check
