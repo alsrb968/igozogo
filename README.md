@@ -1,4 +1,5 @@
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/alsrb968/igozogo)
+![Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/alsrb968/c9a0adeca134526611f8990962be022b/raw/coverage.json)
 
 # 🏛️ Igozogo(이고조고)
 
