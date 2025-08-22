@@ -5,12 +5,15 @@ on:
     branches: [ "main" ]
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
 
 jobs:
   check-for-changes:
     runs-on: ubuntu-latest
+
+    # skip ci 커밋 필터링
+    if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, 'update coverage badges')"
 
     outputs:
       source_changes: ${{ steps.check_changes.outputs.any_changed }}
@@ -26,10 +29,10 @@ jobs:
         id: check_changes
         with:
           files_ignore: |
-            *.md
-            *.mk
+            **.md
             .idea/**
             .github/**
+            .claude/**
 
   build:
     needs: check-for-changes
@@ -66,3 +69,32 @@ jobs:
           paths: |
             ${{ github.workspace }}/**/build/reports/jacoco/**/*Report.xml
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate JaCoCo coverage badges
+        uses: cicirello/jacoco-badge-generator@v2
+        with:
+          badges-directory: .github/badges
+          generate-branches-badge: true
+          generate-summary: true
+          jacoco-csv-file: "**/build/reports/jacoco/**/*.csv"
+
+      - name: Check if badges were updated
+        id: badge-check
+        run: |
+          git add .github/badges/
+          if git diff --staged --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "No badge changes detected"
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "Badge changes detected"
+            git status
+          fi
+
+      - name: Commit coverage badges to PR branch
+        if: steps.badge-check.outputs.changed == 'true'
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -m "chore: update coverage badges [skip ci]"
+          git push origin HEAD:${{ github.head_ref }}
