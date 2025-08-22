@@ -1,3 +1,5 @@
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/alsrb968/igozogo)
+
 # 🏛️ Igozogo(이고조고)
 
 한국의 아름다운 관광지와 그곳에 담긴 이야기를 오디오와 함께 탐험하는 Android 애플리케이션입니다.
