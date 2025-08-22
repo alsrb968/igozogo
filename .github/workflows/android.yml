@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   check-for-changes:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     # skip ci 커밋 필터링
     if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, 'update coverage badges')"
@@ -37,7 +37,7 @@ jobs:
   build:
     needs: check-for-changes
     if: needs.check-for-changes.outputs.source_changes == 'true'
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       - name: Checkout repository
@@ -80,7 +80,7 @@ jobs:
           badges-directory: .github/badges
           generate-branches-badge: true
           generate-summary: true
-          jacoco-csv-file: "**/build/reports/jacoco/**/*.csv"
+          jacoco-csv-file: "${{ github.workspace }}/**/build/reports/jacoco/**/*.csv"
 
       - name: Check if badges were updated
         id: badge-check
