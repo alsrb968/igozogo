@@ -22,12 +22,17 @@ class StoryDetailViewModel @AssistedInject constructor(
 ) : ViewModel() {
     val state: StateFlow<StoryDetailState> = flow {
         emit(getStoryAndPlaceByIdUseCase(storyId, storyLangId))
-    }.map { (place, story) ->
-        if (place != null && story != null) {
-            StoryDetailState.Success(place, story)
-        } else {
-            StoryDetailState.Error
-        }
+    }.map { result ->
+        result.fold(
+            onSuccess = { (place, story) ->
+                StoryDetailState.Success(place, story)
+            },
+            onFailure = {
+                StoryDetailState.Error
+            }
+        )
+    }.catch { 
+        emit(StoryDetailState.Error)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),

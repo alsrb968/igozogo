@@ -10,11 +10,13 @@ class GetStoryAndPlaceByIdUseCase @Inject constructor(
     private val placeRepository: PlaceRepository,
     private val storyRepository: StoryRepository,
 ) {
-    suspend operator fun invoke(storyId: Int, storyLangId: Int): Pair<Place?, Story?> {
-        val story = storyRepository.getStoryById(storyId, storyLangId)
-        val place = story?.let {
-            placeRepository.getPlaceById(it.placeId, it.placeLangId)
+    suspend operator fun invoke(storyId: Int, storyLangId: Int): Result<Pair<Place, Story>> {
+        return runCatching {
+            val story = storyRepository.getStoryById(storyId, storyLangId)
+                ?: throw NullPointerException("story is null")
+            val place = placeRepository.getPlaceById(story.placeId, story.placeLangId)
+                ?: throw NullPointerException("place is null")
+            place to story
         }
-        return Pair(place, story)
     }
 }

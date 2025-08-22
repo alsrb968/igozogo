@@ -32,6 +32,8 @@ class PlaceDetailViewModel @AssistedInject constructor(
                 PlaceDetailState.Error
             }
         )
+    }.catch { 
+        emit(PlaceDetailState.Error)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
