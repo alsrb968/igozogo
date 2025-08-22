@@ -81,6 +81,4 @@ jobs:
           filename: coverage.json
           label: Coverage
           message: ${{ steps.jacoco.outputs.coverage-overall }}%
-          minColorRange: 30
-          maxColorRange: 70
           valColorRange: ${{ steps.jacoco.outputs.coverage-overall }}
