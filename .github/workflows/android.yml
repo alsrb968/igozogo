@@ -8,6 +8,10 @@ permissions:
   contents: read
   pull-requests: write
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   check-for-changes:
     runs-on: self-hosted
@@ -79,4 +83,6 @@ jobs:
           filename: coverage.json
           label: Coverage
           message: ${{ steps.jacoco.outputs.coverage-overall }}%
+          minColorRange: 50
+          maxColorRange: 90
           valColorRange: ${{ steps.jacoco.outputs.coverage-overall }}
