@@ -12,7 +12,6 @@ jobs:
   check-for-changes:
     runs-on: self-hosted
 
-    # skip ci 커밋 필터링
     if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, 'update coverage badges')"
 
     outputs:
@@ -82,18 +81,6 @@ jobs:
           filename: coverage.json
           label: Coverage
           message: ${{ steps.jacoco.outputs.coverage-overall }}%
-          minColorRange: 50
-          maxColorRange: 90
+          minColorRange: 30
+          maxColorRange: 70
           valColorRange: ${{ steps.jacoco.outputs.coverage-overall }}
-
-      - name: Generate branches badge
-        uses: schneegans/dynamic-badges-action@v1.7.0
-        with:
-          auth: ${{ secrets.GIST_TOKEN }}
-          gistID: c9a0adeca134526611f8990962be022b
-          filename: branches.json
-          label: Branches
-          message: ${{ steps.jacoco.outputs.coverage-branches }}%
-          minColorRange: 50
-          maxColorRange: 90
-          valColorRange: ${{ steps.jacoco.outputs.coverage-branches }}

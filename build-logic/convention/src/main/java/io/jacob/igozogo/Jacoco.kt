@@ -85,7 +85,6 @@ internal fun Project.configureJacoco(
                 )
                 reports {
                     xml.required = true
-                    csv.required = true
                     html.required = true
                 }
 
