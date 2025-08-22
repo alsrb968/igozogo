@@ -12,8 +12,6 @@ jobs:
   check-for-changes:
     runs-on: self-hosted
 
-    if: "!contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.head_commit.message, 'update coverage badges')"
-
     outputs:
       source_changes: ${{ steps.check_changes.outputs.any_changed }}
 
@@ -28,7 +26,7 @@ jobs:
         id: check_changes
         with:
           files_ignore: |
-            **.md
+            **/*.md
             .idea/**
             .github/**
             .claude/**
