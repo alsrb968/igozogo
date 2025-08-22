@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
 
 permissions:
-  contents: write
+  contents: read
   pull-requests: write
 
 jobs:
@@ -75,53 +75,25 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Generate coverage badge
-        uses: emibcn/badge-action@v2.0.3
+        uses: schneegans/dynamic-badges-action@v1.7.0
         with:
-          label: 'Coverage'
-          status: '${{ steps.jacoco.outputs.coverage-overall }}%'
-          color: ${{
-            steps.jacoco.outputs.coverage-overall >= 90 && 'brightgreen' ||
-            steps.jacoco.outputs.coverage-overall >= 80 && 'green' ||
-            steps.jacoco.outputs.coverage-overall >= 70 && 'yellow' ||
-            steps.jacoco.outputs.coverage-overall >= 60 && 'orange' ||
-            'red'
-          }}
-          path: '.github/badges/jacoco.svg'
+          auth: ${{ secrets.GITHUB_TOKEN }}
+          gistID: c9a0adeca134526611f8990962be022b
+          filename: coverage.json
+          label: Coverage
+          message: ${{ steps.jacoco.outputs.coverage-overall }}%
+          minColorRange: 50
+          maxColorRange: 90
+          valColorRange: ${{ steps.jacoco.outputs.coverage-overall }}
 
       - name: Generate branches badge
-        uses: emibcn/badge-action@v2.0.3
+        uses: schneegans/dynamic-badges-action@v1.7.0
         with:
-          label: 'Branches'
-          status: '${{ steps.jacoco.outputs.coverage-branches }}%'
-          color: ${{
-            steps.jacoco.outputs.coverage-branches >= 90 && 'brightgreen' ||
-            steps.jacoco.outputs.coverage-branches >= 80 && 'green' ||
-            steps.jacoco.outputs.coverage-branches >= 70 && 'yellow' ||
-            steps.jacoco.outputs.coverage-branches >= 60 && 'orange' ||
-            'red'
-          }}
-          path: '.github/badges/branches.svg'
-
-      - name: Check if badges were updated
-        id: badge-check
-        run: |
-          git add .github/badges/
-          if git diff --staged --quiet; then
-            echo "changed=false" >> $GITHUB_OUTPUT
-            echo "No badge changes detected"
-          else
-            echo "changed=true" >> $GITHUB_OUTPUT
-            echo "Badge changes detected"
-            git status
-          fi
-
-      - name: Commit coverage badges to PR branch
-        if: steps.badge-check.outputs.changed == 'true'
-        run: |
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git commit -m "chore: update coverage badges [skip ci]"
-          git push origin HEAD:${{ github.head_ref }} || {
-            echo "Push failed, trying with force..."
-            git push --force-with-lease origin HEAD:${{ github.head_ref }}
-          }
+          auth: ${{ secrets.GITHUB_TOKEN }}
+          gistID: c9a0adeca134526611f8990962be022b
+          filename: branches.json
+          label: Branches
+          message: ${{ steps.jacoco.outputs.coverage-branches }}%
+          minColorRange: 50
+          maxColorRange: 90
+          valColorRange: ${{ steps.jacoco.outputs.coverage-branches }}
