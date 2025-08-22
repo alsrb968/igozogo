@@ -74,13 +74,33 @@ jobs:
             ${{ github.workspace }}/**/build/reports/jacoco/**/*Report.xml
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Generate JaCoCo coverage badges
-        uses: cicirello/jacoco-badge-generator@v2
+      - name: Generate coverage badge
+        uses: emibcn/badge-action@v2.0.3
         with:
-          badges-directory: .github/badges
-          generate-branches-badge: true
-          generate-summary: true
-          jacoco-csv-file: "${{ github.workspace }}/**/build/reports/jacoco/**/*Report.xml"
+          label: 'Coverage'
+          status: '${{ steps.jacoco.outputs.coverage-overall }}%'
+          color: ${{
+            steps.jacoco.outputs.coverage-overall >= 90 && 'brightgreen' ||
+            steps.jacoco.outputs.coverage-overall >= 80 && 'green' ||
+            steps.jacoco.outputs.coverage-overall >= 70 && 'yellow' ||
+            steps.jacoco.outputs.coverage-overall >= 60 && 'orange' ||
+            'red'
+          }}
+          path: '.github/badges/jacoco.svg'
+
+      - name: Generate branches badge
+        uses: emibcn/badge-action@v2.0.3
+        with:
+          label: 'Branches'
+          status: '${{ steps.jacoco.outputs.coverage-branches }}%'
+          color: ${{
+            steps.jacoco.outputs.coverage-branches >= 90 && 'brightgreen' ||
+            steps.jacoco.outputs.coverage-branches >= 80 && 'green' ||
+            steps.jacoco.outputs.coverage-branches >= 70 && 'yellow' ||
+            steps.jacoco.outputs.coverage-branches >= 60 && 'orange' ||
+            'red'
+          }}
+          path: '.github/badges/branches.svg'
 
       - name: Check if badges were updated
         id: badge-check
