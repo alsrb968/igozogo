@@ -96,5 +96,18 @@ jobs:
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git commit -m "chore: update coverage badges [skip ci]"
-          git push origin HEAD:${{ github.head_ref }}
+          
+          # 최신 변경사항 가져오기
+          git fetch origin ${{ github.head_ref }}
+          git rebase origin/${{ github.head_ref }}
+          
+          # 뱃지 파일 다시 추가 (rebase로 인해 unstage될 수 있음)
+          git add .github/badges/
+          
+          # 변경사항이 있는지 다시 확인
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: update coverage badges [skip ci]"
+            git push origin HEAD:${{ github.head_ref }}
+          else
+            echo "No changes to commit after rebase"
+          fi
