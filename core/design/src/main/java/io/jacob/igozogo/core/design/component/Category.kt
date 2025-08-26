@@ -1,8 +1,6 @@
 package io.jacob.igozogo.core.design.component
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Article
@@ -22,36 +20,6 @@ import androidx.compose.ui.unit.dp
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
 import kotlin.math.absoluteValue
-
-@Composable
-fun CategoryItemList(
-    modifier: Modifier = Modifier,
-    categories: List<String>,
-    onItemClick: (String) -> Unit,
-) {
-    val padding = 16.dp
-
-    LazyHorizontalGrid(
-        rows = GridCells.Fixed(2),
-        modifier = modifier
-            .fillMaxWidth()
-            .height(200.dp + padding),
-        horizontalArrangement = Arrangement.spacedBy(padding),
-        verticalArrangement = Arrangement.spacedBy(padding),
-        contentPadding = PaddingValues(horizontal = padding)
-    ) {
-        items(
-            count = categories.size,
-            key = { categories[it] },
-        ) { index ->
-            CategoryItem(
-                modifier = Modifier.width(200.dp),
-                category = categories[index],
-                onClick = { onItemClick(categories[index]) }
-            )
-        }
-    }
-}
 
 @Composable
 fun CategoryItem(

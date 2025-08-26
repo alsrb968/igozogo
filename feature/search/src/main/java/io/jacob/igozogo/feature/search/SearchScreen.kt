@@ -22,7 +22,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.jacob.igozogo.core.design.component.CategoryItem
 import io.jacob.igozogo.core.design.component.LoadingWheel
-import io.jacob.igozogo.core.design.component.TitleTextItem
+import io.jacob.igozogo.core.design.component.SectionHeader
 import io.jacob.igozogo.core.design.foundation.NestedScrollLazyColumn
 import io.jacob.igozogo.core.design.icon.IgozogoIcons
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
@@ -163,7 +163,7 @@ private fun CategoriesBody(
     categories: List<String>,
     onCategoryClicked: (String) -> Unit
 ) {
-    TitleTextItem(
+    SectionHeader(
         modifier = modifier,
         text = stringResource(designR.string.core_design_category)
     ) {
@@ -194,7 +194,7 @@ private fun RecentSearchesBody(
     onRemoveRecentSearch: (String) -> Unit,
     onClearRecentSearches: () -> Unit
 ) {
-    TitleTextItem(
+    SectionHeader(
         modifier = modifier,
         text = stringResource(designR.string.core_design_recent_search),
     ) {

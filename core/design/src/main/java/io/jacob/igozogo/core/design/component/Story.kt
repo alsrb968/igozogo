@@ -1,7 +1,6 @@
 package io.jacob.igozogo.core.design.component
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -18,34 +17,6 @@ import io.jacob.igozogo.core.design.util.toHumanReadableDate
 import io.jacob.igozogo.core.design.util.toHumanReadableTime
 import io.jacob.igozogo.core.model.Story
 import io.jacob.igozogo.core.testing.data.storyTestData
-
-@Composable
-fun StoryItemList(
-    modifier: Modifier = Modifier,
-    stories: List<Story>,
-    onItemClick: (Story) -> Unit,
-) {
-    val padding = 16.dp
-
-    LazyRow(
-        modifier = modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(padding),
-        contentPadding = PaddingValues(horizontal = padding)
-    ) {
-        items(
-            count = stories.size,
-            key = { stories[it].storyLangId },
-        ) { index ->
-            StoryItem(
-                modifier = Modifier
-                    .width(250.dp),
-                story = stories[index],
-                onClick = onItemClick
-            )
-        }
-    }
-}
 
 @Composable
 fun StoryItem(

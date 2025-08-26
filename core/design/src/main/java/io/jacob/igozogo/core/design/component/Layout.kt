@@ -14,7 +14,7 @@ import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
 
 @Composable
-fun TitleTextItem(
+fun SectionHeader(
     modifier: Modifier = Modifier,
     text: String,
     onMore: (() -> Unit)? = null,
@@ -51,9 +51,9 @@ fun TitleTextItem(
 
 @DevicePreviews
 @Composable
-private fun TitleTextItemPreview() {
+private fun SectionHeaderPreview() {
     IgozogoTheme {
-        TitleTextItem(
+        SectionHeader(
             text = "Preview",
             onMore = {}
         )
