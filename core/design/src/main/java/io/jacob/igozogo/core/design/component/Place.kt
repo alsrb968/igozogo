@@ -1,14 +1,17 @@
 package io.jacob.igozogo.core.design.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -17,6 +20,7 @@ import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
 import io.jacob.igozogo.core.model.Place
 import io.jacob.igozogo.core.testing.data.placeTestData
+import io.jacob.igozogo.core.design.R as designR
 
 @Composable
 fun PlaceItem(
@@ -114,6 +118,54 @@ fun PlaceItem(
     }
 }
 
+@Composable
+fun PlaceSearchItem(
+    modifier: Modifier = Modifier,
+    place: Place,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = modifier
+            .padding(horizontal = 8.dp)
+            .clickable(onClick = onClick),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        StateImage(
+            modifier = Modifier
+                .size(50.dp)
+                .clip(shape = RoundedCornerShape(16.dp)),
+            imageUrl = place.imageUrl,
+            contentDescription = place.title,
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp)
+        ) {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = place.title,
+                style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "${stringResource(designR.string.core_design_place)} · ${place.fullAddress}",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+    }
+}
+
 @DevicePreviews
 @Composable
 private fun PlaceItemPreview() {
@@ -122,6 +174,17 @@ private fun PlaceItemPreview() {
             place = placeTestData.first(),
             isBookmarked = false,
             onBookmarkToggle = {},
+            onClick = {}
+        )
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun PlaceSearchItemPreview() {
+    IgozogoTheme {
+        PlaceSearchItem(
+            place = placeTestData.first(),
             onClick = {}
         )
     }

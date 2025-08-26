@@ -222,12 +222,14 @@ private fun StoriesRow(
             count = stories.size,
             key = { stories[it].storyLangId },
         ) { index ->
-            StoryItem(
-                modifier = Modifier
-                    .width(250.dp),
-                story = stories[index],
-                onClick = onItemClick
-            )
+            stories[index].let { story ->
+                StoryItem(
+                    modifier = Modifier
+                        .width(250.dp),
+                    story = story,
+                    onClick = { onItemClick(story) }
+                )
+            }
         }
     }
 }

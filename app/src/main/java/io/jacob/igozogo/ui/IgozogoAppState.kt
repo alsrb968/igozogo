@@ -102,7 +102,9 @@ class IgozogoAppState(
             }
 
             BottomBarDestination.SEARCH ->
-                navController.navigateToSearch(bottomBarNavOptions)
+                navigateToBottomBarBaseRoute(destination) {
+                    navController.navigateToSearch(bottomBarNavOptions)
+                }
 
             BottomBarDestination.BOOKMARK ->
                 navController.navigateToBookmark(bottomBarNavOptions)
