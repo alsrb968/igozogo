@@ -31,7 +31,7 @@ fun NavGraphBuilder.searchSection(
                 onShowSnackbar = onShowSnackbar
             )
         }
-    }
 
-    destination()
+        destination()
+    }
 }
