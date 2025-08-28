@@ -20,9 +20,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import io.jacob.igozogo.core.design.component.CategoryItem
-import io.jacob.igozogo.core.design.component.LoadingWheel
-import io.jacob.igozogo.core.design.component.TitleTextItem
+import io.jacob.igozogo.core.design.component.*
 import io.jacob.igozogo.core.design.foundation.NestedScrollLazyColumn
 import io.jacob.igozogo.core.design.icon.IgozogoIcons
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
@@ -30,15 +28,19 @@ import io.jacob.igozogo.core.design.tooling.DevicePreviews
 import io.jacob.igozogo.core.model.Place
 import io.jacob.igozogo.core.model.Story
 import io.jacob.igozogo.core.testing.data.categoryTestData
+import io.jacob.igozogo.core.testing.data.placeTestData
 import io.jacob.igozogo.core.testing.data.recentSearchTestData
+import io.jacob.igozogo.core.testing.data.storyTestData
 import kotlinx.coroutines.flow.collectLatest
 import io.jacob.igozogo.core.design.R as designR
 
 @Composable
 internal fun SearchRoute(
     modifier: Modifier = Modifier,
+    viewModel: SearchViewModel = hiltViewModel(),
+    onPlaceClick: (Place) -> Unit,
+    onStoryClick: (Story) -> Unit,
     onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
-    viewModel: SearchViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val searchQuery by viewModel.searchQuery.collectAsStateWithLifecycle()
@@ -57,13 +59,9 @@ internal fun SearchRoute(
                     // todo: Handle navigation to category details
                 }
 
-                is SearchEffect.NavigateToPlaceDetails -> {
-                    // todo: Handle navigation to place details
-                }
+                is SearchEffect.NavigateToPlaceDetails -> onPlaceClick(effect.place)
 
-                is SearchEffect.NavigateToStoryDetails -> {
-                    // todo: Handle navigation to story details
-                }
+                is SearchEffect.NavigateToStoryDetails -> onStoryClick(effect.story)
             }
         }
     }
@@ -82,6 +80,7 @@ internal fun SearchRoute(
         onRecentSearchClicked = { viewModel.sendAction(SearchAction.ClickRecentSearch(it)) },
         onPlaceClicked = { viewModel.sendAction(SearchAction.ClickPlace(it)) },
         onStoryClicked = { viewModel.sendAction(SearchAction.ClickStory(it)) },
+        onStoryPlay = { /* TODO */ }
     )
 }
 
@@ -100,6 +99,7 @@ private fun SearchScreen(
     onRecentSearchClicked: (String) -> Unit = {},
     onPlaceClicked: (Place) -> Unit = {},
     onStoryClicked: (Story) -> Unit = {},
+    onStoryPlay: (Story) -> Unit = {}
 ) {
     NestedScrollLazyColumn(
         modifier = modifier,
@@ -125,7 +125,7 @@ private fun SearchScreen(
 
             is SearchState.CategoriesDisplay ->
                 item {
-                    CategoriesBody(
+                    CategoriesColumns(
                         categories = state.categories,
                         onCategoryClicked = onCategoryClicked
                     )
@@ -133,7 +133,7 @@ private fun SearchScreen(
 
             is SearchState.RecentSearchesDisplay -> {
                 item {
-                    RecentSearchesBody(
+                    RecentSearchesColumn(
                         recentSearches = state.recentSearches,
                         onRecentSearchClicked = onRecentSearchClicked,
                         onRemoveRecentSearch = onRemoveRecentSearch,
@@ -146,7 +146,15 @@ private fun SearchScreen(
                 if (state.isEmpty) {
                     // todo: Show search results empty state
                 } else {
-                    // todo: Show search results
+                    item {
+                        SearchResultsColumn(
+                            places = state.places,
+                            stories = state.stories,
+                            onPlaceClicked = onPlaceClicked,
+                            onStoryClicked = onStoryClicked,
+                            onStoryPlay = onStoryPlay
+                        )
+                    }
                 }
             }
 
@@ -158,12 +166,12 @@ private fun SearchScreen(
 }
 
 @Composable
-private fun CategoriesBody(
+private fun CategoriesColumns(
     modifier: Modifier = Modifier,
     categories: List<String>,
     onCategoryClicked: (String) -> Unit
 ) {
-    TitleTextItem(
+    SectionHeader(
         modifier = modifier,
         text = stringResource(designR.string.core_design_category)
     ) {
@@ -187,28 +195,24 @@ private fun CategoriesBody(
 }
 
 @Composable
-private fun RecentSearchesBody(
+private fun RecentSearchesColumn(
     modifier: Modifier = Modifier,
     recentSearches: List<String>,
     onRecentSearchClicked: (String) -> Unit,
     onRemoveRecentSearch: (String) -> Unit,
     onClearRecentSearches: () -> Unit
 ) {
-    TitleTextItem(
+    Column(
         modifier = modifier,
-        text = stringResource(designR.string.core_design_recent_search),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            recentSearches.forEach { recentSearch ->
-                RecentSearchItem(
-                    modifier = Modifier.fillMaxWidth(),
-                    recentSearch = recentSearch,
-                    onClick = onRecentSearchClicked,
-                    onRemove = onRemoveRecentSearch
-                )
-            }
+        recentSearches.forEach { recentSearch ->
+            RecentSearchItem(
+                modifier = Modifier.fillMaxWidth(),
+                recentSearch = recentSearch,
+                onClick = onRecentSearchClicked,
+                onRemove = onRemoveRecentSearch
+            )
         }
     }
 }
@@ -231,7 +235,7 @@ private fun RecentSearchItem(
             imageVector = IgozogoIcons.History,
             contentDescription = "Recent Search Icon",
             tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(end = 8.dp)
+            modifier = Modifier.padding(horizontal = 8.dp)
         )
 
         Spacer(modifier = Modifier.width(8.dp))
@@ -249,6 +253,35 @@ private fun RecentSearchItem(
                 imageVector = IgozogoIcons.Close,
                 contentDescription = "Remove Recent Search",
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
+private fun SearchResultsColumn(
+    modifier: Modifier = Modifier,
+    places: List<Place>,
+    stories: List<Story>,
+    onPlaceClicked: (Place) -> Unit,
+    onStoryClicked: (Story) -> Unit,
+    onStoryPlay: (Story) -> Unit,
+) {
+    Column(
+        modifier = modifier,
+    ) {
+        places.forEach { place ->
+            PlaceSearchItem(
+                place = place,
+                onClick = { onPlaceClicked(place) }
+            )
+        }
+
+        stories.forEach { story ->
+            StorySearchItem(
+                story = story,
+                onClick = { onStoryClicked(story) },
+                onPlay = { onStoryPlay(story) }
             )
         }
     }
@@ -321,9 +354,9 @@ private fun SearchBar(
 
 @DevicePreviews
 @Composable
-private fun CategoriesBodyPreview() {
+private fun CategoriesColumnsPreview() {
     IgozogoTheme {
-        CategoriesBody(
+        CategoriesColumns(
             categories = categoryTestData,
             onCategoryClicked = {}
         )
@@ -332,13 +365,27 @@ private fun CategoriesBodyPreview() {
 
 @DevicePreviews
 @Composable
-private fun RecentSearchesBodyPreview() {
+private fun RecentSearchesColumnPreview() {
     IgozogoTheme {
-        RecentSearchesBody(
+        RecentSearchesColumn(
             recentSearches = recentSearchTestData,
             onRecentSearchClicked = {},
             onRemoveRecentSearch = {},
             onClearRecentSearches = {}
+        )
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun SearchResultsColumnPreview() {
+    IgozogoTheme {
+        SearchResultsColumn(
+            places = placeTestData.take(5),
+            stories = storyTestData.take(5),
+            onPlaceClicked = {},
+            onStoryClicked = {},
+            onStoryPlay = {}
         )
     }
 }

@@ -1,7 +1,8 @@
 package io.jacob.igozogo.core.design.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -20,43 +21,15 @@ import io.jacob.igozogo.core.model.Story
 import io.jacob.igozogo.core.testing.data.storyTestData
 
 @Composable
-fun StoryItemList(
-    modifier: Modifier = Modifier,
-    stories: List<Story>,
-    onItemClick: (Story) -> Unit,
-) {
-    val padding = 16.dp
-
-    LazyRow(
-        modifier = modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(padding),
-        contentPadding = PaddingValues(horizontal = padding)
-    ) {
-        items(
-            count = stories.size,
-            key = { stories[it].storyLangId },
-        ) { index ->
-            StoryItem(
-                modifier = Modifier
-                    .width(250.dp),
-                story = stories[index],
-                onClick = onItemClick
-            )
-        }
-    }
-}
-
-@Composable
 fun StoryItem(
     modifier: Modifier = Modifier,
     story: Story,
-    onClick: (Story) -> Unit
+    onClick: () -> Unit
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth(),
-        onClick = { onClick(story) }
+        onClick = onClick
     ) {
         Column(
             modifier = Modifier
@@ -88,6 +61,73 @@ fun StoryItem(
                 onShare = { /* TODO */ },
                 onPlay = { /* TODO */ }
             )
+        }
+    }
+}
+
+@Composable
+fun StorySearchItem(
+    modifier: Modifier = Modifier,
+    story: Story,
+    onClick: () -> Unit,
+    onPlay: () -> Unit
+) {
+    Row(
+        modifier = modifier
+            .padding(horizontal = 8.dp)
+            .clickable(onClick = onClick),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        StateImage(
+            modifier = Modifier
+                .size(50.dp)
+                .clip(shape = RoundedCornerShape(16.dp)),
+            imageUrl = story.imageUrl,
+            contentDescription = story.title,
+        )
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(12.dp)
+        ) {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "${story.modifiedTime.toHumanReadableDate()} · ${story.playTime.toHumanReadableTime()}",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Spacer(modifier = Modifier.height(2.dp))
+
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = story.script,
+                style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+
+        Surface(
+            modifier = Modifier
+                .size(24.dp),
+            color = MaterialTheme.colorScheme.primary,
+            shape = CircleShape
+        ) {
+            IconButton(
+                onClick = onPlay
+            ) {
+                Icon(
+                    modifier = Modifier.size(ButtonDefaults.IconSize),
+                    imageVector = IgozogoIcons.Play,
+                    tint = MaterialTheme.colorScheme.onPrimary,
+                    contentDescription = "Play"
+                )
+            }
         }
     }
 }
@@ -205,6 +245,18 @@ private fun StoryItemPreview() {
         StoryItem(
             story = storyTestData.first(),
             onClick = {}
+        )
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun StorySearchItemPreview() {
+    IgozogoTheme {
+        StorySearchItem(
+            story = storyTestData.first(),
+            onClick = {},
+            onPlay = {}
         )
     }
 }

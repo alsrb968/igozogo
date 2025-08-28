@@ -204,10 +204,12 @@ fun PlaceDetailScreen(
                 count = stories.size,
                 key = { stories[it].storyLangId },
             ) { index ->
-                StoryItem(
-                    story = stories[index],
-                    onClick = onStoryClick
-                )
+                stories[index].let { story ->
+                    StoryItem(
+                        story = story,
+                        onClick = { onStoryClick(story) }
+                    )
+                }
             }
         }
     }

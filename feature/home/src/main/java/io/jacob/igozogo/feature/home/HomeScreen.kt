@@ -1,9 +1,10 @@
 package io.jacob.igozogo.feature.home
 
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -75,7 +76,6 @@ fun HomeRoute(
     }
 }
 
-@OptIn(ExperimentalMaterial3ExpressiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
@@ -92,19 +92,14 @@ fun HomeScreen(
             count = feedSections.size,
             key = { feedSections[it].hashCode() },
         ) { index ->
-            val section = feedSections[index]
-            when (section) {
+            when (val section = feedSections[index]) {
                 is FeedSection.Categories -> {
-                    TitleTextItem(
+                    SectionHeader(
                         modifier = Modifier
                             .padding(bottom = 16.dp),
                         text = stringResource(R.string.core_design_category)
                     ) {
-//                        ChipItemList(
-//                            chipItems = section.categories,
-//                            onItemClick = onCategoryClick
-//                        )
-                        CategoryItemList(
+                        CategoriesRows(
                             categories = section.categories,
                             onItemClick = onCategoryClick
                         )
@@ -112,12 +107,12 @@ fun HomeScreen(
                 }
 
                 is FeedSection.Places -> {
-                    TitleTextItem(
+                    SectionHeader(
                         modifier = Modifier
                             .padding(bottom = 16.dp),
                         text = stringResource(R.string.core_design_place), onMore = { }
                     ) {
-                        PlaceItemList(
+                        PlacesRow(
                             places = section.places,
                             isBookmarked = { false },
                             onBookmarkToggle = { },
@@ -127,12 +122,12 @@ fun HomeScreen(
                 }
 
                 is FeedSection.Stories -> {
-                    TitleTextItem(
+                    SectionHeader(
                         modifier = Modifier
                             .padding(bottom = 16.dp),
                         text = stringResource(R.string.core_design_story), onMore = { }
                     ) {
-                        StoryItemList(
+                        StoriesRow(
                             stories = section.stories,
                             onItemClick = onStoryClick
                         )
@@ -143,6 +138,98 @@ fun HomeScreen(
 
         item {
             Text(text = "End of list")
+        }
+    }
+}
+
+@Composable
+private fun CategoriesRows(
+    modifier: Modifier = Modifier,
+    categories: List<String>,
+    onItemClick: (String) -> Unit,
+) {
+    val padding = 16.dp
+
+    LazyHorizontalGrid(
+        rows = GridCells.Fixed(2),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(200.dp + padding),
+        horizontalArrangement = Arrangement.spacedBy(padding),
+        verticalArrangement = Arrangement.spacedBy(padding),
+        contentPadding = PaddingValues(horizontal = padding)
+    ) {
+        items(
+            count = categories.size,
+            key = { categories[it] },
+        ) { index ->
+            CategoryItem(
+                modifier = Modifier.width(200.dp),
+                category = categories[index],
+                onClick = { onItemClick(categories[index]) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun PlacesRow(
+    modifier: Modifier = Modifier,
+    places: List<Place>,
+    isBookmarked: (Place) -> Boolean,
+    onBookmarkToggle: (Place) -> Unit,
+    onItemClick: (Place) -> Unit,
+) {
+    val padding = 16.dp
+
+    LazyRow(
+        modifier = modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(padding),
+        contentPadding = PaddingValues(horizontal = padding)
+    ) {
+        items(
+            count = places.size,
+            key = { places[it].placeLangId },
+        ) { index ->
+            places[index].let { place ->
+                PlaceItem(
+                    place = place,
+                    isBookmarked = isBookmarked(place),
+                    onBookmarkToggle = { onBookmarkToggle(place) },
+                    onClick = { onItemClick(place) }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun StoriesRow(
+    modifier: Modifier = Modifier,
+    stories: List<Story>,
+    onItemClick: (Story) -> Unit,
+) {
+    val padding = 16.dp
+
+    LazyRow(
+        modifier = modifier
+            .fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(padding),
+        contentPadding = PaddingValues(horizontal = padding)
+    ) {
+        items(
+            count = stories.size,
+            key = { stories[it].storyLangId },
+        ) { index ->
+            stories[index].let { story ->
+                StoryItem(
+                    modifier = Modifier
+                        .width(250.dp),
+                    story = story,
+                    onClick = { onItemClick(story) }
+                )
+            }
         }
     }
 }

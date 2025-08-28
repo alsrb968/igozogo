@@ -4,6 +4,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -135,15 +136,34 @@ fun SmallIconButton(
 @Composable
 private fun ToggleFollowIconButtonPreview() {
     IgozogoTheme {
-        Column {
-            ToggleFollowIconButton(
-                isFollowed = true,
-                onClick = {}
-            )
-            ToggleFollowIconButton(
-                isFollowed = false,
-                onClick = {}
-            )
+        Row {
+            Column {
+                ToggleFollowIconButton(
+                    isFollowed = true,
+                    onClick = {}
+                )
+                ToggleFollowIconButton(
+                    isFollowed = false,
+                    onClick = {}
+                )
+            }
+            Column {
+                LargeIconButton(
+                    isChecked = true,
+                    onClick = {},
+                    icon = IgozogoIcons.Check
+                )
+                MediumIconButton(
+                    isChecked = true,
+                    onClick = {},
+                    icon = IgozogoIcons.Check
+                )
+                SmallIconButton(
+                    isChecked = true,
+                    onClick = {},
+                    icon = IgozogoIcons.Check
+                )
+            }
         }
     }
 }

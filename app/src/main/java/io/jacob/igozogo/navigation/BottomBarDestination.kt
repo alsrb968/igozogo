@@ -7,6 +7,7 @@ import io.jacob.igozogo.core.design.icon.IgozogoIcons
 import io.jacob.igozogo.feature.bookmark.navigation.BookmarkRoute
 import io.jacob.igozogo.feature.home.navigation.HomeBaseRoute
 import io.jacob.igozogo.feature.home.navigation.HomeRoute
+import io.jacob.igozogo.feature.search.navigation.SearchBaseRoute
 import io.jacob.igozogo.feature.search.navigation.SearchRoute
 import io.jacob.igozogo.feature.setting.navigation.SettingRoute
 import kotlin.reflect.KClass
@@ -30,6 +31,7 @@ enum class BottomBarDestination(
         icon = IgozogoIcons.SearchBorder,
         selectedIcon = IgozogoIcons.Search,
         route = SearchRoute::class,
+        baseRoute = SearchBaseRoute::class,
     ),
     BOOKMARK(
         label = R.string.nav_bookmark,
