@@ -15,7 +15,7 @@ import kotlinx.serialization.Serializable
 @Serializable data object SearchBaseRoute
 
 fun NavController.navigateToSearch(navOptions: NavOptions) =
-    navigate(route = SearchRoute, navOptions)
+    navigate(route = SearchBaseRoute, navOptions)
 
 fun NavGraphBuilder.searchSection(
     onPlaceClick: (Place) -> Unit,

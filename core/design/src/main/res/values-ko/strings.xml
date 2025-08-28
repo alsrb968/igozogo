@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Bottom Navigation Tabs -->
+    <string name="core_design_home">홈</string>
+    <string name="core_design_search">검색</string>
+    <string name="core_design_bookmark">북마크</string>
+    <string name="core_design_setting">설정</string>
+
     <string name="core_design_cd_follow">팔로우</string>
     <string name="core_design_cd_unfollow">언팔로우</string>
     <string name="core_design_cd_following">팔로잉</string>

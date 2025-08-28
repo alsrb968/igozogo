@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Bottom Navigation Tabs -->
+    <string name="core_design_home">Home</string>
+    <string name="core_design_search">Search</string>
+    <string name="core_design_bookmark">Bookmark</string>
+    <string name="core_design_setting">Setting</string>
+
     <string name="core_design_cd_follow">Follow</string>
     <string name="core_design_cd_unfollow">Unfollow</string>
     <string name="core_design_cd_following">Following</string>

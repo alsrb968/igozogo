@@ -1,8 +1,5 @@
 package io.jacob.igozogo.feature.placedetail
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,15 +8,14 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.jacob.igozogo.core.design.component.FadeTopBarLayout
 import io.jacob.igozogo.core.design.component.LoadingWheel
 import io.jacob.igozogo.core.design.component.StateImage
 import io.jacob.igozogo.core.design.component.StoryItem
@@ -71,50 +67,12 @@ fun PlaceDetailScreen(
 ) {
     val listState = rememberLazyListState()
 
-    val showTopBar by remember {
-        derivedStateOf {
-            // 첫 번째 아이템이 화면에 안 보일 때만 true
-            val firstVisibleItem = listState.firstVisibleItemIndex > 0
-            val offsetPastFirst = listState.firstVisibleItemIndex == 0 &&
-                    listState.firstVisibleItemScrollOffset > 700
-            firstVisibleItem || offsetPastFirst
-        }
-    }
-    Scaffold(
-        modifier = modifier.fillMaxSize(),
-        contentWindowInsets = WindowInsets(bottom = 0.dp),
-        topBar = {
-            TopAppBar(
-                modifier = Modifier,
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface.copy(alpha = if (showTopBar) 1f else 0f)
-                ),
-                title = {
-                    AnimatedVisibility(
-                        visible = showTopBar,
-                        enter = fadeIn(),
-                        exit = fadeOut()
-                    ) {
-                        Text(
-                            modifier = Modifier.fillMaxWidth(),
-                            text = place.title,
-                        )
-                    }
-                },
-                navigationIcon = {
-                    IconButton(
-                        onClick = onBackClick
-                    ) {
-                        Icon(
-                            imageVector = IgozogoIcons.Back,
-                            contentDescription = "Back",
-                        )
-                    }
-                },
-            )
-        }
-    ) { paddingValues ->
-
+    FadeTopBarLayout(
+        modifier = modifier,
+        state = listState,
+        title = place.title,
+        onBack = onBackClick
+    ) {
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize(),
@@ -126,7 +84,7 @@ fun PlaceDetailScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = paddingValues.calculateTopPadding())
+                        .padding(top = 80.dp)
                         .padding(horizontal = 16.dp, vertical = 8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {

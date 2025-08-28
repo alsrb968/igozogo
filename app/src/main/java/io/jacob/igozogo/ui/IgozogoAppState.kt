@@ -10,7 +10,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -52,7 +51,7 @@ class IgozogoAppState(
     val currentBottomBarDestination: BottomBarDestination?
         @Composable get() {
             return BottomBarDestination.entries.firstOrNull { bottomBarDestination ->
-                currentDestination?.hasRoute(route = bottomBarDestination.route) == true
+                currentDestination?.hasRoute(route = bottomBarDestination.baseRoute) == true
             }
         }
 
@@ -65,26 +64,6 @@ class IgozogoAppState(
         isOnline = checkIfOnline()
     }
 
-    private fun navigateToBottomBarBaseRoute(
-        destination: BottomBarDestination,
-        navigateToBottomBarRoute: () -> Unit
-    ) {
-        val currentEntry = navController.currentBackStackEntry
-        val currentDestination = navController.currentDestination
-        val startDestination = navController.graph.findStartDestination()
-
-        val isInGraph = currentEntry?.destination?.hierarchy
-            ?.any { it.hasRoute(destination.baseRoute) } == true
-
-        val isAtRoot = currentDestination == startDestination
-
-        if (isInGraph && !isAtRoot) {
-            navController.popBackStack(destination.route, inclusive = false)
-        } else {
-            navigateToBottomBarRoute()
-        }
-    }
-
     fun navigateToBottomBarDestination(destination: BottomBarDestination) {
         val bottomBarNavOptions = navOptions {
             popUpTo(navController.graph.findStartDestination().id) {
@@ -94,23 +73,20 @@ class IgozogoAppState(
             restoreState = true
         }
 
+        // 이중 NavHost 구조에서는 BaseRoute로 직접 이동
         when (destination) {
             BottomBarDestination.HOME -> {
-                navigateToBottomBarBaseRoute(destination) {
-                    navController.navigateToHome(bottomBarNavOptions)
-                }
+                navController.navigateToHome(bottomBarNavOptions)
             }
-
-            BottomBarDestination.SEARCH ->
-                navigateToBottomBarBaseRoute(destination) {
-                    navController.navigateToSearch(bottomBarNavOptions)
-                }
-
-            BottomBarDestination.BOOKMARK ->
+            BottomBarDestination.SEARCH -> {
+                navController.navigateToSearch(bottomBarNavOptions)
+            }
+            BottomBarDestination.BOOKMARK -> {
                 navController.navigateToBookmark(bottomBarNavOptions)
-
-            BottomBarDestination.SETTING ->
+            }
+            BottomBarDestination.SETTING -> {
                 navController.navigateToSetting(bottomBarNavOptions)
+            }
         }
     }
 
