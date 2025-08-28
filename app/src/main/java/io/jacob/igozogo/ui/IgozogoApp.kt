@@ -36,7 +36,6 @@ fun IgozogoApp(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun IgozogoApp(
     modifier: Modifier = Modifier,
@@ -44,83 +43,69 @@ fun IgozogoApp(
     snackbarHostState: SnackbarHostState,
 ) {
     val currentDestination = appState.currentDestination
-//    var isShowTopAppBar = false
 
-//    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    Scaffold(
+        modifier = modifier,
+        bottomBar = {
+            IgozogoNavigationBar {
+                appState.bottomBarDestinations.forEach { destination ->
+                    val selected = currentDestination
+                        .isRouteInHierarchy(destination.baseRoute)
+                    val text = stringResource(destination.label)
 
-        Scaffold(
-            modifier = modifier,
-//            topBar = {
-//                val label = appState.currentBottomBarDestination?.label
-//                Timber.i("label: $label")
-//                isShowTopAppBar = label != null
-//                label?.let { titleRes ->
-//                    IgozogoTopAppBar(
-//                        titleRes = titleRes,
-//                        scrollBehavior = scrollBehavior
-//                    )
-//                }
-//            },
-            bottomBar = {
-                IgozogoNavigationBar {
-                    appState.bottomBarDestinations.forEach { destination ->
-                        val selected = currentDestination
-                            .isRouteInHierarchy(destination.baseRoute)
-                        val text = stringResource(destination.label)
-
-                        IgozogoNavigationBarItem(
-                            icon = {
-                                Icon(
-                                    imageVector = destination.icon,
-                                    contentDescription = text
-                                )
-                            },
-                            selectedIcon = {
-                                Icon(
-                                    imageVector = destination.selectedIcon,
-                                    contentDescription = text
-                                )
-                            },
-                            label = {
-                                Text(
-                                    text = text,
-                                    style = MaterialTheme.typography.labelLarge,
-                                    maxLines = 1
-                                )
-                            },
-                            selected = selected,
-                            onClick = { appState.navigateToBottomBarDestination(destination) },
-                        )
-                    }
+                    IgozogoNavigationBarItem(
+                        icon = {
+                            Icon(
+                                imageVector = destination.icon,
+                                contentDescription = text
+                            )
+                        },
+                        selectedIcon = {
+                            Icon(
+                                imageVector = destination.selectedIcon,
+                                contentDescription = text
+                            )
+                        },
+                        label = {
+                            Text(
+                                text = text,
+                                style = MaterialTheme.typography.labelLarge,
+                                maxLines = 1
+                            )
+                        },
+                        selected = selected,
+                        onClick = { appState.navigateToBottomBarDestination(destination) },
+                    )
                 }
-            },
-            contentWindowInsets = ScaffoldDefaults.contentWindowInsets
-                .exclude(WindowInsets.statusBars),
-            snackbarHost = {
-                SnackbarHost(
-                    snackbarHostState,
-                    modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
-                )
-            },
-        ) { paddingValues ->
-            Box(
-                modifier = Modifier
-                    .padding(paddingValues)
-            ) {
-                IgozogoNavHost(
-                    appState = appState,
-                    onShowSnackbar = { message, action ->
-                        snackbarHostState.showSnackbar(
-                            message = message,
-                            actionLabel = action,
-                            duration = SnackbarDuration.Short,
-                        ) == SnackbarResult.ActionPerformed
-                    },
-                )
-
-                PlayerMiniBar()
             }
+        },
+        contentWindowInsets = ScaffoldDefaults.contentWindowInsets
+            .exclude(WindowInsets.statusBars),
+        snackbarHost = {
+            SnackbarHost(
+                snackbarHostState,
+                modifier = Modifier.windowInsetsPadding(WindowInsets.safeDrawing),
+            )
+        },
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .padding(paddingValues)
+        ) {
+            IgozogoNavHost(
+                appState = appState,
+                onShowSnackbar = { message, action ->
+                    snackbarHostState.showSnackbar(
+                        message = message,
+                        actionLabel = action,
+                        duration = SnackbarDuration.Short,
+                    ) == SnackbarResult.ActionPerformed
+                },
+            )
+
+            PlayerMiniBar()
         }
+    }
 }
 
 @Composable
