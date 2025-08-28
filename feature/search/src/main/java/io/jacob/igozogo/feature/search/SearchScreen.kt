@@ -2,6 +2,7 @@ package io.jacob.igozogo.feature.search
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -13,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -21,7 +23,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.jacob.igozogo.core.design.component.*
-import io.jacob.igozogo.core.design.foundation.NestedScrollLazyColumn
 import io.jacob.igozogo.core.design.icon.IgozogoIcons
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
@@ -84,6 +85,7 @@ internal fun SearchRoute(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SearchScreen(
     modifier: Modifier = Modifier,
@@ -101,65 +103,73 @@ private fun SearchScreen(
     onStoryClicked: (Story) -> Unit = {},
     onStoryPlay: (Story) -> Unit = {}
 ) {
-    NestedScrollLazyColumn(
+    IgozogoScaffold(
         modifier = modifier,
-        state = rememberLazyListState()
-    ) {
-        stickyHeader {
-            SearchBar(
-                modifier = Modifier
-                    .padding(horizontal = 8.dp),
-                query = searchQuery,
-                onQueryChanged = onSearchQueryChanged,
-                onFocusChanged = onFocusedChanged,
-                onSearch = onSearch,
-                onClear = onClearQuery
-            )
-        }
+        title = stringResource(designR.string.core_design_search)
+    ) { paddingValues, nestedScrollConnection ->
 
-        when (state) {
-            is SearchState.Loading ->
-                item {
-                    LoadingWheel(modifier = Modifier.fillMaxSize())
-                }
-
-            is SearchState.CategoriesDisplay ->
-                item {
-                    CategoriesColumns(
-                        categories = state.categories,
-                        onCategoryClicked = onCategoryClicked
-                    )
-                }
-
-            is SearchState.RecentSearchesDisplay -> {
-                item {
-                    RecentSearchesColumn(
-                        recentSearches = state.recentSearches,
-                        onRecentSearchClicked = onRecentSearchClicked,
-                        onRemoveRecentSearch = onRemoveRecentSearch,
-                        onClearRecentSearches = onClearRecentSearches
-                    )
-                }
+        LazyColumn(
+            modifier = Modifier
+                .padding(paddingValues)
+                .nestedScroll(nestedScrollConnection),
+            state = rememberLazyListState()
+        ) {
+            stickyHeader {
+                SearchBar(
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp),
+                    query = searchQuery,
+                    onQueryChanged = onSearchQueryChanged,
+                    onFocusChanged = onFocusedChanged,
+                    onSearch = onSearch,
+                    onClear = onClearQuery
+                )
             }
 
-            is SearchState.Success -> {
-                if (state.isEmpty) {
-                    // todo: Show search results empty state
-                } else {
+            when (state) {
+                is SearchState.Loading ->
                     item {
-                        SearchResultsColumn(
-                            places = state.places,
-                            stories = state.stories,
-                            onPlaceClicked = onPlaceClicked,
-                            onStoryClicked = onStoryClicked,
-                            onStoryPlay = onStoryPlay
+                        LoadingWheel(modifier = Modifier.fillMaxSize())
+                    }
+
+                is SearchState.CategoriesDisplay ->
+                    item {
+                        CategoriesColumns(
+                            categories = state.categories,
+                            onCategoryClicked = onCategoryClicked
+                        )
+                    }
+
+                is SearchState.RecentSearchesDisplay -> {
+                    item {
+                        RecentSearchesColumn(
+                            recentSearches = state.recentSearches,
+                            onRecentSearchClicked = onRecentSearchClicked,
+                            onRemoveRecentSearch = onRemoveRecentSearch,
+                            onClearRecentSearches = onClearRecentSearches
                         )
                     }
                 }
-            }
 
-            is SearchState.Error -> {
-                // todo: Show error state
+                is SearchState.Success -> {
+                    if (state.isEmpty) {
+                        // todo: Show search results empty state
+                    } else {
+                        item {
+                            SearchResultsColumn(
+                                places = state.places,
+                                stories = state.stories,
+                                onPlaceClicked = onPlaceClicked,
+                                onStoryClicked = onStoryClicked,
+                                onStoryPlay = onStoryPlay
+                            )
+                        }
+                    }
+                }
+
+                is SearchState.Error -> {
+                    // todo: Show error state
+                }
             }
         }
     }

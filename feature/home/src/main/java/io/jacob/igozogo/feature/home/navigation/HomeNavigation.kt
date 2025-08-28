@@ -15,7 +15,7 @@ import kotlinx.serialization.Serializable
 @Serializable data object HomeBaseRoute
 
 fun NavController.navigateToHome(navOptions: NavOptions) =
-    navigate(route = HomeRoute, navOptions)
+    navigate(route = HomeBaseRoute, navOptions)
 
 fun NavGraphBuilder.homeSection(
     onPlaceClick: (Place) -> Unit,

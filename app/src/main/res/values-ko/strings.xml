@@ -6,10 +6,4 @@
     <string name="network_error_title">인터넷 연결 오류</string>
     <string name="network_error_message">인터넷 연결을 확인하고 다시 시도하세요.</string>
     <string name="retry">재시도</string>
-
-    <!-- Bottom Navigation Tabs -->
-    <string name="nav_home">홈</string>
-    <string name="nav_search">검색</string>
-    <string name="nav_bookmark">북마크</string>
-    <string name="nav_setting">설정</string>
 </resources>

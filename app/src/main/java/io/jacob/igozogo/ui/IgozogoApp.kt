@@ -3,19 +3,15 @@ package io.jacob.igozogo.ui
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import io.jacob.igozogo.R
 import io.jacob.igozogo.core.design.component.IgozogoNavigationBar
 import io.jacob.igozogo.core.design.component.IgozogoNavigationBarItem
-import io.jacob.igozogo.core.design.component.IgozogoTopAppBar
-import io.jacob.igozogo.core.design.provider.LocalTopAppBarScrollBehavior
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
 import io.jacob.igozogo.feature.player.PlayerMiniBar
@@ -48,23 +44,23 @@ fun IgozogoApp(
     snackbarHostState: SnackbarHostState,
 ) {
     val currentDestination = appState.currentDestination
-    var isShowTopAppBar = false
+//    var isShowTopAppBar = false
 
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+//    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
-    CompositionLocalProvider(LocalTopAppBarScrollBehavior provides scrollBehavior) {
         Scaffold(
             modifier = modifier,
-            topBar = {
-                val label = appState.currentBottomBarDestination?.label
-                isShowTopAppBar = label != null
-                label?.let { titleRes ->
-                    IgozogoTopAppBar(
-                        titleRes = titleRes,
-                        scrollBehavior = scrollBehavior
-                    )
-                }
-            },
+//            topBar = {
+//                val label = appState.currentBottomBarDestination?.label
+//                Timber.i("label: $label")
+//                isShowTopAppBar = label != null
+//                label?.let { titleRes ->
+//                    IgozogoTopAppBar(
+//                        titleRes = titleRes,
+//                        scrollBehavior = scrollBehavior
+//                    )
+//                }
+//            },
             bottomBar = {
                 IgozogoNavigationBar {
                     appState.bottomBarDestinations.forEach { destination ->
@@ -98,6 +94,8 @@ fun IgozogoApp(
                     }
                 }
             },
+            contentWindowInsets = ScaffoldDefaults.contentWindowInsets
+                .exclude(WindowInsets.statusBars),
             snackbarHost = {
                 SnackbarHost(
                     snackbarHostState,
@@ -107,8 +105,7 @@ fun IgozogoApp(
         ) { paddingValues ->
             Box(
                 modifier = Modifier
-                    .padding(bottom = paddingValues.calculateBottomPadding())
-                    .padding(top = if (isShowTopAppBar) paddingValues.calculateTopPadding() else 0.dp)
+                    .padding(paddingValues)
             ) {
                 IgozogoNavHost(
                     appState = appState,
@@ -124,7 +121,6 @@ fun IgozogoApp(
                 PlayerMiniBar()
             }
         }
-    }
 }
 
 @Composable

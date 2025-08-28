@@ -16,9 +16,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import io.jacob.igozogo.core.design.provider.LocalTopAppBarScrollBehavior
 
 @Composable
 fun NestedScrollLazyColumn(
@@ -33,10 +31,12 @@ fun NestedScrollLazyColumn(
     overscrollEffect: OverscrollEffect? = rememberOverscrollEffect(),
     content: LazyListScope.() -> Unit
 ) {
-    val scrollBehavior = LocalTopAppBarScrollBehavior.current
+//    val scrollBehavior = LocalTopAppBarScrollBehavior.current
 
     LazyColumn(
-        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier
+//            .nestedScroll(scrollBehavior.nestedScrollConnection)
+        ,
         state = state,
         contentPadding = contentPadding,
         reverseLayout = reverseLayout,

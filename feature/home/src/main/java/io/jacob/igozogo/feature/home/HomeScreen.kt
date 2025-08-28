@@ -1,23 +1,24 @@
 package io.jacob.igozogo.feature.home
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import io.jacob.igozogo.core.design.R
 import io.jacob.igozogo.core.design.component.*
-import io.jacob.igozogo.core.design.foundation.NestedScrollLazyColumn
 import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
 import io.jacob.igozogo.core.domain.usecase.FeedSection
@@ -27,6 +28,7 @@ import io.jacob.igozogo.core.testing.data.categoryTestData
 import io.jacob.igozogo.core.testing.data.placeTestData
 import io.jacob.igozogo.core.testing.data.storyTestData
 import kotlinx.coroutines.flow.collectLatest
+import io.jacob.igozogo.core.design.R as designR
 
 @Composable
 fun HomeRoute(
@@ -44,7 +46,7 @@ fun HomeRoute(
             when (effect) {
                 is HomeEffect.Synced ->
                     onShowSnackbar(
-                        context.getString(R.string.core_design_place_sync_completed),
+                        context.getString(designR.string.core_design_place_sync_completed),
                         "OK"
                     )
 
@@ -76,6 +78,7 @@ fun HomeRoute(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
@@ -84,60 +87,68 @@ fun HomeScreen(
     onPlaceClick: (Place) -> Unit,
     onStoryClick: (Story) -> Unit,
 ) {
-    NestedScrollLazyColumn(
+    IgozogoScaffold(
         modifier = modifier,
-        state = rememberLazyListState()
-    ) {
-        items(
-            count = feedSections.size,
-            key = { feedSections[it].hashCode() },
-        ) { index ->
-            when (val section = feedSections[index]) {
-                is FeedSection.Categories -> {
-                    SectionHeader(
-                        modifier = Modifier
-                            .padding(bottom = 16.dp),
-                        text = stringResource(R.string.core_design_category)
-                    ) {
-                        CategoriesRows(
-                            categories = section.categories,
-                            onItemClick = onCategoryClick
-                        )
-                    }
-                }
+        title = stringResource(designR.string.core_design_home)
+    ) { paddingValues, nestedScrollConnection ->
 
-                is FeedSection.Places -> {
-                    SectionHeader(
-                        modifier = Modifier
-                            .padding(bottom = 16.dp),
-                        text = stringResource(R.string.core_design_place), onMore = { }
-                    ) {
-                        PlacesRow(
-                            places = section.places,
-                            isBookmarked = { false },
-                            onBookmarkToggle = { },
-                            onItemClick = onPlaceClick
-                        )
+        LazyColumn(
+            modifier = Modifier
+                .padding(paddingValues)
+                .nestedScroll(nestedScrollConnection),
+            state = rememberLazyListState(),
+        ) {
+            items(
+                count = feedSections.size,
+                key = { feedSections[it].hashCode() },
+            ) { index ->
+                when (val section = feedSections[index]) {
+                    is FeedSection.Categories -> {
+                        SectionHeader(
+                            modifier = Modifier
+                                .padding(bottom = 16.dp),
+                            text = stringResource(designR.string.core_design_category)
+                        ) {
+                            CategoriesRows(
+                                categories = section.categories,
+                                onItemClick = onCategoryClick
+                            )
+                        }
                     }
-                }
 
-                is FeedSection.Stories -> {
-                    SectionHeader(
-                        modifier = Modifier
-                            .padding(bottom = 16.dp),
-                        text = stringResource(R.string.core_design_story), onMore = { }
-                    ) {
-                        StoriesRow(
-                            stories = section.stories,
-                            onItemClick = onStoryClick
-                        )
+                    is FeedSection.Places -> {
+                        SectionHeader(
+                            modifier = Modifier
+                                .padding(bottom = 16.dp),
+                            text = stringResource(designR.string.core_design_place), onMore = { }
+                        ) {
+                            PlacesRow(
+                                places = section.places,
+                                isBookmarked = { false },
+                                onBookmarkToggle = { },
+                                onItemClick = onPlaceClick
+                            )
+                        }
+                    }
+
+                    is FeedSection.Stories -> {
+                        SectionHeader(
+                            modifier = Modifier
+                                .padding(bottom = 16.dp),
+                            text = stringResource(designR.string.core_design_story), onMore = { }
+                        ) {
+                            StoriesRow(
+                                stories = section.stories,
+                                onItemClick = onStoryClick
+                            )
+                        }
                     }
                 }
             }
-        }
 
-        item {
-            Text(text = "End of list")
+            item {
+                Text(text = "End of list")
+            }
         }
     }
 }
