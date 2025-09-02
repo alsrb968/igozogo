@@ -5,17 +5,13 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import io.jacob.igozogo.feature.bookmark.navigation.BookmarkRoute
-import io.jacob.igozogo.feature.bookmark.navigation.bookmarkScreen
+import io.jacob.igozogo.feature.bookmark.navigation.bookmarkSection
 import io.jacob.igozogo.feature.home.navigation.HomeBaseRoute
 import io.jacob.igozogo.feature.home.navigation.homeSection
 import io.jacob.igozogo.feature.placedetail.navigation.navigateToPlaceDetail
 import io.jacob.igozogo.feature.placedetail.navigation.placeDetailScreen
 import io.jacob.igozogo.feature.search.navigation.searchSection
-import io.jacob.igozogo.feature.setting.navigation.SettingRoute
-import io.jacob.igozogo.feature.setting.navigation.settingScreen
+import io.jacob.igozogo.feature.setting.navigation.settingSection
 import io.jacob.igozogo.feature.storydetail.navigation.navigateToStoryDetail
 import io.jacob.igozogo.feature.storydetail.navigation.storyDetailScreen
 import io.jacob.igozogo.ui.IgozogoAppState
@@ -32,6 +28,7 @@ fun IgozogoNavHost(
         modifier = modifier,
     ) {
         homeSection(
+            getNestedNavController = { appState.getNestedNavController(it) },
             navigateToPlaceDetail = { navigateToPlaceDetail(it) },
             navigateToStoryDetail = { navigateToStoryDetail(it) },
             onShowSnackbar = onShowSnackbar
@@ -43,6 +40,7 @@ fun IgozogoNavHost(
         }
         
         searchSection(
+            getNestedNavController = { appState.getNestedNavController(it) },
             navigateToPlaceDetail = { navigateToPlaceDetail(it) },
             navigateToStoryDetail = { navigateToStoryDetail(it) },
             onShowSnackbar = onShowSnackbar
@@ -53,17 +51,15 @@ fun IgozogoNavHost(
             )
         }
         
-        composable<BookmarkRoute> {
-            BookmarkTabNavHost(
-                onShowSnackbar = onShowSnackbar
-            )
-        }
+        bookmarkSection(
+            getNestedNavController = { appState.getNestedNavController(it) },
+            onShowSnackbar = onShowSnackbar
+        )
         
-        composable<SettingRoute> {
-            SettingTabNavHost(
-                onShowSnackbar = onShowSnackbar
-            )
-        }
+        settingSection(
+            getNestedNavController = { appState.getNestedNavController(it) },
+            onShowSnackbar = onShowSnackbar
+        )
     }
 }
 
@@ -83,34 +79,3 @@ fun NavGraphBuilder.addDetailsGraph(
     )
 }
 
-@Composable
-private fun BookmarkTabNavHost(
-    onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
-) {
-    val navController = rememberNavController()
-    
-    NavHost(
-        navController = navController,
-        startDestination = BookmarkRoute
-    ) {
-        bookmarkScreen(
-            onShowSnackbar = onShowSnackbar
-        )
-    }
-}
-
-@Composable
-private fun SettingTabNavHost(
-    onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
-) {
-    val navController = rememberNavController()
-    
-    NavHost(
-        navController = navController,
-        startDestination = SettingRoute
-    ) {
-        settingScreen(
-            onShowSnackbar = onShowSnackbar
-        )
-    }
-}

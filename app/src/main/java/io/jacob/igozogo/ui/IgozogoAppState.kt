@@ -19,6 +19,8 @@ import io.jacob.igozogo.feature.home.navigation.navigateToHome
 import io.jacob.igozogo.feature.search.navigation.navigateToSearch
 import io.jacob.igozogo.feature.setting.navigation.navigateToSetting
 import io.jacob.igozogo.navigation.BottomBarDestination
+import timber.log.Timber
+import kotlin.reflect.KClass
 
 @Composable
 fun rememberIgozogoAppState(
@@ -32,6 +34,21 @@ class IgozogoAppState(
     val navController: NavHostController,
     private val context: Context,
 ) {
+    private val nestedNavControllers = mutableStateMapOf<KClass<*>, NavHostController>()
+
+    @Composable
+    fun getNestedNavController(destination: KClass<*>): NavHostController {
+        val ret = nestedNavControllers.getOrPut(destination) {
+            rememberNavController()
+        }
+
+        nestedNavControllers.entries.forEachIndexed { index, dest ->
+            Timber.i("[$index] ${dest.key}")
+        }
+
+        return ret
+    }
+
     private val previousDestination = mutableStateOf<NavDestination?>(null)
 
     val currentDestination: NavDestination?

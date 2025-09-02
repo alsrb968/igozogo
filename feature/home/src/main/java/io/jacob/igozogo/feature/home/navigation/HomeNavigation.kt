@@ -3,14 +3,15 @@ package io.jacob.igozogo.feature.home.navigation
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import io.jacob.igozogo.core.model.Place
 import io.jacob.igozogo.core.model.Story
 import io.jacob.igozogo.feature.home.HomeRoute
 import kotlinx.serialization.Serializable
+import kotlin.reflect.KClass
 
 @Serializable data object HomeRoute
 
@@ -34,14 +35,13 @@ private fun NavGraphBuilder.homeScreen(
 }
 
 @Composable
-private fun HomeNavHost(
+fun HomeNavHost(
+    navController: NavHostController,
     navigateToPlaceDetail: NavController.(Place) -> Unit,
     navigateToStoryDetail: NavController.(Story) -> Unit,
     onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
     destination: NavGraphBuilder.(NavController) -> Unit,
 ) {
-    val navController = rememberNavController()
-
     NavHost(
         navController = navController,
         startDestination = HomeRoute
@@ -57,13 +57,16 @@ private fun HomeNavHost(
 }
 
 fun NavGraphBuilder.homeSection(
+    getNestedNavController: @Composable (KClass<*>) -> NavHostController,
     navigateToPlaceDetail: NavController.(Place) -> Unit,
     navigateToStoryDetail: NavController.(Story) -> Unit,
     onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
     destination: NavGraphBuilder.(NavController) -> Unit,
 ) {
     composable<HomeBaseRoute> {
+        val navController = getNestedNavController(HomeBaseRoute::class)
         HomeNavHost(
+            navController = navController,
             navigateToPlaceDetail = navigateToPlaceDetail,
             navigateToStoryDetail = navigateToStoryDetail,
             onShowSnackbar = onShowSnackbar,
