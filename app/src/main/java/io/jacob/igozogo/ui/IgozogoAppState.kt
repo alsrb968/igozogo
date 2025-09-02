@@ -19,8 +19,6 @@ import io.jacob.igozogo.feature.home.navigation.navigateToHome
 import io.jacob.igozogo.feature.search.navigation.navigateToSearch
 import io.jacob.igozogo.feature.setting.navigation.navigateToSetting
 import io.jacob.igozogo.navigation.BottomBarDestination
-import timber.log.Timber
-import kotlin.reflect.KClass
 
 @Composable
 fun rememberIgozogoAppState(
@@ -34,19 +32,24 @@ class IgozogoAppState(
     val navController: NavHostController,
     private val context: Context,
 ) {
-    private val nestedNavControllers = mutableStateMapOf<KClass<*>, NavHostController>()
-
-    @Composable
-    fun getNestedNavController(destination: KClass<*>): NavHostController {
-        val ret = nestedNavControllers.getOrPut(destination) {
-            rememberNavController()
+    private val tabNavControllers = mutableMapOf<BottomBarDestination, NavHostController>()
+    
+    fun registerTabNavController(destination: BottomBarDestination, navController: NavHostController) {
+        tabNavControllers[destination] = navController
+    }
+    
+    private fun navigateToTabRoot(destination: BottomBarDestination) {
+        tabNavControllers[destination]?.let { tabNavController ->
+            tabNavController.popBackStack(
+                route = when (destination) {
+                    BottomBarDestination.HOME -> io.jacob.igozogo.feature.home.navigation.HomeRoute
+                    BottomBarDestination.SEARCH -> io.jacob.igozogo.feature.search.navigation.SearchRoute
+                    BottomBarDestination.BOOKMARK -> io.jacob.igozogo.feature.bookmark.navigation.BookmarkRoute
+                    BottomBarDestination.SETTING -> io.jacob.igozogo.feature.setting.navigation.SettingRoute
+                },
+                inclusive = false
+            )
         }
-
-        nestedNavControllers.entries.forEachIndexed { index, dest ->
-            Timber.i("[$index] ${dest.key}")
-        }
-
-        return ret
     }
 
     private val previousDestination = mutableStateOf<NavDestination?>(null)
@@ -81,7 +84,17 @@ class IgozogoAppState(
         isOnline = checkIfOnline()
     }
 
+    private var lastSelectedTab by mutableStateOf<BottomBarDestination?>(null)
+    
     fun navigateToBottomBarDestination(destination: BottomBarDestination) {
+        // 같은 탭을 다시 클릭한 경우 해당 탭의 root로 이동
+        if (lastSelectedTab == destination) {
+            navigateToTabRoot(destination)
+            return
+        }
+        
+        lastSelectedTab = destination
+        
         val bottomBarNavOptions = navOptions {
             popUpTo(navController.graph.findStartDestination().id) {
                 saveState = true

@@ -1,17 +1,18 @@
 package io.jacob.igozogo.feature.search.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import io.jacob.igozogo.core.model.Place
 import io.jacob.igozogo.core.model.Story
 import io.jacob.igozogo.feature.search.SearchRoute
 import kotlinx.serialization.Serializable
-import kotlin.reflect.KClass
 
 @Serializable data object SearchRoute
 
@@ -57,14 +58,19 @@ fun SearchNavHost(
 }
 
 fun NavGraphBuilder.searchSection(
-    getNestedNavController: @Composable (KClass<*>) -> NavHostController,
+    onRegisterTabNavController: (NavHostController) -> Unit,
     navigateToPlaceDetail: NavController.(Place) -> Unit,
     navigateToStoryDetail: NavController.(Story) -> Unit,
     onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
     destination: NavGraphBuilder.(NavController) -> Unit,
 ) {
     composable<SearchBaseRoute> {
-        val navController = getNestedNavController(SearchBaseRoute::class)
+        val navController = rememberNavController()
+        
+        LaunchedEffect(navController) {
+            onRegisterTabNavController(navController)
+        }
+        
         SearchNavHost(
             navController = navController,
             navigateToPlaceDetail = navigateToPlaceDetail,

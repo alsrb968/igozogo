@@ -28,7 +28,9 @@ fun IgozogoNavHost(
         modifier = modifier,
     ) {
         homeSection(
-            getNestedNavController = { appState.getNestedNavController(it) },
+            onRegisterTabNavController = { navController -> 
+                appState.registerTabNavController(BottomBarDestination.HOME, navController) 
+            },
             navigateToPlaceDetail = { navigateToPlaceDetail(it) },
             navigateToStoryDetail = { navigateToStoryDetail(it) },
             onShowSnackbar = onShowSnackbar
@@ -40,7 +42,9 @@ fun IgozogoNavHost(
         }
         
         searchSection(
-            getNestedNavController = { appState.getNestedNavController(it) },
+            onRegisterTabNavController = { navController -> 
+                appState.registerTabNavController(BottomBarDestination.SEARCH, navController) 
+            },
             navigateToPlaceDetail = { navigateToPlaceDetail(it) },
             navigateToStoryDetail = { navigateToStoryDetail(it) },
             onShowSnackbar = onShowSnackbar
@@ -52,12 +56,16 @@ fun IgozogoNavHost(
         }
         
         bookmarkSection(
-            getNestedNavController = { appState.getNestedNavController(it) },
+            onRegisterTabNavController = { navController -> 
+                appState.registerTabNavController(BottomBarDestination.BOOKMARK, navController) 
+            },
             onShowSnackbar = onShowSnackbar
         )
         
         settingSection(
-            getNestedNavController = { appState.getNestedNavController(it) },
+            onRegisterTabNavController = { navController -> 
+                appState.registerTabNavController(BottomBarDestination.SETTING, navController) 
+            },
             onShowSnackbar = onShowSnackbar
         )
     }
