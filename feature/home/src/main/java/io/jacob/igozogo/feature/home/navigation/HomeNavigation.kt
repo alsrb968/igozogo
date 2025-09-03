@@ -13,6 +13,7 @@ import io.jacob.igozogo.core.model.Place
 import io.jacob.igozogo.core.model.Story
 import io.jacob.igozogo.feature.home.HomeRoute
 import kotlinx.serialization.Serializable
+import kotlin.reflect.KClass
 
 @Serializable data object HomeRoute
 
@@ -36,7 +37,7 @@ private fun NavGraphBuilder.homeScreen(
 }
 
 @Composable
-fun HomeNavHost(
+private fun HomeNavHost(
     navController: NavHostController,
     navigateToPlaceDetail: NavController.(Place) -> Unit,
     navigateToStoryDetail: NavController.(Story) -> Unit,
@@ -58,7 +59,7 @@ fun HomeNavHost(
 }
 
 fun NavGraphBuilder.homeSection(
-    onRegisterTabNavController: (NavHostController) -> Unit,
+    onRegisterNestedNavController: (KClass<*>, NavHostController) -> Unit,
     navigateToPlaceDetail: NavController.(Place) -> Unit,
     navigateToStoryDetail: NavController.(Story) -> Unit,
     onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
@@ -68,7 +69,7 @@ fun NavGraphBuilder.homeSection(
         val navController = rememberNavController()
         
         LaunchedEffect(navController) {
-            onRegisterTabNavController(navController)
+            onRegisterNestedNavController(HomeRoute::class, navController)
         }
         
         HomeNavHost(

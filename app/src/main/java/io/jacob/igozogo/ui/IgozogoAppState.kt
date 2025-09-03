@@ -14,11 +14,16 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import io.jacob.igozogo.feature.bookmark.navigation.BookmarkRoute
 import io.jacob.igozogo.feature.bookmark.navigation.navigateToBookmark
+import io.jacob.igozogo.feature.home.navigation.HomeRoute
 import io.jacob.igozogo.feature.home.navigation.navigateToHome
+import io.jacob.igozogo.feature.search.navigation.SearchRoute
 import io.jacob.igozogo.feature.search.navigation.navigateToSearch
+import io.jacob.igozogo.feature.setting.navigation.SettingRoute
 import io.jacob.igozogo.feature.setting.navigation.navigateToSetting
 import io.jacob.igozogo.navigation.BottomBarDestination
+import kotlin.reflect.KClass
 
 @Composable
 fun rememberIgozogoAppState(
@@ -32,24 +37,26 @@ class IgozogoAppState(
     val navController: NavHostController,
     private val context: Context,
 ) {
-    private val tabNavControllers = mutableMapOf<BottomBarDestination, NavHostController>()
-    
-    fun registerTabNavController(destination: BottomBarDestination, navController: NavHostController) {
-        tabNavControllers[destination] = navController
+    private val nestedNavControllers = mutableMapOf<BottomBarDestination, NavHostController>()
+
+    fun registerNestedNavController(
+        destination: BottomBarDestination,
+        route: KClass<*>,
+        navController: NavHostController
+    ) {
+        nestedNavControllers[destination] = navController
     }
-    
-    private fun navigateToTabRoot(destination: BottomBarDestination) {
-        tabNavControllers[destination]?.let { tabNavController ->
-            tabNavController.popBackStack(
-                route = when (destination) {
-                    BottomBarDestination.HOME -> io.jacob.igozogo.feature.home.navigation.HomeRoute
-                    BottomBarDestination.SEARCH -> io.jacob.igozogo.feature.search.navigation.SearchRoute
-                    BottomBarDestination.BOOKMARK -> io.jacob.igozogo.feature.bookmark.navigation.BookmarkRoute
-                    BottomBarDestination.SETTING -> io.jacob.igozogo.feature.setting.navigation.SettingRoute
-                },
-                inclusive = false
-            )
-        }
+
+    private fun navigateToNestedNavRoot(destination: BottomBarDestination) {
+        nestedNavControllers[destination]?.popBackStack(
+            route = when (destination) {
+                BottomBarDestination.HOME -> HomeRoute
+                BottomBarDestination.SEARCH -> SearchRoute
+                BottomBarDestination.BOOKMARK -> BookmarkRoute
+                BottomBarDestination.SETTING -> SettingRoute
+            },
+            inclusive = false
+        )
     }
 
     private val previousDestination = mutableStateOf<NavDestination?>(null)
@@ -84,17 +91,17 @@ class IgozogoAppState(
         isOnline = checkIfOnline()
     }
 
-    private var lastSelectedTab by mutableStateOf<BottomBarDestination?>(null)
-    
+    private var lastSelectedDestination by mutableStateOf<BottomBarDestination?>(null)
+
     fun navigateToBottomBarDestination(destination: BottomBarDestination) {
         // 같은 탭을 다시 클릭한 경우 해당 탭의 root로 이동
-        if (lastSelectedTab == destination) {
-            navigateToTabRoot(destination)
+        if (lastSelectedDestination == destination) {
+            navigateToNestedNavRoot(destination)
             return
         }
-        
-        lastSelectedTab = destination
-        
+
+        lastSelectedDestination = destination
+
         val bottomBarNavOptions = navOptions {
             popUpTo(navController.graph.findStartDestination().id) {
                 saveState = true
@@ -103,20 +110,11 @@ class IgozogoAppState(
             restoreState = true
         }
 
-        // 이중 NavHost 구조에서는 BaseRoute로 직접 이동
         when (destination) {
-            BottomBarDestination.HOME -> {
-                navController.navigateToHome(bottomBarNavOptions)
-            }
-            BottomBarDestination.SEARCH -> {
-                navController.navigateToSearch(bottomBarNavOptions)
-            }
-            BottomBarDestination.BOOKMARK -> {
-                navController.navigateToBookmark(bottomBarNavOptions)
-            }
-            BottomBarDestination.SETTING -> {
-                navController.navigateToSetting(bottomBarNavOptions)
-            }
+            BottomBarDestination.HOME -> navController.navigateToHome(bottomBarNavOptions)
+            BottomBarDestination.SEARCH -> navController.navigateToSearch(bottomBarNavOptions)
+            BottomBarDestination.BOOKMARK -> navController.navigateToBookmark(bottomBarNavOptions)
+            BottomBarDestination.SETTING -> navController.navigateToSetting(bottomBarNavOptions)
         }
     }
 

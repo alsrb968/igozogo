@@ -28,8 +28,8 @@ fun IgozogoNavHost(
         modifier = modifier,
     ) {
         homeSection(
-            onRegisterTabNavController = { navController -> 
-                appState.registerTabNavController(BottomBarDestination.HOME, navController) 
+            onRegisterNestedNavController = { route, navController ->
+                appState.registerNestedNavController(BottomBarDestination.HOME, route, navController)
             },
             navigateToPlaceDetail = { navigateToPlaceDetail(it) },
             navigateToStoryDetail = { navigateToStoryDetail(it) },
@@ -42,8 +42,8 @@ fun IgozogoNavHost(
         }
         
         searchSection(
-            onRegisterTabNavController = { navController -> 
-                appState.registerTabNavController(BottomBarDestination.SEARCH, navController) 
+            onRegisterNestedNavController = { route, navController ->
+                appState.registerNestedNavController(BottomBarDestination.SEARCH, route, navController)
             },
             navigateToPlaceDetail = { navigateToPlaceDetail(it) },
             navigateToStoryDetail = { navigateToStoryDetail(it) },
@@ -56,15 +56,15 @@ fun IgozogoNavHost(
         }
         
         bookmarkSection(
-            onRegisterTabNavController = { navController -> 
-                appState.registerTabNavController(BottomBarDestination.BOOKMARK, navController) 
+            onRegisterNestedNavController = { route, navController ->
+                appState.registerNestedNavController(BottomBarDestination.BOOKMARK, route, navController)
             },
             onShowSnackbar = onShowSnackbar
         )
         
         settingSection(
-            onRegisterTabNavController = { navController -> 
-                appState.registerTabNavController(BottomBarDestination.SETTING, navController) 
+            onRegisterNestedNavController = { route, navController ->
+                appState.registerNestedNavController(BottomBarDestination.SETTING, route, navController)
             },
             onShowSnackbar = onShowSnackbar
         )
