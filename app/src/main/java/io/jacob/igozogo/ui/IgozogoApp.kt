@@ -3,9 +3,12 @@ package io.jacob.igozogo.ui
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -16,6 +19,7 @@ import io.jacob.igozogo.core.design.theme.IgozogoTheme
 import io.jacob.igozogo.core.design.tooling.DevicePreviews
 import io.jacob.igozogo.feature.player.PlayerMiniBar
 import io.jacob.igozogo.navigation.IgozogoNavHost
+import kotlinx.coroutines.launch
 import kotlin.reflect.KClass
 
 @Composable
@@ -42,7 +46,8 @@ fun IgozogoApp(
     appState: IgozogoAppState,
     snackbarHostState: SnackbarHostState,
 ) {
-    val currentDestination = appState.currentDestination
+    val currentDestination by appState.currentDestination.collectAsStateWithLifecycle(initialValue = null)
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         modifier = modifier,
@@ -74,7 +79,11 @@ fun IgozogoApp(
                             )
                         },
                         selected = selected,
-                        onClick = { appState.navigateToBottomBarDestination(destination) },
+                        onClick = {
+                            scope.launch {
+                                appState.navigateToBottomBarDestination(destination)
+                            }
+                        },
                     )
                 }
             }
