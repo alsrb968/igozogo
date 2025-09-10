@@ -6,7 +6,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import io.jacob.igozogo.feature.bookmark.navigation.bookmarkSection
-import io.jacob.igozogo.feature.home.navigation.HomeBaseRoute
 import io.jacob.igozogo.feature.home.navigation.homeSection
 import io.jacob.igozogo.feature.placedetail.navigation.navigateToPlaceDetail
 import io.jacob.igozogo.feature.placedetail.navigation.placeDetailScreen
@@ -24,12 +23,12 @@ fun IgozogoNavHost(
 ) {
     NavHost(
         navController = appState.navController,
-        startDestination = HomeBaseRoute,
+        startDestination = appState.startDestination.baseRoute,
         modifier = modifier,
     ) {
         homeSection(
-            onRegisterNestedNavController = { route, navController ->
-                appState.registerNestedNavController(BottomBarDestination.HOME, route, navController)
+            onRegisterNestedNavController = { navController ->
+                appState.registerNestedNavController(BottomBarDestination.HOME, navController)
             },
             navigateToPlaceDetail = { navigateToPlaceDetail(it) },
             navigateToStoryDetail = { navigateToStoryDetail(it) },
@@ -42,8 +41,8 @@ fun IgozogoNavHost(
         }
         
         searchSection(
-            onRegisterNestedNavController = { route, navController ->
-                appState.registerNestedNavController(BottomBarDestination.SEARCH, route, navController)
+            onRegisterNestedNavController = { navController ->
+                appState.registerNestedNavController(BottomBarDestination.SEARCH, navController)
             },
             navigateToPlaceDetail = { navigateToPlaceDetail(it) },
             navigateToStoryDetail = { navigateToStoryDetail(it) },
@@ -56,15 +55,15 @@ fun IgozogoNavHost(
         }
         
         bookmarkSection(
-            onRegisterNestedNavController = { route, navController ->
-                appState.registerNestedNavController(BottomBarDestination.BOOKMARK, route, navController)
+            onRegisterNestedNavController = { navController ->
+                appState.registerNestedNavController(BottomBarDestination.BOOKMARK, navController)
             },
             onShowSnackbar = onShowSnackbar
         )
         
         settingSection(
-            onRegisterNestedNavController = { route, navController ->
-                appState.registerNestedNavController(BottomBarDestination.SETTING, route, navController)
+            onRegisterNestedNavController = { navController ->
+                appState.registerNestedNavController(BottomBarDestination.SETTING, navController)
             },
             onShowSnackbar = onShowSnackbar
         )

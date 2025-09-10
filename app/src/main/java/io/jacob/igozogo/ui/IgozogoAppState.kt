@@ -14,16 +14,11 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import io.jacob.igozogo.feature.bookmark.navigation.BookmarkRoute
 import io.jacob.igozogo.feature.bookmark.navigation.navigateToBookmark
-import io.jacob.igozogo.feature.home.navigation.HomeRoute
 import io.jacob.igozogo.feature.home.navigation.navigateToHome
-import io.jacob.igozogo.feature.search.navigation.SearchRoute
 import io.jacob.igozogo.feature.search.navigation.navigateToSearch
-import io.jacob.igozogo.feature.setting.navigation.SettingRoute
 import io.jacob.igozogo.feature.setting.navigation.navigateToSetting
 import io.jacob.igozogo.navigation.BottomBarDestination
-import kotlin.reflect.KClass
 
 @Composable
 fun rememberIgozogoAppState(
@@ -41,7 +36,6 @@ class IgozogoAppState(
 
     fun registerNestedNavController(
         destination: BottomBarDestination,
-        route: KClass<*>,
         navController: NavHostController
     ) {
         nestedNavControllers[destination] = navController
@@ -49,12 +43,7 @@ class IgozogoAppState(
 
     private fun navigateToNestedNavRoot(destination: BottomBarDestination) {
         nestedNavControllers[destination]?.popBackStack(
-            route = when (destination) {
-                BottomBarDestination.HOME -> HomeRoute
-                BottomBarDestination.SEARCH -> SearchRoute
-                BottomBarDestination.BOOKMARK -> BookmarkRoute
-                BottomBarDestination.SETTING -> SettingRoute
-            },
+            route = bottomBarDestinations.find { it == destination }?.route ?: return,
             inclusive = false
         )
     }
@@ -83,6 +72,7 @@ class IgozogoAppState(
         }
 
     val bottomBarDestinations: List<BottomBarDestination> = BottomBarDestination.entries
+    val startDestination = bottomBarDestinations.first()
 
     var isOnline by mutableStateOf(checkIfOnline())
         private set
@@ -91,7 +81,7 @@ class IgozogoAppState(
         isOnline = checkIfOnline()
     }
 
-    private var lastSelectedDestination by mutableStateOf<BottomBarDestination?>(null)
+    private var lastSelectedDestination by mutableStateOf(startDestination)
 
     fun navigateToBottomBarDestination(destination: BottomBarDestination) {
         // 같은 탭을 다시 클릭한 경우 해당 탭의 root로 이동

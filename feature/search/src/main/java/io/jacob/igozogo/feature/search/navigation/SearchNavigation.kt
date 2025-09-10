@@ -13,7 +13,6 @@ import io.jacob.igozogo.core.model.Place
 import io.jacob.igozogo.core.model.Story
 import io.jacob.igozogo.feature.search.SearchRoute
 import kotlinx.serialization.Serializable
-import kotlin.reflect.KClass
 
 @Serializable data object SearchRoute
 
@@ -37,7 +36,7 @@ private fun NavGraphBuilder.searchScreen(
 }
 
 @Composable
-fun SearchNavHost(
+private fun SearchNavHost(
     navController: NavHostController,
     navigateToPlaceDetail: NavController.(Place) -> Unit,
     navigateToStoryDetail: NavController.(Story) -> Unit,
@@ -59,7 +58,7 @@ fun SearchNavHost(
 }
 
 fun NavGraphBuilder.searchSection(
-    onRegisterNestedNavController: (KClass<*>, NavHostController) -> Unit,
+    onRegisterNestedNavController: (NavHostController) -> Unit,
     navigateToPlaceDetail: NavController.(Place) -> Unit,
     navigateToStoryDetail: NavController.(Story) -> Unit,
     onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
@@ -69,7 +68,7 @@ fun NavGraphBuilder.searchSection(
         val navController = rememberNavController()
         
         LaunchedEffect(navController) {
-            onRegisterNestedNavController(SearchRoute::class, navController)
+            onRegisterNestedNavController(navController)
         }
         
         SearchNavHost(

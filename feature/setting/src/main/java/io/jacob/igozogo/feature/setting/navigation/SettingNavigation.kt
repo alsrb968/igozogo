@@ -11,7 +11,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import io.jacob.igozogo.feature.setting.SettingRoute
 import kotlinx.serialization.Serializable
-import kotlin.reflect.KClass
 
 @Serializable data object SettingRoute
 
@@ -36,14 +35,14 @@ private fun SettingNavHost(
 }
 
 fun NavGraphBuilder.settingSection(
-    onRegisterNestedNavController: (KClass<*>, NavHostController) -> Unit,
+    onRegisterNestedNavController: (NavHostController) -> Unit,
     onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
 ) {
     composable<SettingRoute> {
         val navController = rememberNavController()
 
         LaunchedEffect(navController) {
-            onRegisterNestedNavController(SettingRoute::class, navController)
+            onRegisterNestedNavController(navController)
         }
 
         SettingNavHost(

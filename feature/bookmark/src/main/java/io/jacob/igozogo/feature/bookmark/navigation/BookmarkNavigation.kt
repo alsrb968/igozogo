@@ -11,7 +11,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import io.jacob.igozogo.feature.bookmark.BookmarkRoute
 import kotlinx.serialization.Serializable
-import kotlin.reflect.KClass
 
 @Serializable data object BookmarkRoute
 
@@ -36,14 +35,14 @@ private fun BookmarkNavHost(
 }
 
 fun NavGraphBuilder.bookmarkSection(
-    onRegisterNestedNavController: (KClass<*>, NavHostController) -> Unit,
+    onRegisterNestedNavController: (NavHostController) -> Unit,
     onShowSnackbar: suspend (message: String, actionLabel: String?) -> Boolean,
 ) {
     composable<BookmarkRoute> {
         val navController = rememberNavController()
 
         LaunchedEffect(navController) {
-            onRegisterNestedNavController(BookmarkRoute::class, navController)
+            onRegisterNestedNavController(navController)
         }
 
         BookmarkNavHost(
