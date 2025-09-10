@@ -8,7 +8,6 @@ import android.os.Build
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.content.ContextCompat.getSystemService
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -20,9 +19,13 @@ import io.jacob.igozogo.feature.home.navigation.navigateToHome
 import io.jacob.igozogo.feature.search.navigation.navigateToSearch
 import io.jacob.igozogo.feature.setting.navigation.navigateToSetting
 import io.jacob.igozogo.navigation.BottomBarDestination
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
 @Composable
 fun rememberIgozogoAppState(
@@ -36,20 +39,25 @@ class IgozogoAppState(
     val navController: NavHostController,
     private val context: Context,
 ) {
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+
     private val previousDestination = mutableStateOf<NavDestination?>(null)
 
-    val currentDestination: Flow<NavDestination?> =
+    val currentDestination: StateFlow<NavDestination?> =
         navController.currentBackStackEntryFlow.map { entry ->
             entry.destination.also { destination ->
                 previousDestination.value = destination
             }
-        }
+        }.stateIn(
+            scope = scope,
+            started = SharingStarted.Eagerly,
+            initialValue = null
+        )
 
     val currentBottomBarDestination: BottomBarDestination?
         @Composable get() {
-            val current by currentDestination.collectAsStateWithLifecycle(initialValue = null)
             return BottomBarDestination.entries.firstOrNull { bottomBarDestination ->
-                current?.hasRoute(route = bottomBarDestination.baseRoute) == true
+                currentDestination.value?.hasRoute(route = bottomBarDestination.baseRoute) == true
             }
         }
 
@@ -67,14 +75,14 @@ class IgozogoAppState(
 
     private fun navigateToNestedNavRoot(destination: BottomBarDestination) {
         nestedNavControllers[destination]?.popBackStack(
-            route = bottomBarDestinations.find { it == destination }?.route ?: return,
+            route = destination.route,
             inclusive = false
         )
     }
 
-    suspend fun navigateToBottomBarDestination(destination: BottomBarDestination) {
+    fun navigateToBottomBarDestination(destination: BottomBarDestination) {
         // 같은 탭을 다시 클릭한 경우 해당 탭의 root로 이동
-        if (currentDestination.firstOrNull()?.hasRoute(destination.baseRoute) == true) {
+        if (currentDestination.value?.hasRoute(destination.baseRoute) == true) {
             navigateToNestedNavRoot(destination)
             return
         }
